@@ -32,6 +32,10 @@
          padding: 3em; /* Ajusta el valor según sea necesario */
              }
 
+             #map {
+	height: 700px;
+	width: 100%;
+}
     </style>
 
 
@@ -68,30 +72,62 @@
 
             <!-- Iniciar sesión al final -->
             <div class="d-flex align-items-center">
-                <p class="mb-0 me-2"><a href="login.php" style="text-decoration: none; color: black;">Iniciar Sesión</a></p>
+                <p class="mb-0 me-2">Iniciar Sesión</p>
                 <i class="bi bi-person-circle" style="font-size: 1.5rem;"></i>
             </div>
         </div>
     </nav>
 
-    <!-- Apartado Titulo -->
+      <!-- Apartado Titulo -->
 
-        <div class="titulo d-flex justify-content-center border border-primary" style="padding: 10em; background: #5095CA;">
-            <h1 style="color: white;">Bienvenidos a la Biblioteca DGG</h1>
+      <div class="titulo d-flex justify-content-center border border-primary" style="padding: 10em; background: #5095CA;">
+            <h1 style="color: white;">Contacto</h1>
         </div>
-    
 
+        <div class="container mt-5 mb-5 pt-5 pb-5">
+            <div class="row">
+                <div id="map"></div>
+            </div>
+           
         
+       </div>
+        <script src="script.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=iniciarMap"></script>
+     
+
+    <div class="container-fluid mt-5" style="background: #5095CA;">
+    <div class="container-fluid">
+    <div class="row text-center">
+        <div class="col temaContacto mt-5 mb-5">
+            <i class="bi bi-pin-fill icono-grande text-warning" style="font-size: 2rem;"></i>
+            <p class="texto-grande text-white"><strong>Dirección</strong></p>
+            <p class="texto-normal text-white">Carr. de Guadarrama, 85, 28260 Galapagar, Madrid</p>
+        </div>
+
+        <div class="col temaContacto mt-5 mb-5">
+            <i class="bi bi-envelope-check-fill icono-grande text-warning" style="font-size: 2rem;"></i>
+            <p class="texto-grande text-white"><strong>Email</strong></p>
+            <p class="texto-normal text-white">bibliotecaDGG@gmail.com</p>
+        </div>
+
+        <div class="col temaContacto mt-5 mb-5">
+            <i class="bi bi-telephone-fill icono-grande text-warning" style="font-size: 2rem;"></i>
+            <p class="texto-grande text-white"><strong>Teléfono</strong></p>
+            <p class="texto-normal text-white">+34 690054835</p>
+        </div>
+    </div>
+</div>
 
 
 
 
-</body>
 
 
-<footer>
+    </body>
 
-<div class="titulo d-flex flex-row justify-content-around border border-primary text-white" style="padding: 10em; background: #5095CA;">
+
+    <footer>
+    <div class="titulo d-flex flex-row justify-content-around border border-primary text-white" style="padding: 10em; background: #5095CA;">
     <div class="d-flex flex-column">
         <div class="div">
             <h4 class="text-warning">Biblioteca DGG</h4>
@@ -135,7 +171,5 @@
     </div>
 </div>
 
-
-</footer>
-
+    </footer>
 </html>

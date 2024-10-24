@@ -63,16 +63,18 @@ CREATE TABLE Libros_Prestados (
 );
 
 
+INSERT INTO Administrador (dni, nombre, apellido, telefono, correo, contraseña) 
+VALUES 
+('98765432D', 'Javier', 'Herce', 912345677, 'javierherce@example.com', 'adminpass1'),
+('56473829E', 'Martin', 'Jaimes', 912345676, 'martinjaimes@example.com', 'adminpass2');
+
 -- INSERT INTO Usuario (dni, nombre, apellido, telefono, correo, contraseña) 
 -- VALUES 
 -- ('12345678A', 'Carlos', 'Martinez', 987654321, 'carlos@example.com', 'password1'),
 -- ('87654321B', 'Laura', 'Gomez', 912345678, 'laura@example.com', 'password2'),
 -- ('11223344C', 'María', 'Perez', 912345679, 'maria@example.com', 'password3');
 
--- INSERT INTO Administrador (dni, nombre, apellido, telefono, correo, contraseña) 
--- VALUES 
--- ('98765432D', 'Jorge', 'Lopez', 912345677, 'jorge.admin@example.com', 'adminpass1'),
--- ('56473829E', 'Ana', 'Mendez', 912345676, 'ana.admin@example.com', 'adminpass2');
+
 
 -- INSERT INTO Autor (dni, nombre, apellido, fecha_nacimiento) 
 -- VALUES 
