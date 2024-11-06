@@ -8,5 +8,9 @@ class Usuario {
         $query->execute([$correo, $contraseña]);
         return $query->fetch(PDO::FETCH_ASSOC);
     }
+
+        
+
+
 }
 ?>

@@ -10,10 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($usuario) {
         // Redirigir al panel principal o la página de libros
-        header("Location: libros.php");
+        header("Location: ../Vista/index.php");
         exit();
     } else {
         echo "Error: Credenciales inválidas";
+    
     }
 }
 ?>

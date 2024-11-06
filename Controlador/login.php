@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $query = "SELECT * FROM Usuario WHERE dni = ? AND contraseña = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ss", $dni, $password);
+    $stmt->bind_param("ss",$dni, $password);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -17,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: ../Vista/index.php");
     } else {
         echo "Credenciales incorrectas";
+        
     }
 }
-?>
+?> 

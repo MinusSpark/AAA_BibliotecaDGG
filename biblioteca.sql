@@ -65,8 +65,8 @@ CREATE TABLE Libros_Prestados (
 
 INSERT INTO Administrador (dni, nombre, apellido, telefono, correo, contraseña) 
 VALUES 
-('98765432D', 'Javier', 'Herce', 912345677, 'javierherce@example.com', 'adminpass1'),
-('56473829E', 'Martin', 'Jaimes', 912345676, 'martinjaimes@example.com', 'adminpass2');
+('98765432D', 'Javier', 'Herce', 912345677, 'javier@gmail.com', 'adminpass1'),
+('56473829E', 'Martin', 'Jaimes', 912345676, 'martin@gmail.com', 'adminpass2');
 
 -- INSERT INTO Usuario (dni, nombre, apellido, telefono, correo, contraseña) 
 -- VALUES 
