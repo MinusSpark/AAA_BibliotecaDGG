@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'; 
-import { Carousel } from 'react-bootstrap'; // Importamos Carousel de react-bootstrap
+import { Carousel } from 'react-bootstrap'; 
 import Header from '../components/Header'; 
-import Footer from '../components/Footer'; 
+import Footer from '../components/Footer';
+import carousel1 from '../images/carousel1.jpg';
+import carousel2 from '../images/carousel2.jpg';
+import carousel3 from '../images/carousel3.jpg';
 
 const Home = () => {
     return (
@@ -11,40 +14,40 @@ const Home = () => {
             <Header />
             
             {/* Slider de Bootstrap */}
-            <Carousel className="my-4">
+            <Carousel className="my-4" style={{ maxWidth: '800px', margin: '0 auto' }}>
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src="https://via.placeholder.com/800x400?text=Explora+nuestros+Libros"
+                        src={carousel1}
                         alt="Primera imagen"
                     />
-                    <Carousel.Caption>
-                        <h3>Explora Nuestros Libros</h3>
-                        <p>Encuentra una gran variedad de títulos y categorías.</p>
+                    <Carousel.Caption className="bg-dark bg-opacity-50 p-4">
+                        <h3 className="text-light">Explora Nuestros Libros</h3>
+                        <p className="text-light">Encuentra una gran variedad de títulos y categorías.</p>
                     </Carousel.Caption>
                 </Carousel.Item>
                 
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src="https://via.placeholder.com/800x400?text=Gestiona+tu+Biblioteca"
+                        src={carousel2}
                         alt="Segunda imagen"
                     />
-                    <Carousel.Caption>
-                        <h3>Gestiona tu Biblioteca</h3>
-                        <p>Accede a préstamos y devoluciones fácilmente.</p>
+                    <Carousel.Caption className="bg-dark bg-opacity-50 p-4">
+                        <h3 className="text-light">Gestiona tu Biblioteca</h3>
+                        <p className="text-light">Accede a préstamos y devoluciones fácilmente.</p>
                     </Carousel.Caption>
                 </Carousel.Item>
                 
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
-                        src="https://via.placeholder.com/800x400?text=Unete+Hoy+Mismo"
+                        src={carousel3}
                         alt="Tercera imagen"
                     />
-                    <Carousel.Caption>
-                        <h3>Únete Hoy Mismo</h3>
-                        <p>Regístrate y disfruta de nuestros servicios.</p>
+                    <Carousel.Caption className="bg-dark bg-opacity-50 p-4">
+                        <h3 className="text-light">Únete Hoy Mismo</h3>
+                        <p className="text-light">Regístrate y disfruta de nuestros servicios.</p>
                     </Carousel.Caption>
                 </Carousel.Item>
             </Carousel>

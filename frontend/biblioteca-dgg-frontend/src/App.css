@@ -36,3 +36,25 @@
     transform: rotate(360deg);
   }
 }
+
+/* App.css */
+
+header {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #ffcc00; /* Color del título */
+}
+
+nav a {
+  transition: background-color 0.3s; /* Transición suave para el hover */
+}
+
+nav a:hover {
+  background-color: #0056b3; /* Color al pasar el mouse */
+}
