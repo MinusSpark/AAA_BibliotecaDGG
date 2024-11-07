@@ -16,22 +16,45 @@ function Login() {
     };
 
     return (
-        <div>
+        <div className="d-flex flex-column min-vh-100">
             <Header />
-            <h1>Iniciar sesión</h1>
-            <input
-                type="email"
-                placeholder="Correo"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <button onClick={handleLogin}>Ingresar</button>
+            <div className="container my-auto">
+                <div className="row justify-content-center">
+                    <div className="col-md-6 col-lg-4">
+                        <div className="card shadow-lg p-4">
+                            <h2 className="text-center mb-4">Iniciar sesión</h2>
+                            <div className="mb-3">
+                                <label htmlFor="email" className="form-label">Correo electrónico</label>
+                                <input
+                                    type="email"
+                                    className="form-control"
+                                    id="email"
+                                    placeholder="Introduce tu correo"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="password" className="form-label">Contraseña</label>
+                                <input
+                                    type="password"
+                                    className="form-control"
+                                    id="password"
+                                    placeholder="Introduce tu contraseña"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                            </div>
+                            <button
+                                className="btn btn-primary w-100"
+                                onClick={handleLogin}
+                            >
+                                Ingresar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <Footer />
         </div>
     );

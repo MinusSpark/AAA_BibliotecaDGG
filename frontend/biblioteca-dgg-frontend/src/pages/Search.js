@@ -14,21 +14,42 @@ function Search() {
     };
 
     return (
-        <div>
+        <div className="d-flex flex-column min-vh-100">
             <Header />
-            <input
-                type="text"
-                placeholder="Buscar libros"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-            />
-            <button onClick={searchBooks}>Buscar</button>
-
-            <ul>
-                {results.map(book => (
-                    <li key={book.isbn}>{book.titulo}</li>
-                ))}
-            </ul>
+            <div className="container my-auto">
+                <div className="row justify-content-center">
+                    <div className="col-md-8 col-lg-6">
+                        <div className="card shadow-lg p-4">
+                            <h2 className="text-center mb-4">Buscar Libros</h2>
+                            <div className="mb-3">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Introduce el título o autor"
+                                    value={query}
+                                    onChange={(e) => setQuery(e.target.value)}
+                                />
+                            </div>
+                            <button
+                                className="btn btn-primary w-100"
+                                onClick={searchBooks}
+                            >
+                                Buscar
+                            </button>
+                            <div className="mt-4">
+                                <h4>Resultados:</h4>
+                                <ul className="list-group">
+                                    {results.map(book => (
+                                        <li key={book.isbn} className="list-group-item">
+                                            {book.titulo}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <Footer />
         </div>
     );
