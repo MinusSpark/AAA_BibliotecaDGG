@@ -18,14 +18,21 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const login = async (email, password) => {
+    const login = async (email, password, isAdmin = false) => {
         try {
             const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=login', { email, password });
             const userData = response.data.user; // Asegúrate de que esto sea correcto
-            setUser(userData);
+            if (isAdmin) {
+                // Lógica para manejar el inicio de sesión de administrador
+                setUser({ ...userData, role: 'admin' }); // Agregar rol
+            } else {
+                setUser(userData);
+            }
             localStorage.setItem('user', JSON.stringify(userData));
+            return { status: 'success', user: userData }; // Devolver la respuesta
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
+            return { status: 'error', message: error.message }; // Devolver error
         }
     };
 

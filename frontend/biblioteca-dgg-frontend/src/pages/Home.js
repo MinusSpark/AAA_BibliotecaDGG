@@ -59,12 +59,6 @@ const Home = () => {
                 <nav>
                     <ul className="list-unstyled">
                         <li className="my-2">
-                            <Link className="btn btn-primary" to="/user-panel">Panel de Usuario</Link>
-                        </li>
-                        <li className="my-2">
-                            <Link className="btn btn-secondary" to="/admin-panel">Panel de Administrador</Link>
-                        </li>
-                        <li className="my-2">
                             <Link className="btn btn-info" to="/contact">Contacto</Link>
                         </li>
                         <li className="my-2">

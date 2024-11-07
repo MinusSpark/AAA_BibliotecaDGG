@@ -29,7 +29,10 @@ function Header() {
                             {user ? (
                                 <>
                                     <li className="nav-item">
-                                        <span className="nav-link">Bienvenido, {user.correo}</span> {/* Muestra el correo del usuario */}
+                                        <span className="nav-link">Bienvenido, {user.correo}</span>
+                                        {user.role === 'admin' && (
+                                            <Link className="nav-link" to="/admin-panel">Panel de Administrador</Link> // Enlace visible solo para admin
+                                        )}
                                     </li>
                                     <li className="nav-item">
                                         <button className="btn btn-outline-light" onClick={logout}>Cerrar sesión</button>

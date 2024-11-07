@@ -6,6 +6,8 @@ import Register from './pages/Register';
 import Contact from './pages/Contact';
 import UserPanel from './pages/UserPanel';
 import AdminPanel from './pages/AdminPanel';
+import Search from './pages/Search';
+import AdminLogin from './pages/AdminLogin';
 
 const App = () => {
     return (
@@ -13,10 +15,12 @@ const App = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/admin-login" element={<AdminLogin />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/user-panel" element={<UserPanel />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
+                <Route path="/search" element={<Search />} />
             </Routes>
         </Router>
     );

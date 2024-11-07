@@ -48,12 +48,12 @@ class ControladorUsuario
         }
     }
 
-    public static function obtenerUsuarios()
-    {
+    public static function obtenerUsuarios() {
         $conexion = Conexion::conectar();
         $sql = "SELECT * FROM Usuario";
         $stmt = $conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 }

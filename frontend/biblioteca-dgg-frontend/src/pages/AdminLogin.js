@@ -1,19 +1,28 @@
-// Login.js
+// AdminLogin.js
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // Importar Link
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../services/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
-function Login() {
+function AdminLogin() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const handleLogin = async () => {
-        await login(email, password);
-        navigate('/'); // Redirige al inicio tras iniciar sesión
+    const handleAdminLogin = async () => {
+        try {
+            const response = await login(email, password, true); // Llama a la función de login
+            if (response && response.status === 'success') {
+                navigate('/'); // Redirige al inicio tras iniciar sesión
+            } else {
+                alert('Error en el inicio de sesión'); // Manejo de error
+            }
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+            alert('Error en el inicio de sesión'); // Manejo de error
+        }
     };
 
     return (
@@ -23,7 +32,7 @@ function Login() {
                 <div className="row justify-content-center">
                     <div className="col-md-6 col-lg-4">
                         <div className="card shadow-lg p-4">
-                            <h2 className="text-center mb-4">Iniciar sesión</h2>
+                            <h2 className="text-center mb-4">Iniciar sesión como Administrador</h2>
                             <div className="mb-3">
                                 <label htmlFor="email" className="form-label">Correo electrónico</label>
                                 <input
@@ -48,13 +57,10 @@ function Login() {
                             </div>
                             <button
                                 className="btn btn-primary w-100"
-                                onClick={handleLogin}
+                                onClick={handleAdminLogin}
                             >
                                 Ingresar
                             </button>
-                            <div className="text-center mt-3">
-                                <Link to="/admin-login">Iniciar sesión como administrador</Link> {/* Enlace agregado */}
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -64,4 +70,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default AdminLogin;
