@@ -56,5 +56,20 @@ nav a {
 }
 
 nav a:hover {
-  background-color: #0056b3; /* Color al pasar el mouse */
+  background-color: #18b300; /* Color al pasar el mouse */
+}
+
+/* Agregar estilo para las páginas de login y registro */
+form {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
 }

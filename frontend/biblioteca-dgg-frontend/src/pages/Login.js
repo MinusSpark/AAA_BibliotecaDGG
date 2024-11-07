@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import Header from '../components/Header'; 
-import Footer from '../components/Footer'; 
+import React, { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../services/AuthContext';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
 
-    const handleLogin = () => {
-        axios.post('http://localhost:3001/api/login', { email, password })
-            .then(response => alert('Login exitoso'))
-            .catch(error => console.error('Error en login:', error));
+    const handleLogin = async () => {
+        await login(email, password);
+        navigate('/'); // Redirige al inicio tras iniciar sesión
     };
 
     return (

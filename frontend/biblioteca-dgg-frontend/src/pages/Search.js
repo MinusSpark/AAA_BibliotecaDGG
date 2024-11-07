@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 function Search() {
     const [query, setQuery] = useState('');
@@ -13,6 +15,7 @@ function Search() {
 
     return (
         <div>
+            <Header />
             <input
                 type="text"
                 placeholder="Buscar libros"
@@ -26,6 +29,7 @@ function Search() {
                     <li key={book.isbn}>{book.titulo}</li>
                 ))}
             </ul>
+            <Footer />
         </div>
     );
 }

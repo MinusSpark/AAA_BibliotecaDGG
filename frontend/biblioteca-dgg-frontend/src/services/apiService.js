@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api';
+const API_URL = 'http://localhost/api';
 
 export const fetchBooks = async () => {
     try {
-        const response = await axios.get(`${API_URL}/books`);
+        const response = await axios.get(`${API_URL}/books`); 
         return response.data;
     } catch (error) {
         console.error('Error fetching books:', error);
@@ -12,9 +12,10 @@ export const fetchBooks = async () => {
     }
 };
 
+
 export const notifyAvailability = async (email, bookTitle) => {
     try {
-        const response = await axios.post(`${API_URL}/notify-availability`, {
+        const response = await axios.post(`${API_URL}/notify-availability`, { 
             email,
             bookTitle
         });
@@ -24,3 +25,4 @@ export const notifyAvailability = async (email, bookTitle) => {
         return null;
     }
 };
+
