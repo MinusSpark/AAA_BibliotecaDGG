@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
-import { Carousel } from 'react-bootstrap'; 
-import Header from '../components/Header'; 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Carousel } from 'react-bootstrap';
+import Header from '../components/Header';
 import Footer from '../components/Footer';
 import carousel1 from '../images/carousel1.jpg';
 import carousel2 from '../images/carousel2.jpg';
@@ -12,7 +12,7 @@ const Home = () => {
     return (
         <div className="d-flex flex-column min-vh-100">
             <Header />
-            
+
             {/* Slider de Bootstrap */}
             <Carousel className="my-4" style={{ maxWidth: '750px', margin: '0 auto' }}>
                 <Carousel.Item>
@@ -26,7 +26,7 @@ const Home = () => {
                         <p className="text-light">Encuentra una gran variedad de títulos y categorías.</p>
                     </Carousel.Caption>
                 </Carousel.Item>
-                
+
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
@@ -38,7 +38,7 @@ const Home = () => {
                         <p className="text-light">Accede a préstamos y devoluciones fácilmente.</p>
                     </Carousel.Caption>
                 </Carousel.Item>
-                
+
                 <Carousel.Item>
                     <img
                         className="d-block w-100"
@@ -55,7 +55,7 @@ const Home = () => {
             <div className="container text-center my-5">
                 <h1 className="display-4">Bienvenido a la Biblioteca DGG</h1>
                 <p className="lead">Explora nuestra colección de libros y gestiona tus préstamos.</p>
-                
+
                 <nav>
                     <ul className="list-unstyled">
                         <li className="my-2">
