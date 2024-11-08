@@ -33,6 +33,23 @@ const AdminPanel = () => {
         fetchUsers();
     }, [user, navigate]);
 
+    const handleDelete = async (dni) => {
+        if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+            try {
+                await axios.delete(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteUser&dni=${dni}`);
+                setUsers(users.filter(user => user.dni !== dni)); // Actualiza la lista de usuarios
+                alert('Usuario eliminado exitosamente');
+            } catch (error) {
+                console.error('Error al eliminar usuario:', error);
+                alert('Error al eliminar usuario');
+            }
+        }
+    };
+
+    const handleEdit = (dni) => {
+        navigate(`/edit-user/${dni}`); // Redirige a la página de edición
+    };
+
     return (
         <div>
             <Header />
@@ -60,8 +77,8 @@ const AdminPanel = () => {
                             <td>{user.telefono}</td>
                             <td>{user.correo}</td>
                             <td>
-                                <button className="btn btn-danger btn-sm">Eliminar</button>
-                                <button className="btn btn-warning btn-sm">Editar</button>
+                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(user.dni)}>Eliminar</button>
+                                <button className="btn btn-warning btn-sm" onClick={() => handleEdit(user.dni)}>Editar</button>
                             </td>
                         </tr>
                     ))}

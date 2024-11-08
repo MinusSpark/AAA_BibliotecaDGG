@@ -22,8 +22,8 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=login', { email, password });
             const userData = response.data.user; // Asegúrate de que esto sea correcto
+            console.log('Usuario logueado:', userData); // Agrega esto para verificar la estructura
             if (isAdmin) {
-                // Lógica para manejar el inicio de sesión de administrador
                 setUser({ ...userData, role: 'admin' }); // Agregar rol
             } else {
                 setUser(userData);
@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user');
@@ -47,3 +48,4 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+

@@ -8,6 +8,7 @@ import UserPanel from './pages/UserPanel';
 import AdminPanel from './pages/AdminPanel';
 import Search from './pages/Search';
 import AdminLogin from './pages/AdminLogin';
+import EditUser from './pages/EditUser';
 
 const App = () => {
     return (
@@ -21,6 +22,7 @@ const App = () => {
                 <Route path="/user-panel" element={<UserPanel />} />
                 <Route path="/admin-panel" element={<AdminPanel />} />
                 <Route path="/search" element={<Search />} />
+                <Route path="/edit-user/:dni" element={<EditUser />} />
             </Routes>
         </Router>
     );

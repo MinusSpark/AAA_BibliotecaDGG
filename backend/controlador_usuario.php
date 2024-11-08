@@ -13,10 +13,11 @@ class ControladorUsuario
         $stmt->execute();
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($usuario) {
-            return ['status' => 'success', 'user' => $usuario];
+        // Verificar que el usuario se haya encontrado y que incluya la propiedad 'correo'
+        if ($usuario && isset($usuario['correo'])) {
+            return $usuario; // Retornamos el objeto completo de usuario
         } else {
-            return ['status' => 'error', 'message' => 'Correo o contraseña incorrectos'];
+            return null; // Retornamos null si no se encuentra o si falta el correo
         }
     }
 
@@ -42,7 +43,11 @@ class ControladorUsuario
             $stmt->bindParam(":telefono", $telefono);
             $stmt->bindParam(":correo", $correo);
             $stmt->bindParam(":password", $password);
-            return $stmt->execute();
+            if ($stmt->execute()) {
+                return ['status' => 'success', 'message' => 'Usuario registrado exitosamente'];
+            } else {
+                return ['status' => 'error', 'message' => 'Error al registrar el usuario'];
+            }
         } catch (Exception $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
@@ -55,5 +60,53 @@ class ControladorUsuario
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+ 
+    public static function eliminarUsuario($dni) {
+        $conexion = Conexion::conectar();
+        try {
+            $sql = "DELETE FROM Usuario WHERE dni = :dni";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(":dni", $dni);
+            if ($stmt->execute()) {
+                return ['status' => 'success', 'message' => 'Usuario eliminado exitosamente'];
+            } else {
+                return ['status' => 'error', 'message' => 'Error al eliminar el usuario'];
+            }
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+
+    public static function actualizarUsuario($data) {
+        $conexion = Conexion::conectar();
+        try {
+            $sql = "UPDATE Usuario SET nombre = :nombre, apellido = :apellido, telefono = :telefono, correo = :correo WHERE dni = :dni";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(":dni", $data['dni']);
+            $stmt->bindParam(":nombre", $data['nombre']);
+            $stmt->bindParam(":apellido", $data['apellido']);
+            $stmt->bindParam(":telefono", $data['telefono']);
+            $stmt->bindParam(":correo", $data['correo']);
+            if ($stmt->execute()) {
+                return ['status' => 'success', 'message' => 'Usuario actualizado exitosamente'];
+            } else {
+                return ['status' => 'error', 'message' => 'Error al actualizar el usuario'];
+            }
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+
+    public static function obtenerUsuarioPorDni($dni) {
+        $conexion = Conexion::conectar();
+        $sql = "SELECT * FROM Usuario WHERE dni = :dni";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bindParam(":dni", $dni);
+        $stmt->execute();
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $usuario ? ['status' => 'success', 'data' => $usuario] : ['status' => 'error', 'message' => 'Usuario no encontrado'];
+    }
     
+    
+
 }
