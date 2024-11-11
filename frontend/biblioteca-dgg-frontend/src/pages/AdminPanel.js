@@ -17,47 +17,29 @@ const AdminPanel = () => {
 
     useEffect(() => {
         if (!user || user.role !== 'admin') {
-            navigate('/'); // Redirige si no es admin
+            navigate('/'); // Redirect if not an admin
         }
 
-        const fetchUsers = async () => {
+        // Helper function to safely update state with response data
+        const fetchData = async (url, setState) => {
             try {
-                const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=users');
+                const response = await axios.get(url);
                 if (response.data.status === 'success' && Array.isArray(response.data.data)) {
-                    setUsers(response.data.data);
+                    setState(response.data.data);
                 } else {
-                    setUsers([]);
+                    setState([]); // Default to empty array if data is not as expected
                 }
             } catch (error) {
-                console.error('Error fetching users:', error);
+                console.error(`Error fetching data from ${url}:`, error);
+                setState([]); // Set state to empty array on error
             }
         };
 
-        const fetchBooks = async () => {
-            const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=books');
-            setBooks(response.data.data);
-        };
-
-        const fetchBorrowedBooks = async () => {
-            const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=borrowedBooks');
-            setBorrowedBooks(response.data.data);
-        };
-
-        const fetchAuthors = async () => {
-            const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=authors'); // Asegúrate de tener esta ruta en tu API
-            setAuthors(response.data.data);
-        };
-
-        const fetchPublishers = async () => {
-            const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=publishers'); // Asegúrate de tener esta ruta en tu API
-            setPublishers(response.data.data);
-        };
-
-        fetchUsers();
-        fetchBooks();
-        fetchBorrowedBooks();
-        fetchAuthors();
-        fetchPublishers();
+        fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=users', setUsers);
+        fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=books', setBooks);
+        fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=borrowedBooks', setBorrowedBooks);
+        fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=authors', setAuthors);
+        fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=publishers', setPublishers);
     }, [user, navigate]);
 
     const handleDelete = async (dni) => {
