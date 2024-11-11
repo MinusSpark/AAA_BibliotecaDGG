@@ -1,8 +1,10 @@
 <?php
 require_once 'conexion.php';
 
-class ControladorLibro {
-    public static function buscarLibros($titulo) {
+class ControladorLibro
+{
+    public static function buscarLibros($titulo)
+    {
         $conexion = Conexion::conectar();
         $sql = "SELECT * FROM Libro WHERE titulo LIKE :titulo";
         $stmt = $conexion->prepare($sql);
@@ -11,7 +13,8 @@ class ControladorLibro {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function obtenerLibrosDisponibles() {
+    public static function obtenerLibrosDisponibles()
+    {
         $conexion = Conexion::conectar();
         $sql = "SELECT * FROM Libro WHERE stock > 0";
         $stmt = $conexion->prepare($sql);
@@ -19,7 +22,8 @@ class ControladorLibro {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function registrarLibro($input) {
+    public static function registrarLibro($input)
+    {
         $conexion = Conexion::conectar();
         $sql = "INSERT INTO Libro (isbn, titulo, autor, stock) VALUES (:isbn, :titulo, :autor, :stock)";
         $stmt = $conexion->prepare($sql);
@@ -30,15 +34,30 @@ class ControladorLibro {
         return $stmt->execute();
     }
 
-    public static function obtenerLibros() {
+    public static function obtenerLibros()
+    {
         $conexion = Conexion::conectar();
-        $sql = "SELECT * FROM Libro";
+        $sql = "SELECT 
+                    Libro.isbn, 
+                    Libro.titulo, 
+                    Libro.año, 
+                    Libro.stock, 
+                    Libro.portada, 
+                    Autor.nombre AS autor_nombre, 
+                    Autor.apellido AS autor_apellido, 
+                    Libro.editorial_id 
+                FROM 
+                    Libro 
+                JOIN 
+                    Autor ON Libro.autor_dni = Autor.dni"; 
         $stmt = $conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
-    public static function obtenerLibrosPrestados() {
+
+
+    public static function obtenerLibrosPrestados()
+    {
         $conexion = Conexion::conectar();
         $sql = "SELECT * FROM Libros_Prestados";
         $stmt = $conexion->prepare($sql);
@@ -46,22 +65,21 @@ class ControladorLibro {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function obtenerAutores() {
+    public static function obtenerAutores()
+    {
         $conexion = Conexion::conectar();
         $sql = "SELECT * FROM Autor";
         $stmt = $conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
-    public static function obtenerEditoriales() {
+
+    public static function obtenerEditoriales()
+    {
         $conexion = Conexion::conectar();
         $sql = "SELECT * FROM Editorial";
         $stmt = $conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
-    
 }
-?>

@@ -15,14 +15,14 @@ $request = isset($_GET['request']) ? $_GET['request'] : '';
 switch ($method) {
     case 'GET':
         if ($request === 'books') {
-            $libros = ControladorLibro::obtenerLibros(); // Asegúrate de tener esta función en el controlador
+            $libros = ControladorLibro::obtenerLibros();
             if ($libros) {
                 echo json_encode(['status' => 'success', 'data' => $libros]);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron libros']);
             }
         } elseif ($request === 'borrowedBooks') {
-            $librosPrestados = ControladorLibro::obtenerLibrosPrestados(); // Asegúrate de tener esta función en el controlador
+            $librosPrestados = ControladorLibro::obtenerLibrosPrestados();
             if ($librosPrestados) {
                 echo json_encode(['status' => 'success', 'data' => $librosPrestados]);
             } else {
@@ -32,14 +32,13 @@ switch ($method) {
             // Verificar si se ha pasado un 'dni' en la solicitud
             if (isset($_GET['dni'])) {
                 $dni = $_GET['dni'];
-                $usuario = ControladorUsuario::obtenerUsuarioPorDni($dni); // Obtener usuario por DNI
+                $usuario = ControladorUsuario::obtenerUsuarioPorDni($dni);
                 if ($usuario) {
                     echo json_encode(['status' => 'success', 'data' => $usuario]);
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'Usuario no encontrado']);
                 }
             } else {
-                // Solicitud para obtener todos los usuarios si no se pasa un 'dni'
                 $usuarios = ControladorUsuario::obtenerUsuarios();
                 if ($usuarios) {
                     echo json_encode(['status' => 'success', 'data' => $usuarios]);
@@ -49,7 +48,7 @@ switch ($method) {
             }
         } elseif ($request === 'authors') {
             // Ruta para obtener autores
-            $autores = ControladorLibro::obtenerAutores(); // Asegúrate de tener esta función en el controlador
+            $autores = ControladorLibro::obtenerAutores();
             if ($autores) {
                 echo json_encode(['status' => 'success', 'data' => $autores]);
             } else {
@@ -57,7 +56,7 @@ switch ($method) {
             }
         } elseif ($request === 'publishers') {
             // Ruta para obtener editoriales
-            $editoriales = ControladorLibro::obtenerEditoriales(); // Asegúrate de tener esta función en el controlador
+            $editoriales = ControladorLibro::obtenerEditoriales();
             if ($editoriales) {
                 echo json_encode(['status' => 'success', 'data' => $editoriales]);
             } else {
@@ -80,10 +79,8 @@ switch ($method) {
             );
             echo json_encode($resultado);
         } elseif ($request === 'login') {
-            // Solicitud de inicio de sesión
             $usuario = ControladorUsuario::login($input['email'], $input['password']);
             if ($usuario && isset($usuario['correo'])) {
-                // Verificamos que el campo 'correo' esté en el objeto usuario
                 echo json_encode(['status' => 'success', 'user' => $usuario]);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Correo o contraseña incorrectos']);
@@ -93,7 +90,7 @@ switch ($method) {
 
     case 'DELETE':
         if ($request === 'deleteUser') {
-            $dni = $_GET['dni']; // Obtención del DNI del usuario a eliminar
+            $dni = $_GET['dni'];
             if (isset($dni) && !empty($dni)) {
                 $resultado = ControladorUsuario::eliminarUsuario($dni);
                 echo json_encode($resultado);
@@ -112,12 +109,12 @@ switch ($method) {
         break;
 
     case 'OPTIONS':
-        // Respuesta para solicitudes de verificación de CORS
+        // reespuesta para solicitudes de verificación de CORS
         http_response_code(200);
         exit(0);
 
     default:
-        // Respuesta para métodos HTTP no soportados
+        //respuesta para métodos HTTP no soportados
         echo json_encode(["message" => "Método no soportado"]);
         break;
 }

@@ -69,7 +69,7 @@ function Contact() {
                                 placeholder="Escribe tu mensaje aquí"
                             ></textarea>
                         </div>
-                        <button type="submit" className="btn btn-primary w-100">Enviar</button>
+                        <button type="submit" className="btn btn-primary w-100" to="/">Enviar</button>
                     </form>
                     <div className="mt-4 text-center">
                         <p>Email: <a href="mailto:bibliotecadgg@outlook.com">contacto@bibliotecaDGG.com</a></p>

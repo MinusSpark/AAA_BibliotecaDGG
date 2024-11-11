@@ -13,11 +13,10 @@ class ControladorUsuario
         $stmt->execute();
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Verificar que el usuario se haya encontrado y que incluya la propiedad 'correo'
         if ($usuario && isset($usuario['correo'])) {
-            return $usuario; // Retornamos el objeto completo de usuario
+            return $usuario;
         } else {
-            return null; // Retornamos null si no se encuentra o si falta el correo
+            return null;
         }
     }
 
