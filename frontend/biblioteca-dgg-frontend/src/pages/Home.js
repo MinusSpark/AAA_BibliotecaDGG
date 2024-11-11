@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+//import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Carousel } from 'react-bootstrap';
 import Header from '../components/Header';
@@ -56,16 +56,6 @@ const Home = () => {
                 <h1 className="display-4">Bienvenido a la Biblioteca DGG</h1>
                 <p className="lead">Explora nuestra colección de libros y gestiona tus préstamos.</p>
 
-                <nav>
-                    <ul className="list-unstyled">
-                        <li className="my-2">
-                            <Link className="btn btn-info" to="/contact">Contacto</Link>
-                        </li>
-                        <li className="my-2">
-                            <Link className="btn btn-success" to="/login">Iniciar Sesión</Link>
-                        </li>
-                    </ul>
-                </nav>
             </div>
 
             {/* Sección de Información Adicional */}

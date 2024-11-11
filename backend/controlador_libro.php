@@ -29,5 +29,39 @@ class ControladorLibro {
         $stmt->bindParam(":stock", $input['stock']);
         return $stmt->execute();
     }
+
+    public static function obtenerLibros() {
+        $conexion = Conexion::conectar();
+        $sql = "SELECT * FROM Libro";
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public static function obtenerLibrosPrestados() {
+        $conexion = Conexion::conectar();
+        $sql = "SELECT * FROM Libros_Prestados";
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function obtenerAutores() {
+        $conexion = Conexion::conectar();
+        $sql = "SELECT * FROM Autor";
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public static function obtenerEditoriales() {
+        $conexion = Conexion::conectar();
+        $sql = "SELECT * FROM Editorial";
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    
 }
 ?>

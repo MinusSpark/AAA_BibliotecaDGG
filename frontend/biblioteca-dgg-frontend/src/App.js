@@ -9,6 +9,8 @@ import AdminPanel from './pages/AdminPanel';
 import Search from './pages/Search';
 import AdminLogin from './pages/AdminLogin';
 import EditUser from './pages/EditUser';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
 
 const App = () => {
     return (
@@ -23,6 +25,8 @@ const App = () => {
                 <Route path="/admin-panel" element={<AdminPanel />} />
                 <Route path="/search" element={<Search />} />
                 <Route path="/edit-user/:dni" element={<EditUser />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
             </Routes>
         </Router>
     );

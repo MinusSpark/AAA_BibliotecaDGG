@@ -4,8 +4,7 @@ require_once 'controlador_usuario.php';
 require_once 'controlador_libro.php';
 
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Origin: http://localhost:3000");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 header("Content-Type: application/json; charset=UTF-8");
@@ -16,12 +15,18 @@ $request = isset($_GET['request']) ? $_GET['request'] : '';
 switch ($method) {
     case 'GET':
         if ($request === 'books') {
-            // Solicitud para obtener los libros disponibles
-            $libros = ControladorLibro::obtenerLibrosDisponibles();
+            $libros = ControladorLibro::obtenerLibros(); // Asegúrate de tener esta función en el controlador
             if ($libros) {
                 echo json_encode(['status' => 'success', 'data' => $libros]);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'No se encontraron libros disponibles']);
+                echo json_encode(['status' => 'error', 'message' => 'No se encontraron libros']);
+            }
+        } elseif ($request === 'borrowedBooks') {
+            $librosPrestados = ControladorLibro::obtenerLibrosPrestados(); // Asegúrate de tener esta función en el controlador
+            if ($librosPrestados) {
+                echo json_encode(['status' => 'success', 'data' => $librosPrestados]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No se encontraron libros prestados']);
             }
         } elseif ($request === 'users') {
             // Verificar si se ha pasado un 'dni' en la solicitud
@@ -41,6 +46,22 @@ switch ($method) {
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'No se encontraron usuarios']);
                 }
+            }
+        } elseif ($request === 'authors') {
+            // Ruta para obtener autores
+            $autores = ControladorLibro::obtenerAutores(); // Asegúrate de tener esta función en el controlador
+            if ($autores) {
+                echo json_encode(['status' => 'success', 'data' => $autores]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No se encontraron autores']);
+            }
+        } elseif ($request === 'publishers') {
+            // Ruta para obtener editoriales
+            $editoriales = ControladorLibro::obtenerEditoriales(); // Asegúrate de tener esta función en el controlador
+            if ($editoriales) {
+                echo json_encode(['status' => 'success', 'data' => $editoriales]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No se encontraron editoriales']);
             }
         }
         break;
@@ -100,4 +121,3 @@ switch ($method) {
         echo json_encode(["message" => "Método no soportado"]);
         break;
 }
-?>

@@ -96,7 +96,7 @@ class ControladorUsuario
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
-
+    
     public static function obtenerUsuarioPorDni($dni) {
         $conexion = Conexion::conectar();
         $sql = "SELECT * FROM Usuario WHERE dni = :dni";

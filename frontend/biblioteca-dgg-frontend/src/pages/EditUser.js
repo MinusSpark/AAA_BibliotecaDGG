@@ -1,5 +1,3 @@
-// Ejemplo del componente con modificaciones en cada input para asegurar valores iniciales
-
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -8,7 +6,7 @@ import Footer from '../components/Footer';
 
 const EditUser = () => {
     const { dni } = useParams(); // Obtener el DNI del usuario desde la URL
-    
+
     const [userData, setUserData] = useState({
         dni: '',
         nombre: '',
@@ -16,21 +14,16 @@ const EditUser = () => {
         telefono: '',
         correo: '',
     });
-    
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=users&dni=${dni}`);
+                console.log(response.data); // Verifica la respuesta
                 if (response.data.status === 'success') {
-                    setUserData(response.data.data || {
-                        dni: '',
-                        nombre: '',
-                        apellido: '',
-                        telefono: '',
-                        correo: '',
-                    }); // Asegúrate de que siempre se establezca un objeto
+                    setUserData(response.data.data);
                 } else {
                     alert('Error al cargar los datos del usuario');
                 }
@@ -38,7 +31,7 @@ const EditUser = () => {
                 console.error('Error fetching user data:', error);
             }
         };
-        
+
         fetchUserData();
     }, [dni]);
 
@@ -49,10 +42,15 @@ const EditUser = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(userData); 
         try {
-            await axios.put(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=updateUser`, userData);
-            alert('Usuario actualizado exitosamente');
-            navigate('/admin-panel'); // Redirige al panel de administración
+            const response = await axios.put(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=updateUser`, userData);
+            if (response.data.status === 'success') {
+                alert('Usuario actualizado exitosamente');
+                navigate('/admin-panel'); // Redirige al panel de administración
+            } else {
+                alert('Error al actualizar usuario');
+            }
         } catch (error) {
             console.error('Error al actualizar usuario:', error);
             alert('Error al actualizar usuario');
@@ -76,7 +74,6 @@ const EditUser = () => {
                                         id="dni"
                                         name="dni"
                                         value={userData.dni || ''}  // Valor asegurado
-                                        onChange={handleChange}
                                         readOnly
                                     />
                                 </div>
