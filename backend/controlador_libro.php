@@ -34,8 +34,7 @@ class ControladorLibro
         return $stmt->execute();
     }
 
-    public static function obtenerLibros()
-    {
+    public static function obtenerLibros() {
         $conexion = Conexion::conectar();
         $sql = "SELECT 
                     Libro.isbn, 
@@ -45,25 +44,44 @@ class ControladorLibro
                     Libro.portada, 
                     Autor.nombre AS autor_nombre, 
                     Autor.apellido AS autor_apellido, 
-                    Libro.editorial_id 
+                    Editorial.nombre AS editorial_nombre,
+                    Libro.genero  /* Asegúrate de incluir el género */
                 FROM 
                     Libro 
                 JOIN 
-                    Autor ON Libro.autor_dni = Autor.dni"; 
+                    Autor ON Libro.autor_dni = Autor.dni 
+                JOIN 
+                    Editorial ON Libro.editorial_id = Editorial.id"; 
         $stmt = $conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    
 
 
-    public static function obtenerLibrosPrestados()
-    {
+    public static function obtenerLibrosPrestados() {
         $conexion = Conexion::conectar();
-        $sql = "SELECT * FROM Libros_Prestados";
+        $sql = "SELECT 
+                    Libros_Prestados.id, 
+                    Libros_Prestados.isbn, 
+                    Libros_Prestados.dni_usuario, 
+                    Libros_Prestados.fecha_prestamo, 
+                    Libros_Prestados.fecha_devolucion, 
+                    Usuario.nombre AS usuario_nombre, 
+                    Usuario.apellido AS usuario_apellido,
+                    Libro.titulo AS libro_titulo
+                FROM 
+                    Libros_Prestados 
+                JOIN 
+                    Usuario ON Libros_Prestados.dni_usuario = Usuario.dni 
+                JOIN 
+                    Libro ON Libros_Prestados.isbn = Libro.isbn"; 
         $stmt = $conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
 
     public static function obtenerAutores()
     {
@@ -82,4 +100,43 @@ class ControladorLibro
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public static function eliminarLibro($isbn) {
+        $conexion = Conexion::conectar();
+        try {
+            $sql = "DELETE FROM Libro WHERE isbn = :isbn";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(":isbn", $isbn);
+            if ($stmt->execute()) {
+                return ['status' => 'success', 'message' => 'Libro eliminado exitosamente'];
+            } else {
+                return ['status' => 'error', 'message' => 'Error al eliminar el libro'];
+            }
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+    
+    public static function actualizarLibro($data) {
+        $conexion = Conexion::conectar();
+        try {
+            $sql = "UPDATE Libro SET titulo = :titulo, año = :año, autor_dni = :autor, editorial_id = :editorial, genero = :genero, stock = :stock, portada = :portada WHERE isbn = :isbn";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(":isbn", $data['isbn']);
+            $stmt->bindParam(":titulo", $data['titulo']);
+            $stmt->bindParam(":año", $data['año']);
+            $stmt->bindParam(":autor", $data['autor']);
+            $stmt->bindParam(":editorial", $data['editorial']);
+            $stmt->bindParam(":genero", $data['genero']);
+            $stmt->bindParam(":stock", $data['stock']);
+            $stmt->bindParam(":portada", $data['portada']);
+            if ($stmt->execute()) {
+                return ['status' => 'success', 'message' => 'Libro actualizado exitosamente'];
+            } else {
+                return ['status' => 'error', 'message' => 'Error al actualizar el libro'];
+            }
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+    
 }

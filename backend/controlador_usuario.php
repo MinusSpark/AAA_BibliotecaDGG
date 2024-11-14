@@ -105,7 +105,6 @@ class ControladorUsuario
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         return $usuario ? ['status' => 'success', 'data' => $usuario] : ['status' => 'error', 'message' => 'Usuario no encontrado'];
     }
-    
-    
+
 
 }

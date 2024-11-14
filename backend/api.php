@@ -2,11 +2,11 @@
 require_once 'conexion.php';
 require_once 'controlador_usuario.php';
 require_once 'controlador_libro.php';
+require_once 'controlador_admin.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-
 header("Content-Type: application/json; charset=UTF-8");
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -62,6 +62,13 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron editoriales']);
             }
+        } elseif ($request === 'administrators') {
+            $administradores = ControladorAdmin::obtenerAdministradores();
+            if ($administradores) {
+                echo json_encode(['status' => 'success', 'data' => $administradores]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No se encontraron administradores']);
+            }
         }
         break;
 
@@ -85,6 +92,10 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Correo o contraseña incorrectos']);
             }
+        } elseif ($request === 'registerBook') {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $resultado = ControladorLibro::registrarLibro($input);
+            echo json_encode($resultado);
         }
         break;
 
@@ -97,6 +108,14 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'DNI del usuario no proporcionado']);
             }
+        } elseif ($request === 'deleteBook') {
+            $isbn = $_GET['isbn'];
+            if (isset($isbn) && !empty($isbn)) {
+                $resultado = ControladorLibro::eliminarLibro($isbn); 
+                echo json_encode($resultado);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'ISBN no proporcionado']);
+            }
         }
         break;
 
@@ -104,6 +123,10 @@ switch ($method) {
         if ($request === 'updateUser') {
             $input = json_decode(file_get_contents("php://input"), true);
             $resultado = ControladorUsuario::actualizarUsuario($input);
+            echo json_encode($resultado);
+        } elseif ($request === 'updateBook') {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $resultado = ControladorLibro::actualizarLibro($input); 
             echo json_encode($resultado);
         }
         break;
