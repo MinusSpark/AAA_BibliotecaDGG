@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Link } from 'react-router-dom';
 
 function Register() {
     const [userData, setUserData] = useState({
@@ -14,7 +15,7 @@ function Register() {
         try {
             await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=registerUser', userData);
             alert('Registro exitoso');
-            navigate('/');
+            navigate('/'); // Redirigir al home después de registro
         } catch (error) {
             console.error('Error al registrar usuario:', error);
         }
@@ -23,7 +24,7 @@ function Register() {
     return (
         <div className="d-flex flex-column min-vh-100">
             <Header />
-            <div className="container my-auto">
+            <div className="container my-5">
                 <div className="row justify-content-center">
                     <div className="col-md-8 col-lg-6">
                         <div className="card shadow-lg p-4">
@@ -97,6 +98,11 @@ function Register() {
                                     Registrar
                                 </button>
                             </form>
+
+                            {/* Enlace a la página de Login */}
+                            <div className="mt-3 text-center">
+                                <p>¿Ya tienes cuenta? <Link to="/login">Inicia sesión aquí</Link></p>
+                            </div>
                         </div>
                     </div>
                 </div>

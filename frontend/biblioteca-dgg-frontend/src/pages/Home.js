@@ -65,12 +65,12 @@ const Home = () => {
                         <div className="row">
                             {books.map(book => (
                                 <div className="col-md-2 mb-3" key={book.isbn}>
-                                    <div className="card" style={{ height: '475px' }}>
+                                    <div className="card" style={{ height: '575px' }}>
                                         <img
                                             src={book.portada}
                                             className="card-img-top"
                                             alt={`Portada de ${book.titulo}`}
-                                            style={{ height: '200px', objectFit: 'cover' }}
+                                            style={{ height: '300px', objectFit: 'cover' }}
                                         />
                                         <div className="card-body d-flex flex-column">
                                             <h5 className="card-title">{book.titulo}</h5>

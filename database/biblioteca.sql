@@ -79,9 +79,7 @@ INSERT INTO Usuario (dni, nombre, apellido, telefono, correo, contraseña) VALUE
 ('44556677F', 'Carlos', 'Lopez', 987654324, 'carlos.lopez@example.com', 'password6'),
 ('55667788G', 'Lucia', 'Martín', 987654325, 'lucia.martin@example.com', 'password7'),
 ('66778899H', 'Luis', 'Hernández', 987654326, 'luis.hernandez@example.com', 'password8'),
-('77889900I', 'Raquel', 'Fernández', 987654327, 'raquel.fernandez@example.com', 'password9'),
-('98765432D', 'Javier', 'Herce', 912345677, 'javier@gmail.com', 'adminpass1'),
-('56473829E', 'Martin', 'Jaimes', 912345676, 'martin@gmail.com', 'adminpass2');
+('77889900I', 'Raquel', 'Fernández', 987654327, 'raquel.fernandez@example.com', 'password9');
 
 -- Insertar administradores
 INSERT INTO Administrador (dni, nombre, apellido, telefono, correo, contraseña) VALUES
@@ -111,14 +109,14 @@ INSERT INTO Editorial (nombre, telefono, direccion, fecha_nacimiento) VALUES
 ('Editorial McGraw-Hill', 912345677, 'Calle Princesa, Madrid', '1917-02-22'),
 ('Editorial Taurus', 912345678, 'Calle de Serrano, Madrid', '1974-06-14'),
 ('Editorial RBA', 912345679, 'Calle de Paseo de Gracia, Barcelona', '1959-10-09'),
-('Cantaro', 0, NULL, '0000-00-00'),
-('Diana', 0, NULL, '0000-00-00'),
-('Salamandra', 0, NULL, '0000-00-00'),
-('Debolsillo', 0, NULL, '0000-00-00'),
-('Colección Popular', 0, NULL, '0000-00-00'),
-('Losada S.A.', 0, NULL, '0000-00-00'),
-('Anagrama', 0, NULL, '0000-00-00'),
-('Anaya', 0, NULL, '0000-00-00');
+('Cantaro', 912345680, 'C. de la Flor Baja, 8, Centro, 28013 Madrid', '2001-01-01'),
+('Diana', 912345681, NULL, '1946-01-01'),
+('Salamandra', 912345682, NULL, '1989-01-01'),
+('Debolsillo', 912345683, NULL, '2001-01-01'),
+('Colección Popular', 912345684, 'C. de Leo, 7, local 2, Retiro, 28007 Madrid', '1944-01-01'),
+('Losada S.A.', 912345685, NULL, '1938-01-01'),
+('Anagrama', 912345686, 'Carrrer de, Carrer de Pau Claris, 172, principal, 2º, 08037 Barcelona', '1969-04-23'),
+('Anaya', 912345687, 'Carrer de Bac de Roda, 64, Edifici D, planta baixa, local 2B, Sant Martí, 08019 Barcelona', '1959-01-01');
 
 -- Insertar libros
 INSERT INTO Libro (isbn, titulo, año, autor_dni, editorial_id, genero, stock, portada) VALUES
@@ -126,18 +124,25 @@ INSERT INTO Libro (isbn, titulo, año, autor_dni, editorial_id, genero, stock, p
 ('9781234567892', 'Harry Potter y la Piedra Filosofal', '1997-06-26', '56789012H', 2, 'Fantasía', 8, 'https://th.bing.com/th/id/R.805803cc0091320ff3392709185e8764?rik=ZVapd%2fHqWS%2bAjg&riu=http%3a%2f%2fcdn.coordiutil.com%2fimagen-harry_potter_y_la_piedra_filosofal_libro_1-1952728-0-0-0-75.jpg&ehk=tG4asswFSO%2bhBiDYqJazlnRx9ERwaqBOmwFZJ%2b85wv8%3d&risl=&pid=ImgRaw&r=0'),
 ('9781234567893', 'La Casa de los Espíritus', '1982-11-12', '34567890F', 3, 'Realismo Mágico', 5, 'https://phantom-expansion.unidadeditorial.es/8f63d59e95157a09f7ab4cc1cd6d4808/crop/0x31/1677x2548/resize/1200/f/jpg/assets/multimedia/imagenes/2022/07/21/16583909817374.jpg'),
 ('9782345678901', 'La Muerte de Artemio Cruz', '1962-02-20', '78901234J', 5, 'Realismo', 9, 'https://th.bing.com/th/id/OIP.UGGYVHaXq-EIM7mICVCFswHaLs?rs=1&pid=ImgDetMain'),
-('9782345678902', 'El Laberinto de la Soledad', '1950-03-15', '89012345K', 6, 'Ensayo', 6, 'https://imagenes.elpais.com/resizer/gZ3Ju4WrFwPSPLWeQJzAGHhWsLg=/414x0/arc-anglerfish-eu-central-1-prod-prisa.s3.amazonaws.com/public/GNOOKNSNKFFSTF3WNHNE2ID3HQ.jpg'),
-('9782345678903', 'Veinte Poemas de Amor y Una Canción Desesperada', '1924-01-01', '90123456L', 7, 'Poesía', 7, 'https://www.elsotano.com/imagenes_grandes/978968/978968160/978968160072.GIF');
+('9782345678902', 'El Laberinto de la Soledad', '1950-03-15', '89012345K', 15, 'Ensayo', 6, 'https://pictures.abebooks.com/LIBRERIA7SOLES/30468897193.jpg'),
+('9782345678903', 'Veinte Poemas de Amor y Una Canción Desesperada', '1924-01-01', '90123456L', 7, 'Poesía', 7, 'https://www.marcialpons.es/media/img/portadas/2023/6/12/9788411483414.jpg'),
+('9783456789010', 'El Aleph', '1949-05-01', '67890123I', 16, 'Ficción', 5, 'https://i.thenile.io/r1000/9780307950949.jpg?r=5ea98546707f3'), 
+('9784567890120', 'Fahrenheit 451', '1953-10-19', '23456789N', 4, 'Ciencia Ficción', 12, 'https://www.tiposinfames.com/media/img/portadas/9788445006771.jpg'),
+('9785678901230', 'Cuentos Completos', '1952-03-10', '12345678M', 17, 'Cuentos', 10, 'https://www.anagrama-ed.es/uploads/media/portadas/0001/20/3fdf861cea0165306ffcbfe3ff3c4ca58ec80123.jpeg'),
+('9786789012340', 'La Casa de Bernarda Alba', '1936-03-02', '78901234J', 17, 'Teatro', 8, 'https://blog.12min.com/wp-content/uploads/2018/04/06c-La-Casa-de-Bernarda-Alba.jpg'),
+('9787890123450', 'Los Detectives Salvajes', '1998-07-01', '34567890F', 17, 'Novela', 5, 'https://th.bing.com/th/id/OIP.Rw9QGAp_ohu95w_RliJasAHaLU?rs=1&pid=ImgDetMain'),
+('9788901234560', 'En El Camino', '1957-11-18', '56789012H', 17, 'Literatura Americana', 4, 'https://th.bing.com/th/id/R.ea62465843f70004aa89a45e4ea96663?rik=7F5ZClEM840aUQ&riu=http%3a%2f%2fwww.anagrama-ed.es%2fimg%2fportadas%2fCM10_G.jpg&ehk=cWLYdX%2bQIuGI36NVBglVbmISPvC1he0EZcrK%2fNECMOw%3d&risl=&pid=ImgRaw&r=0'),
+('9789012345670', 'La Fiesta Ajena', '1979-03-05', '67890123I', 10, 'Novela', 7, 'https://i.pinimg.com/736x/ce/7c/bd/ce7cbd6edba13910a6a1dba123290b70--liliana.jpg');
 
 -- Insertar libros prestados
 INSERT INTO Libros_Prestados (isbn, dni_usuario, fecha_prestamo, fecha_devolucion) VALUES
 ('9781234567891', '12345678A', '2023-01-10', '2023-02-10'),
 ('9781234567892', '87654321B', '2023-02-15', '2023-03-15'),
 ('9781234567893', '11223344C', '2023-03-01', '2023-04-01'),
-('9782345678901', '22334455D', '2023-04-05', NULL), -- aún no devuelto
+('9782345678901', '22334455D', '2023-04-05', NULL), 
 ('9782345678902', '33445566E', '2023-05-20', '2023-06-20'),
-('9782345678903', '44556677F', '2023-06-25', NULL), -- aún no devuelto
+('9782345678903', '44556677F', '2023-06-25', NULL), 
 ('9781234567891', '55667788G', '2023-07-10', '2023-08-10'),
-('9781234567892', '66778899H', '2023-08-12', NULL), -- aún no devuelto
+('9781234567892', '66778899H', '2023-08-12', NULL), 
 ('9782345678903', '77889900I', '2023-09-14', '2023-10-14'),
-('9782345678902', '98765432D', '2023-10-20', NULL);
+('9782345678902', '22334455D', '2023-10-20', NULL);
