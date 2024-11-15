@@ -9,6 +9,7 @@ import carousel3 from '../images/carousel3.jpg';
 import prestamoLibros from '../images/prestamoLibros.jpg';
 import salaEstudio from '../images/salaEstudio.jpg';
 import personaLeyendo from '../images/personaLeyendo.jpg';
+import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
 import { Book } from 'react-bootstrap-icons'; // Importamos el icono del libro
 import axios from 'axios';
 
@@ -34,7 +35,7 @@ const Home = () => {
     // Contador que va incrementando de 0 a 10 con un intervalo más lento
     const interval = setInterval(() => {
       setCounter((prevCounter) => {
-        if (prevCounter < 10) {
+        if (prevCounter < 4) {
           return prevCounter + 1;
         } else {
           clearInterval(interval); // Detener el intervalo cuando llegue a 10
@@ -50,11 +51,53 @@ const Home = () => {
   return (
     <div className="d-flex flex-column min-vh-100">
       <Header />
+{/* Contenedor del título con imagen de fondo y estilos en línea */}
+<div
+  style={{
+    backgroundImage: `url(${fondoBiblioteca})`, // Imagen de fondo
+    backgroundSize: 'cover', // Ajustar la imagen para que cubra todo el contenedor
+    backgroundPosition: 'center', // Centrar la imagen
+    backgroundRepeat: 'no-repeat', // Evitar repeticiones
+    filter: 'blur(0px)', // Difuminado de la imagen de fondo
+    position: 'relative', // Para capas internas
+    color: 'white', // Texto en blanco
+    textAlign: 'center', // Centrar el texto horizontalmente
+    padding: '5rem 0', // Espaciado interno para altura del contenedor
+  }}
+>
+  {/* Capa semitransparente para oscurecer el fondo */}
+  <div
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Oscurecimiento semitransparente
+      zIndex: 1,
+    }}
+  ></div>
 
-      {/* Título dentro de container-fluid con fondo azul */}
-      <div className="container-fluid bg-primary text-white text-center py-5">
-        <h1>Bienvenido a la Biblioteca DGG</h1>
-      </div>
+  {/* Título del texto */}
+  <h1
+    style={{
+      position: 'relative', // Colocar encima de la capa de oscurecimiento
+      zIndex: 2, // Asegurar que esté por encima de todo lo demás
+    }}
+  >
+    Bienvenido a la Biblioteca DGG
+  </h1>
+
+  <h4
+    style={{
+      position: 'relative', // Colocar encima de la capa de oscurecimiento
+      zIndex: 2, // Asegurar que esté por encima de todo lo demás
+    }}
+  >
+    Un Mundo de Conocimiento a tu Alcance
+  </h4>
+
+</div>
 
       {/* Carousel */}
       <Carousel className="my-4" style={{ maxWidth: '750px', margin: '0 auto' }}>
@@ -111,38 +154,70 @@ const Home = () => {
           </div>
         </div>
 
+
+  <div class="container-fluid">
+    <div class="row d-flex flex-row">
+        <div class="texto d-flex flex-column col-md-6 col-xxl-6 p-4" style={{background:'#f7f7f7'}}>
+            <h4 class="mb-3" style={{color:'#FFC300'}}>Encontrarás un montón de posibilidades</h4>
+            <p>En la Biblioteca DGG no solo encontrarás libros, sino también un espacio vibrante lleno de actividades que enriquecerán tu experiencia como lector y miembro de nuestra comunidad. Te invitamos a que te sumes a nuestros Eventos Destacados, diseñados para inspirarte, conectar con otros y ampliar tus conocimientos de forma divertida y significativa.</p>
+            <div className="d-flex align-items-center justify-content-center text-center">
+         
+            <div className="me-2">
+              <h2>{counter}+</h2> {/* Aquí se muestra el contador */}
+              <p class="text-center">Actividades Mensuales</p>
+            </div>
+            <div>
+              <Book size={48} />
+            </div>
+          </div>
+        </div>
+
+        <div class="calendario col-xxl-6 col-md-6 d-flex justify-content-center align-items-center p-4" style={{background:'#002B5B'}}>
+            <div class="calendar-container">
+                <h4 class="mb-3" style={{color:'#FFFFFF'}}>Eventos Destacados</h4>
+                <Calendar style={{backgroundColor: '#F5F5F5'}}/>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
         {/* Sección de Servicios de la Biblioteca */}
         <div className="container my-5">
-          <h2 className="text-center">Servicios de la Biblioteca</h2>
+          <h2 className="text-center" style={{color:'#000000'}}>Servicios de la Biblioteca</h2>
           <div className="row">
-            <div className="col-md-4 mb-3">
+
+            <div className="col-md-4 mb-3 mt-4">
               <div className="card h-100">
                 <img src={prestamoLibros} className="card-img-top" alt="Préstamo de Libros" />
-                <div className="card-body">
-                  <h5 className="card-title">Préstamo de Libros</h5>
-                  <p className="card-text">
+                <div className="card-body" style={{background:'#F5F5F5'}}>
+                   <h5 className="card-title" style={{color:'#FFFFFF', background:'#002B5B',padding:7,margin:-15}}>Préstamo de Libros</h5>
+                  <p className="card-text" style={{color:'#000000', marginTop:20}}>
                     Accede a una amplia colección de libros disponibles para préstamos. Nuestra plataforma te permite encontrar fácilmente títulos de diversos géneros y autores reconocidos. Podrás disfrutar de tus lecturas favoritas desde la comodidad de tu hogar o en nuestras instalaciones.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="col-md-4 mb-3">
+
+            <div className="col-md-4 mb-3  mt-4">
               <div className="card h-100">
                 <img src={salaEstudio} className="card-img-top" alt="Salas de Estudio" />
-                <div className="card-body">
-                  <h5 className="card-title">Salas de Estudio</h5>
-                  <p className="card-text">
+                <div className="card-body" style={{background:'#F5F5F5'}}>
+                  <h5 className="card-title" style={{color:'#FFFFFF', background:'#002B5B',padding:7,margin:-15}}>Salas de Estudio</h5>
+                  <p className="card-text" style={{color:'#000000', marginTop:20}}>
                     Reserva nuestras salas de estudio para un ambiente tranquilo y cómodo, ideal para estudiar o realizar trabajos en equipo. Contamos con espacios bien equipados, conexión a internet, y el ambiente perfecto para que te puedas concentrar y aprovechar al máximo tu tiempo.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="col-md-4 mb-3">
+
+            <div className="col-md-4 mb-3  mt-4">
               <div className="card h-100">
                 <img src={personaLeyendo} className="card-img-top" alt="Club de Lectura" />
-                <div className="card-body">
-                  <h5 className="card-title">Club de Lectura</h5>
-                  <p className="card-text">
+                <div className="card-body" style={{background:'#F5F5F5'}}>
+                  <h5 className="card-title" style={{color:'#FFFFFF', background:'#002B5B',padding:7,margin:-15}}>Club de Lectura</h5>
+                  <p className="card-text" style={{color:'#000000', marginTop:20}}>
                     Únete a nuestro club de lectura y comparte tus experiencias literarias. Participa en discusiones, conoce a otros amantes de la lectura y disfruta de encuentros enriquecedores donde podrás compartir tus opiniones y descubrir nuevas perspectivas sobre tus libros favoritos.
                   </p>
                 </div>
@@ -151,41 +226,15 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Contenedor del contador (Ajustado para ocupara todo el ancho) */}
-        <div className="w-100 bg-primary text-white py-3 d-flex justify-content-center align-items-center">
-          <div className="text-center">
-            <h2>{counter}+</h2> {/* Aquí se muestra el contador */}
-            <p>Libros</p>
-          </div>
-          <Book size={48} />
-        </div>
+  
 
-        {/* Sección de Importancia de Leer */}
-        <div className="card mb-4 shadow-sm">
-          <div className="card-header bg-warning text-white">
-            <h2 className="h5 mb-0">La Importancia de Leer</h2>
-          </div>
-          <div className="card-body">
-            <div className="row">
-              {/* Primer contenedor con el texto */}
-              <div className="col-md-6 mb-3">
-                <h3>¿Por qué leer es importante?</h3>
-                <p>
-                  Leer es fundamental para el desarrollo intelectual, emocional y cultural. A través de los libros, podemos aprender sobre diferentes perspectivas, culturas y pensamientos. Además, nuestra biblioteca organiza actividades en diferentes fechas que puedes consultar en el calendario a continuación.
-                </p>
-              </div>
-
-              {/* Segundo contenedor con el calendario */}
-              {/* Segundo contenedor con el calendario */}
-<div className="col-md-6 mb-3 calendar-container">
-  <h4>Consulta el Calendario de Actividades</h4>
-  <Calendar />
-</div>
-
-            </div>
-          </div>
-        </div>
       </div>
+
+
+      
+    
+
+
 
       <Footer />
     </div>

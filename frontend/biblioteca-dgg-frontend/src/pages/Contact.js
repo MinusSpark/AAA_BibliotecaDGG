@@ -3,7 +3,8 @@ import emailjs from 'emailjs-com';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import GoogleMap from '../components/GoogleMap'; // Asegúrate de importar correctamente
-
+import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
+import Home from './Home.js';
 function Contact() {
     const form = useRef();
 
@@ -24,10 +25,52 @@ function Contact() {
         <div className="d-flex flex-column min-vh-100">
             <Header />
 
-            <div className="container-fluid" style={{background: '#808080', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '9em', marginBottom:'3em', boxShadow:'0 4px 8px rgba(0, 0, 0, 0.1)'}}>
-                <h1 style={{color:'white'}}>Contacto</h1>
-            </div>
+            <div
+  style={{
+    backgroundImage: `url(${fondoBiblioteca})`, // Imagen de fondo
+    backgroundSize: 'cover', // Ajustar la imagen para que cubra todo el contenedor
+    backgroundPosition: 'center', // Centrar la imagen
+    backgroundRepeat: 'no-repeat', // Evitar repeticiones
+    filter: 'blur(0px)', // Difuminado de la imagen de fondo
+    position: 'relative', // Para capas internas
+    color: 'white', // Texto en blanco
+    textAlign: 'center', // Centrar el texto horizontalmente
+    padding: '5rem 0', // Espaciado interno para altura del contenedor
+  }}
+>
+  {/* Capa semitransparente para oscurecer el fondo */}
+  <div
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Oscurecimiento semitransparente
+      zIndex: 1,
+    }}
+  ></div>
 
+  {/* Título del texto */}
+  <h1
+    style={{
+      position: 'relative', // Colocar encima de la capa de oscurecimiento
+      zIndex: 2, // Asegurar que esté por encima de todo lo demás
+    }}
+  >
+Contacto
+  </h1>
+
+  <h4
+    style={{
+      position: 'relative', // Colocar encima de la capa de oscurecimiento
+      zIndex: 2, // Asegurar que esté por encima de todo lo demás
+    }}
+  >
+  Home<strong style={{color:'#FFC300'}}> / </strong> Contacto
+  </h4>
+
+</div>
             <div className="container my-auto">
                 <div className="card shadow-lg p-4 mb-4">
                     <h2 className="text-center mb-4">Nuestra Ubicación</h2>
