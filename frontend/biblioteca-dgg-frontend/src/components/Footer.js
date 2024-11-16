@@ -10,7 +10,7 @@ function Footer() {
                 <div className="row justify-content-center">
                     {/* Sección izquierda: Nombre de la Biblioteca */}
                     <div className="col-12 col-md-4 mb-3 col-xxl-3 text-xxl-start text-center">
-                        <h2 className="h4" style={{color:'#FFC300'}}>Biblioteca DGG</h2>
+                    <Link className="navbar-brand "style={{color:'#FFC300'}} to="/">Biblioteca DGG</Link> {/* Aseguramos texto blanco */}
                         <p>Un Mundo de Conocimiento a tu Alcance</p>
                     </div>
 
