@@ -28,7 +28,7 @@ function AdminLogin() {
     return (
         <div className="d-flex flex-column min-vh-100">
             <Header />
-            <div className="container my-auto">
+            <div className="container my-5">
                 <div className="row justify-content-center">
                     <div className="col-md-6 col-lg-4">
                         <div className="card shadow-lg p-4">

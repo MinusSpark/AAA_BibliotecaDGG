@@ -96,6 +96,14 @@ switch ($method) {
             $input = json_decode(file_get_contents("php://input"), true);
             $resultado = ControladorLibro::registrarLibro($input);
             echo json_encode($resultado);
+        } elseif ($request === 'addAuthor') {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $resultado = ControladorAutor::registrarAutor($input);
+            echo json_encode($resultado);
+        } elseif ($request === 'addPublisher') {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $resultado = ControladorEditorial::registrarEditorial($input);
+            echo json_encode($resultado);
         }
         break;
 
@@ -116,6 +124,14 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'ISBN no proporcionado']);
             }
+        } elseif ($request === 'deleteAuthor') {
+            $dni = $_GET['dni'];
+            $resultado = ControladorAutor::eliminarAutor($dni);
+            echo json_encode($resultado);
+        } elseif ($request === 'deletePublisher') {
+            $id = $_GET['id'];
+            $resultado = ControladorEditorial::eliminarEditorial($id);
+            echo json_encode($resultado);
         }
         break;
 
@@ -127,6 +143,14 @@ switch ($method) {
         } elseif ($request === 'updateBook') {
             $input = json_decode(file_get_contents("php://input"), true);
             $resultado = ControladorLibro::actualizarLibro($input); 
+            echo json_encode($resultado);
+        } elseif ($request === 'updateAuthor') {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $resultado = ControladorAutor::actualizarAutor($input);
+            echo json_encode($resultado);
+        } elseif ($request === 'updatePublisher') {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $resultado = ControladorEditorial::actualizarEditorial($input);
             echo json_encode($resultado);
         }
         break;
