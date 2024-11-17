@@ -1,5 +1,5 @@
 <?php
-require_once 'conexion.php';
+
 require_once 'controlador_usuario.php';
 require_once 'controlador_libro.php';
 require_once 'controlador_admin.php';
@@ -29,7 +29,6 @@ switch ($method) {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron libros prestados']);
             }
         } elseif ($request === 'users') {
-            // Verificar si se ha pasado un 'dni' en la solicitud
             if (isset($_GET['dni'])) {
                 $dni = $_GET['dni'];
                 $usuario = ControladorUsuario::obtenerUsuarioPorDni($dni);
@@ -46,8 +45,33 @@ switch ($method) {
                     echo json_encode(['status' => 'error', 'message' => 'No se encontraron usuarios']);
                 }
             }
+        } elseif ($request === 'currentLoans') {
+            // Ruta para obtener préstamos actuales
+            if (isset($_GET['dni'])) {
+                $dni = $_GET['dni'];
+                $loans = ControladorLibro::obtenerLibrosPrestadosPorUsuario($dni);
+                if ($loans) {
+                    echo json_encode(['status' => 'success', 'data' => $loans]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se encontraron préstamos actuales']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
+            }
+        } elseif ($request === 'loanHistory') {
+            // Ruta para obtener historial de préstamos
+            if (isset($_GET['dni'])) {
+                $dni = $_GET['dni'];
+                $history = ControladorLibro::obtenerHistorialDePrestamos($dni);
+                if ($history) {
+                    echo json_encode(['status' => 'success', 'data' => $history]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se encontraron datos de historial']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
+            }
         } elseif ($request === 'authors') {
-            // Ruta para obtener autores
             $autores = ControladorLibro::obtenerAutores();
             if ($autores) {
                 echo json_encode(['status' => 'success', 'data' => $autores]);
@@ -55,7 +79,6 @@ switch ($method) {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron autores']);
             }
         } elseif ($request === 'publishers') {
-            // Ruta para obtener editoriales
             $editoriales = ControladorLibro::obtenerEditoriales();
             if ($editoriales) {
                 echo json_encode(['status' => 'success', 'data' => $editoriales]);

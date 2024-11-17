@@ -34,7 +34,8 @@ class ControladorLibro
         return $stmt->execute();
     }
 
-    public static function obtenerLibros() {
+    public static function obtenerLibros()
+    {
         $conexion = Conexion::conectar();
         $sql = "SELECT 
                     Libro.isbn, 
@@ -45,7 +46,7 @@ class ControladorLibro
                     Autor.nombre AS autor_nombre, 
                     Autor.apellido AS autor_apellido, 
                     Editorial.nombre AS editorial_nombre,
-                    Libro.genero  /* Asegúrate de incluir el género */
+                    Libro.genero
                 FROM 
                     Libro 
                 JOIN 
@@ -56,11 +57,9 @@ class ControladorLibro
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
-    
 
-
-    public static function obtenerLibrosPrestados() {
+    public static function obtenerLibrosPrestados()
+    {
         $conexion = Conexion::conectar();
         $sql = "SELECT 
                     Libros_Prestados.id, 
@@ -81,7 +80,6 @@ class ControladorLibro
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    
 
     public static function obtenerAutores()
     {
@@ -100,7 +98,9 @@ class ControladorLibro
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public static function eliminarLibro($isbn) {
+
+    public static function eliminarLibro($isbn)
+    {
         $conexion = Conexion::conectar();
         try {
             $sql = "DELETE FROM Libro WHERE isbn = :isbn";
@@ -115,8 +115,9 @@ class ControladorLibro
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
-    
-    public static function actualizarLibro($data) {
+
+    public static function actualizarLibro($data)
+    {
         $conexion = Conexion::conectar();
         try {
             $sql = "UPDATE Libro SET titulo = :titulo, año = :año, autor_dni = :autor, editorial_id = :editorial, genero = :genero, stock = :stock, portada = :portada WHERE isbn = :isbn";
@@ -138,5 +139,24 @@ class ControladorLibro
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
-    
+
+    public static function obtenerLibrosPrestadosPorUsuario($dni)
+    {
+        $conexion = Conexion::conectar();
+        $sql = "SELECT * FROM Libros_Prestados WHERE dni_usuario = :dni_usuario AND fecha_devolucion IS NULL";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bindParam(":dni_usuario", $dni);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function obtenerHistorialDePrestamos($dni)
+    {
+        $conexion = Conexion::conectar();
+        $sql = "SELECT * FROM Libros_Prestados WHERE dni_usuario = :dni_usuario AND fecha_devolucion IS NOT NULL";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bindParam(":dni_usuario", $dni);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

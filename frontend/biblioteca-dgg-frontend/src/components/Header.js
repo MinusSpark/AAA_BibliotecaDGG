@@ -1,11 +1,18 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../services/AuthContext'; // para autenticación
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
 function Header() {
     const { user, logout } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
 
     return (
         <header className="bg-dark text-white">
@@ -34,20 +41,20 @@ function Header() {
                                         </li>
                                     ) : (
                                         <li className="nav-item">
-                                            <span className="nav-link text-white">Bienvenido, {user.correo}</span>
+                                            <Link to="/user-panel" className="nav-link text-white">Bienvenido/a, {user.correo}</Link>
                                         </li>
                                     )}
                                     <li className="nav-item">
-                                        <button className="btn btn-outline-light" onClick={logout}>Cerrar sesión</button> {/* Botón con borde blanco */}
+                                        <button className="btn btn-outline-light" onClick={handleLogout}>Cerrar sesión</button>
                                     </li>
                                 </>
                             ) : (
                                 <>
                                     <li className="nav-item">
-                                        <Link className="nav-link text-white" to="/login">Login</Link> {/* Texto blanco */}
+                                        <Link className="nav-link text-white" to="/login">Login</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link text-white" to="/register">Registrarse</Link> {/* Texto blanco */}
+                                        <Link className="nav-link text-white" to="/register">Registrarse</Link>
                                     </li>
                                 </>
                             )}
