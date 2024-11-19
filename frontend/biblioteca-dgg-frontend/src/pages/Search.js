@@ -16,17 +16,15 @@ const Search = () => {
     const [genres, setGenres] = useState([]);
     const [sortOrder, setSortOrder] = useState({ stock: 'asc', year: 'asc' });
 
-
     useEffect(() => {
         const fetchBooks = async () => {
             try {
-                const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/routes/routes_libros.php?action=all');
-                console.log(response.data);
+                const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=books');
                 setBooks(response.data.data);
                 setFilteredBooks(response.data.data);
 
                 // Extraer autores, editoriales y géneros únicos
-                const uniquePublishers = [...new Set(response.data.data.map(book => book.editorial_nombre))];
+                const uniquePublishers = [...new Set(response.data.data.map(book => book.editorial_id))];
                 const uniqueAuthors = [...new Set(response.data.data.map(book => `${book.autor_nombre} ${book.autor_apellido}`))];
                 const uniqueGenres = [...new Set(response.data.data.map(book => book.genero))];
 
@@ -53,7 +51,7 @@ const Search = () => {
         }
 
         if (selectedPublisher) {
-            updatedBooks = updatedBooks.filter(book => book.editorial_nombre === selectedPublisher);
+            updatedBooks = updatedBooks.filter(book => book.editorial_id === selectedPublisher);
         }
 
         if (selectedAuthor) {
@@ -75,9 +73,9 @@ const Search = () => {
 
         const sortedBooks = [...filteredBooks].sort((a, b) => {
             if (criteria === 'stock') {
-                return newOrder === 'asc' ? a.stock - b.stock : b.stock - a.stock;
+                return newOrder === 'asc' ? a.stock - b.stock : b.stock - a.stock; // Ordenar según la dirección
             } else if (criteria === 'year') {
-                return newOrder === 'asc' ? new Date(a.año) - new Date(b.año) : new Date(b.año) - new Date(a.año);
+                return newOrder === 'asc' ? new Date(a.año) - new Date(b.año) : new Date(b.año) - new Date(a.año); // Ordenar según la dirección
             }
             return 0;
         });
@@ -88,7 +86,7 @@ const Search = () => {
             <Header />
 
             <div className="container my-5">
-                <h1 className="text-center mb-4">Buscar Libros</h1>
+                <h1 className="text-center">Buscar Libros</h1>
                 <input
                     type="text"
                     placeholder="Buscar por título..."
@@ -115,15 +113,17 @@ const Search = () => {
                     </select>
                 </div>
 
+                {/*
                 <div className="mb-3">
                     <label>Editorial:</label>
-                    <select onChange={e => setSelectedPublisher(e.target.value)} className="form-select">
+                    <select onChange={(e) => setSelectedPublisher(e.target.value)} className="form-select">
                         <option value="">Seleccionar editorial</option>
                         {publishers.map((publisher, index) => (
                             <option key={index} value={publisher}>{publisher}</option>
                         ))}
                     </select>
-                </div>
+                </div>                
+                */}
 
                 <div className="mb-3">
                     <label>Autor:</label>
@@ -135,23 +135,23 @@ const Search = () => {
                     </select>
                 </div>
 
+                {/*
                 <div className="mb-3">
                     <label>Género:</label>
-                    <select onChange={e => setSelectedGenre(e.target.value)} className="form-select">
+                    <select onChange={(e) => setSelectedGenre(e.target.value)} className="form-select">
                         <option value="">Seleccionar género</option>
                         {genres.map((genre, index) => (
                             <option key={index} value={genre}>{genre}</option>
                         ))}
                     </select>
                 </div>
+                */}
 
-
-            <div class="container d-flex flex-row justify-content-center my-4">
                 <button
                     onClick={() => handleSort('stock')}
                     className="btn btn-primary me-2"
                 >
-                    Ordenar por Stock
+                    Ordenar por Stock 
                     {sortOrder.stock === 'asc' ? '↑' : '↓'}
                 </button>
 
@@ -159,11 +159,9 @@ const Search = () => {
                     onClick={() => handleSort('year')}
                     className="btn btn-primary"
                 >
-                    Ordenar por Año
+                    Ordenar por Año 
                     {sortOrder.year === 'asc' ? '↑' : '↓'}
                 </button>
-
-            </div>
 
                 <div className="row mt-4">
                     {filteredBooks.map(book => (
