@@ -11,7 +11,6 @@ import BorrowedBooksTable from '../components/admin/BorrowedBooksTable';
 import AuthorTable from '../components/admin/AuthorTable';
 import PublisherTable from '../components/admin/PublisherTable';
 
-
 const AdminPanel = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -22,10 +21,12 @@ const AdminPanel = () => {
     const [borrowedBooks, setBorrowedBooks] = useState([]);
     const [authors, setAuthors] = useState([]);
     const [publishers, setPublishers] = useState([]);
+    const [reservas, setReservas] = useState([]); // Nuevo estado para reservas
 
+    // Comprobar que el usuario sea admin
     useEffect(() => {
         if (!user || user.role !== 'admin') {
-            navigate('/'); // Redirect if not an admin
+            navigate('/'); // Redirigir si no es admin
         }
 
         const fetchData = async (url, setState) => {
@@ -49,18 +50,34 @@ const AdminPanel = () => {
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=publishers', setPublishers);
     }, [user, navigate]);
 
+    // Cargar reservas pendientes
     useEffect(() => {
-        const fetchAdministradores = async () => {
+        const fetchReservas = async () => {
             try {
-                const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=administrators');
-                setAdministradores(response.data.data);
+                const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=reservasPendientes');
+                if (response.data.status === 'success') {
+                    setReservas(response.data.data);
+                }
             } catch (error) {
-                console.error('Error fetching administrators:', error);
+                console.error('Error fetching reservas:', error);
             }
         };
-        fetchAdministradores();
+
+        fetchReservas();
     }, []);
 
+    // Función para aprobar una reserva
+    const handleApprove = async (reservaId) => {
+        try {
+            const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=aceptarReserva', { reserva_id: reservaId });
+            if (response.data.status === 'success') {
+                alert('Reserva aceptada.');
+                setReservas(reservas.filter((reserva) => reserva.id !== reservaId)); // Eliminar reserva de la lista
+            }
+        } catch (error) {
+            console.error('Error al aceptar reserva:', error);
+        }
+    };
 
     return (
         <div>
@@ -69,6 +86,30 @@ const AdminPanel = () => {
                 <h1 className="text-center mb-4">Panel de Administrador</h1>
                 <p className="text-center mb-5">Gestiona usuarios, inventario de libros y más desde aquí.</p>
 
+                {/* Mostrar reservas pendientes */}
+                <div className="card mb-4 shadow-sm">
+                    <div className="card-header bg-primary text-white">
+                        <h2 className="h5 mb-0">Reservas Pendientes</h2>
+                    </div>
+                    <div className="card-body">
+                        {reservas.length === 0 ? (
+                            <p>No hay reservas pendientes.</p>
+                        ) : (
+                            reservas.map((reserva) => (
+                                <div key={reserva.id} className="d-flex justify-content-between align-items-center mb-3">
+                                    <p>
+                                        Usuario: {reserva.usuario_dni} ({reserva.nombre}) reservó el libro: {reserva.titulo} ({reserva.libro_isbn})
+                                    </p>
+                                    <button className="btn btn-success" onClick={() => handleApprove(reserva.id)}>
+                                        Aceptar
+                                    </button>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+
+                {/* Otros componentes */}
                 <UserTable users={users} setUsers={setUsers} />
                 <BookTable books={books} setBooks={setBooks} authors={authors} publishers={publishers} />
                 <BorrowedBooksTable borrowedBooks={borrowedBooks} />

@@ -13,13 +13,23 @@ function Register() {
 
     const handleRegister = async () => {
         try {
-            await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=registerUser', userData);
-            alert('Registro exitoso');
-            navigate('/'); // Redirigir al home después de registro
+            const response = await axios.post(
+                'http://localhost/AAA_BibliotecaDGG/backend/api.php?request=registerUser',
+                userData
+            );
+            console.log('Respuesta del servidor:', response.data);
+            if (response.data.status === 'success') {
+                alert('Registro exitoso');
+                navigate('/');
+            } else {
+                alert(`Error: ${response.data.message}`);
+            }
         } catch (error) {
             console.error('Error al registrar usuario:', error);
+            alert('Error en la conexión o en el servidor');
         }
     };
+
 
     return (
         <div className="d-flex flex-column min-vh-100">

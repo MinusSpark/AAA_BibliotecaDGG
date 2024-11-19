@@ -45,22 +45,24 @@ class ControladorUsuario
             if ($stmt->execute()) {
                 return ['status' => 'success', 'message' => 'Usuario registrado exitosamente'];
             } else {
-                return ['status' => 'error', 'message' => 'Error al registrar el usuario'];
+                return ['status' => 'error', 'message' => $stmt->errorInfo()];
             }
         } catch (Exception $e) {
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
 
-    public static function obtenerUsuarios() {
+    public static function obtenerUsuarios()
+    {
         $conexion = Conexion::conectar();
         $sql = "SELECT * FROM Usuario";
         $stmt = $conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
- 
-    public static function eliminarUsuario($dni) {
+
+    public static function eliminarUsuario($dni)
+    {
         $conexion = Conexion::conectar();
         try {
             $sql = "DELETE FROM Usuario WHERE dni = :dni";
@@ -76,7 +78,8 @@ class ControladorUsuario
         }
     }
 
-    public static function actualizarUsuario($data) {
+    public static function actualizarUsuario($data)
+    {
         $conexion = Conexion::conectar();
         try {
             $sql = "UPDATE Usuario SET nombre = :nombre, apellido = :apellido, telefono = :telefono, correo = :correo WHERE dni = :dni";
@@ -95,8 +98,9 @@ class ControladorUsuario
             return ['status' => 'error', 'message' => $e->getMessage()];
         }
     }
-    
-    public static function obtenerUsuarioPorDni($dni) {
+
+    public static function obtenerUsuarioPorDni($dni)
+    {
         $conexion = Conexion::conectar();
         $sql = "SELECT * FROM Usuario WHERE dni = :dni";
         $stmt = $conexion->prepare($sql);
@@ -105,6 +109,4 @@ class ControladorUsuario
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         return $usuario ? ['status' => 'success', 'data' => $usuario] : ['status' => 'error', 'message' => 'Usuario no encontrado'];
     }
-
-
 }

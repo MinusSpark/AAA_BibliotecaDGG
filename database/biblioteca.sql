@@ -58,15 +58,28 @@ CREATE TABLE Libro (
     FOREIGN KEY (editorial_id) REFERENCES Editorial(id)
 );
 
+-- cambios a la tabla libro
+ALTER TABLE libro ADD COLUMN reservas INT DEFAULT 0;
+
 -- Tabla Libros Prestados
-CREATE TABLE Libros_Prestados (
+CREATE TABLE libros_prestados (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    isbn VARCHAR(13) NOT NULL,
-    dni_usuario VARCHAR(9) NOT NULL,
-    fecha_prestamo DATE NOT NULL DEFAULT CURRENT_DATE,
-    fecha_devolucion DATE,
-    FOREIGN KEY (isbn) REFERENCES Libro(isbn),
-    FOREIGN KEY (dni_usuario) REFERENCES Usuario(dni)
+    usuario_dni VARCHAR(10) NOT NULL,
+    libro_isbn VARCHAR(13) NOT NULL,
+    fecha_prestamo DATETIME DEFAULT CURRENT_TIMESTAMP,
+    fecha_devolucion DATETIME DEFAULT NULL,
+    FOREIGN KEY (usuario_dni) REFERENCES usuario(dni),
+    FOREIGN KEY (libro_isbn) REFERENCES libro(isbn)
+);
+
+-- Tabla Reservas
+CREATE TABLE reservas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_dni VARCHAR(10) NOT NULL,
+    libro_isbn VARCHAR(13) NOT NULL,
+    fecha_reserva DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_dni) REFERENCES usuario(dni),
+    FOREIGN KEY (libro_isbn) REFERENCES libro(isbn)
 );
 
 -- Insertar usuarios
@@ -135,7 +148,7 @@ INSERT INTO Libro (isbn, titulo, año, autor_dni, editorial_id, genero, stock, p
 ('9789012345670', 'La Fiesta Ajena', '1979-03-05', '67890123I', 10, 'Novela', 7, 'https://i.pinimg.com/736x/ce/7c/bd/ce7cbd6edba13910a6a1dba123290b70--liliana.jpg');
 
 -- Insertar libros prestados
-INSERT INTO Libros_Prestados (isbn, dni_usuario, fecha_prestamo, fecha_devolucion) VALUES
+INSERT INTO Libros_Prestados (libro_isbn, usuario_dni, fecha_prestamo, fecha_devolucion) VALUES
 ('9781234567891', '12345678A', '2023-01-10', '2023-02-10'),
 ('9781234567892', '87654321B', '2023-02-15', '2023-03-15'),
 ('9781234567893', '11223344C', '2023-03-01', '2023-04-01'),

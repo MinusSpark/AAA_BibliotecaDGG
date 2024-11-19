@@ -14,6 +14,7 @@ $request = isset($_GET['request']) ? $_GET['request'] : '';
 
 switch ($method) {
     case 'GET':
+        // Solicitudes para obtener información
         if ($request === 'books') {
             $libros = ControladorLibro::obtenerLibros();
             if ($libros) {
@@ -28,6 +29,14 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron libros prestados']);
             }
+        } elseif ($request === 'reservasPendientes') {
+            $query = "SELECT r.id, r.usuario_dni, u.nombre, r.libro_isbn, l.titulo, r.fecha_reserva 
+                      FROM reservas r
+                      JOIN usuario u ON r.usuario_dni = u.dni
+                      JOIN libro l ON r.libro_isbn = l.isbn";
+            $result = $conn->query($query);
+            $reservas = $result->fetch_all(MYSQLI_ASSOC);
+            echo json_encode(['status' => 'success', 'data' => $reservas]);
         } elseif ($request === 'users') {
             if (isset($_GET['dni'])) {
                 $dni = $_GET['dni'];
@@ -97,6 +106,7 @@ switch ($method) {
 
     case 'POST':
         $input = json_decode(file_get_contents("php://input"), true);
+        file_put_contents('debug.txt', print_r($input, true));
         if ($request === 'registerUser') {
             // Solicitud para registrar un nuevo usuario
             $resultado = ControladorUsuario::registro(
@@ -111,7 +121,7 @@ switch ($method) {
         } elseif ($request === 'login') {
             $usuario = ControladorUsuario::login($input['email'], $input['password']);
             if ($usuario && isset($usuario['correo'])) {
-                echo json_encode(['status' => 'success', 'user' => $usuario]);
+                echo json_encode(['status' => 'success', 'user' => $usuario]); // Una sola copia del usuario
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Correo o contraseña incorrectos']);
             }
@@ -127,6 +137,44 @@ switch ($method) {
             $input = json_decode(file_get_contents("php://input"), true);
             $resultado = ControladorEditorial::registrarEditorial($input);
             echo json_encode($resultado);
+        } elseif ($request === 'reservarLibro') {
+            // Solicitud para reservar un libro
+            $usuario_dni = $_POST['usuario_dni'];
+            $libro_isbn = $_POST['libro_isbn'];
+
+            $query = "INSERT INTO reservas (usuario_dni, libro_isbn) VALUES ('$usuario_dni', '$libro_isbn')";
+            if ($conn->query($query)) {
+                echo json_encode(['status' => 'success', 'message' => 'Reserva creada exitosamente.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Error al crear la reserva.']);
+            }
+        } elseif ($request === 'aceptarReserva') {
+            // Solicitud para aceptar una reserva y crear el préstamo
+            $reserva_id = $_POST['reserva_id'];
+
+            $query_reserva = "SELECT * FROM reservas WHERE id = '$reserva_id'";
+            $reserva = $conn->query($query_reserva)->fetch_assoc();
+
+            if ($reserva) {
+                $usuario_dni = $reserva['usuario_dni'];
+                $libro_isbn = $reserva['libro_isbn'];
+
+                // Crear el préstamo
+                $query_prestamo = "INSERT INTO libros_prestados (usuario_dni, libro_isbn) VALUES ('$usuario_dni', '$libro_isbn')";
+                $conn->query($query_prestamo);
+
+                // Actualizar el stock del libro
+                $query_update_stock = "UPDATE libro SET stock = stock - 1 WHERE isbn = '$libro_isbn'";
+                $conn->query($query_update_stock);
+
+                // Eliminar la reserva
+                $query_delete_reserva = "DELETE FROM reservas WHERE id = '$reserva_id'";
+                $conn->query($query_delete_reserva);
+
+                echo json_encode(['status' => 'success', 'message' => 'Reserva aceptada y préstamo creado.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Reserva no encontrada.']);
+            }
         }
         break;
 
@@ -142,7 +190,7 @@ switch ($method) {
         } elseif ($request === 'deleteBook') {
             $isbn = $_GET['isbn'];
             if (isset($isbn) && !empty($isbn)) {
-                $resultado = ControladorLibro::eliminarLibro($isbn); 
+                $resultado = ControladorLibro::eliminarLibro($isbn);
                 echo json_encode($resultado);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'ISBN no proporcionado']);
@@ -155,6 +203,14 @@ switch ($method) {
             $id = $_GET['id'];
             $resultado = ControladorEditorial::eliminarEditorial($id);
             echo json_encode($resultado);
+        } elseif ($request === 'deleteReserva') {
+            $reserva_id = $_GET['id'];
+            $query_delete_reserva = "DELETE FROM reservas WHERE id = '$reserva_id'";
+            if ($conn->query($query_delete_reserva)) {
+                echo json_encode(['status' => 'success', 'message' => 'Reserva eliminada exitosamente.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Error al eliminar la reserva.']);
+            }
         }
         break;
 
@@ -165,7 +221,7 @@ switch ($method) {
             echo json_encode($resultado);
         } elseif ($request === 'updateBook') {
             $input = json_decode(file_get_contents("php://input"), true);
-            $resultado = ControladorLibro::actualizarLibro($input); 
+            $resultado = ControladorLibro::actualizarLibro($input);
             echo json_encode($resultado);
         } elseif ($request === 'updateAuthor') {
             $input = json_decode(file_get_contents("php://input"), true);

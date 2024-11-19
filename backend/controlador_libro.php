@@ -52,7 +52,7 @@ class ControladorLibro
                 JOIN 
                     Autor ON Libro.autor_dni = Autor.dni 
                 JOIN 
-                    Editorial ON Libro.editorial_id = Editorial.id"; 
+                    Editorial ON Libro.editorial_id = Editorial.id";
         $stmt = $conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -64,7 +64,7 @@ class ControladorLibro
         $sql = "SELECT 
                     Libros_Prestados.id, 
                     Libros_Prestados.isbn, 
-                    Libros_Prestados.dni_usuario, 
+                    Libros_Prestados.usuario_dni, 
                     Libros_Prestados.fecha_prestamo, 
                     Libros_Prestados.fecha_devolucion, 
                     Usuario.nombre AS usuario_nombre, 
@@ -73,9 +73,9 @@ class ControladorLibro
                 FROM 
                     Libros_Prestados 
                 JOIN 
-                    Usuario ON Libros_Prestados.dni_usuario = Usuario.dni 
+                    Usuario ON Libros_Prestados.usuario_dni = Usuario.dni 
                 JOIN 
-                    Libro ON Libros_Prestados.isbn = Libro.isbn"; 
+                    Libro ON Libros_Prestados.isbn = Libro.isbn";
         $stmt = $conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -143,19 +143,26 @@ class ControladorLibro
     public static function obtenerLibrosPrestadosPorUsuario($dni)
     {
         $conexion = Conexion::conectar();
-        $sql = "SELECT * FROM Libros_Prestados WHERE dni_usuario = :dni_usuario AND fecha_devolucion IS NULL";
+        $sql = "SELECT lp.*, l.titulo, l.año, l.portada 
+            FROM Libros_Prestados lp
+            JOIN Libro l ON lp.libro_isbn = l.isbn
+            WHERE lp.usuario_dni = :usuario_dni AND lp.fecha_devolucion IS NULL";
         $stmt = $conexion->prepare($sql);
-        $stmt->bindParam(":dni_usuario", $dni);
+        $stmt->bindParam(":usuario_dni", $dni);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
     public static function obtenerHistorialDePrestamos($dni)
     {
         $conexion = Conexion::conectar();
-        $sql = "SELECT * FROM Libros_Prestados WHERE dni_usuario = :dni_usuario AND fecha_devolucion IS NOT NULL";
+        $sql = "SELECT lp.*, l.titulo, l.año, l.portada 
+            FROM Libros_Prestados lp
+            JOIN Libro l ON lp.libro_isbn = l.isbn
+            WHERE lp.usuario_dni = :usuario_dni AND lp.fecha_devolucion IS NOT NULL";
         $stmt = $conexion->prepare($sql);
-        $stmt->bindParam(":dni_usuario", $dni);
+        $stmt->bindParam(":usuario_dni", $dni);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

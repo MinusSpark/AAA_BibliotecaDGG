@@ -18,11 +18,16 @@ import CookieConsent from '../components/CookieConsent';
 // Importar la librería del calendario
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../services/AuthContext';
 
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [counter, setCounter] = useState(0); // Estado para el contador
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false); // Estado para mostrar el mensaje de bienvenida
+  const { user } = useContext(AuthContext); // Obtener usuario desde el contexto
+  const navigate = useNavigate(); // Estado para redirigir
 
   useEffect(() => {
     // Comprobar si ya existe una cookie para mostrar el mensaje de bienvenida
@@ -31,7 +36,7 @@ const Home = () => {
       setShowWelcomeMessage(true); // Si no existe la cookie, mostramos el mensaje
       localStorage.setItem("welcomeMessageShown", "true"); // Establecer la cookie para que no se muestre de nuevo
     }
-  
+
     const fetchBooks = async () => {
       try {
         const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=books');
@@ -41,7 +46,7 @@ const Home = () => {
       }
     };
     fetchBooks();
-  
+
     // Contador que va incrementando de 0 a 10 con un intervalo más lento
     const interval = setInterval(() => {
       setCounter((prevCounter) => {
@@ -53,10 +58,40 @@ const Home = () => {
         }
       });
     }, 500); // 500ms para incrementar el contador
-  
+
     // Limpiar el intervalo al desmontar el componente
     return () => clearInterval(interval);
   }, []);
+
+  const handleReserve = async (isbn) => {
+    if (!user) {
+      console.error("Error: usuario no definido.");
+      navigate('/login');
+      return;
+    }
+
+    console.log('Usuario:', JSON.stringify(user, null, 2));
+
+    if (user.role === 'user') {
+      try {
+        const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=reservarLibro', {
+          usuario_dni: user.dni,
+          libro_isbn: isbn,
+        });
+        if (response.data.status === 'success') {
+          alert('Libro reservado exitosamente.');
+        } else {
+          alert('Error al reservar el libro.');
+        }
+      } catch (error) {
+        console.error('Error al reservar libro:', error);
+        alert('Hubo un error al intentar reservar el libro.');
+      }
+    } else {
+      alert('Solo los usuarios pueden reservar libros.');
+    }
+  };
+
 
   return (
     <div className="d-flex flex-column min-vh-100">
@@ -153,7 +188,11 @@ const Home = () => {
                       <p className="card-text">Año: {book.año}</p>
                       <p className="card-text">Stock: {book.stock}</p>
                       <div className="mt-auto">
-                        <button className="btn btn-primary me-2">Reservar</button>
+                        <button
+                          className="btn btn-primary me-2"
+                          onClick={() => handleReserve(book.isbn)}>
+                          Reservar
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -162,22 +201,6 @@ const Home = () => {
             </div>
           </div>
         </div>
-
-{/*       
-      <div class="container">
-          <div class="row">
-              <div class="imagen"> 
-                  <img src="" alt=""/>
-              </div>
-          
-              <div class="texto">
-                  <h3></h3>
-                  <p></p>
-              </div>
-          </div>
-      </div> */}
-
-
 
         <div className="container-fluid">
           <div className="row d-flex flex-row">
@@ -246,49 +269,49 @@ const Home = () => {
 
 
 
-<div class="container d-flex flex-column" style={{background:'#F5F5F5', padding: 50, paddingBottom:80}}>
+      <div className="container d-flex flex-column" style={{ background: '#F5F5F5', padding: 50, paddingBottom: 80 }}>
 
-<h2 class="text-center mb-4">Preguntas Frecuentes</h2>
+        <h2 className="text-center mb-4">Preguntas Frecuentes</h2>
 
-<div class="accordion accordion-flush" id="accordionFlushExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-      ¿Cómo puedo solicitar el préstamo de un libro?
-      </button>
-    </h2>
-    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">Puedes buscar el libro en el catálogo de nuestra página web. Una vez encontrado,inicia sesión y busca el libro que quieres pedir prestado.</div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-      ¿Cuánto tiempo puedo tener un libro prestado?
-      </button>
-    </h2>
-    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">El período estándar de préstamo es de 14 días, con posibilidad de una renovación si el libro no está reservado por otro usuario.
+        <div className="accordion accordion-flush" id="accordionFlushExample">
+          <div className="accordion-item">
+            <h2 className="accordion-header">
+              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                ¿Cómo puedo solicitar el préstamo de un libro?
+              </button>
+            </h2>
+            <div id="flush-collapseOne" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+              <div className="accordion-body">Puedes buscar el libro en el catálogo de nuestra página web. Una vez encontrado,inicia sesión y busca el libro que quieres pedir prestado.</div>
+            </div>
+          </div>
+          <div className="accordion-item">
+            <h2 className="accordion-header">
+              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                ¿Cuánto tiempo puedo tener un libro prestado?
+              </button>
+            </h2>
+            <div id="flush-collapseTwo" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+              <div className="accordion-body">El período estándar de préstamo es de 14 días, con posibilidad de una renovación si el libro no está reservado por otro usuario.
 
-</div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-      ¿Qué hago si pierdo un libro que tengo en préstamo?
-      </button>
-    </h2>
-    <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-      <div class="accordion-body">Debes comunicarte con la biblioteca lo antes posible. Se te pedirá reemplazar el libro perdido o cubrir su costo según la política de reposición.</div>
-    </div>
-  </div>
-</div>
+              </div>
+            </div>
+          </div>
+          <div className="accordion-item">
+            <h2 className="accordion-header">
+              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                ¿Qué hago si pierdo un libro que tengo en préstamo?
+              </button>
+            </h2>
+            <div id="flush-collapseThree" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+              <div className="accordion-body">Debes comunicarte con la biblioteca lo antes posible. Se te pedirá reemplazar el libro perdido o cubrir su costo según la política de reposición.</div>
+            </div>
+          </div>
+        </div>
 
-</div>
+      </div>
 
       <Footer />
-      <CookieConsent/>
+      <CookieConsent />
     </div>
   );
 };
