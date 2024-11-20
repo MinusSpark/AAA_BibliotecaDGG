@@ -1,5 +1,0 @@
-Array
-(
-    [email] => javier@gmail.com
-    [password] => adminpass1
-)

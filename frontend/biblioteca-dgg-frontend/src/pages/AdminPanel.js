@@ -45,10 +45,10 @@ const AdminPanel = () => {
             }
         };
 
+        /*cambiar nombre a adminpanelnoseque*/
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=users', setUsers);
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=books', setBooks);
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=pendingReservations', setReservations);
-        fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=borrowedBooks', setBorrowedBooks);
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=authors', setAuthors);
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=publishers', setPublishers);
     }, [user, navigate]);

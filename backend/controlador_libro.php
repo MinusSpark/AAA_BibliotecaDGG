@@ -3,37 +3,8 @@ require_once 'conexion.php';
 
 class ControladorLibro
 {
-    public static function buscarLibros($titulo)
-    {
-        $conexion = Conexion::conectar();
-        $sql = "SELECT * FROM Libro WHERE titulo LIKE :titulo";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bindValue(":titulo", "%$titulo%");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 
-    public static function obtenerLibrosDisponibles()
-    {
-        $conexion = Conexion::conectar();
-        $sql = "SELECT * FROM Libro WHERE stock > 0";
-        $stmt = $conexion->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public static function registrarLibro($input)
-    {
-        $conexion = Conexion::conectar();
-        $sql = "INSERT INTO Libro (isbn, titulo, autor, stock) VALUES (:isbn, :titulo, :autor, :stock)";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bindParam(":isbn", $input['isbn']);
-        $stmt->bindParam(":titulo", $input['titulo']);
-        $stmt->bindParam(":autor", $input['autor']);
-        $stmt->bindParam(":stock", $input['stock']);
-        return $stmt->execute();
-    }
-
+    // MÉTODO PARA IMPRIMIR LIBROS (HOME, SEARCH Y ADMIN PANEL)
     public static function obtenerLibros()
     {
         $conexion = Conexion::conectar();
@@ -58,29 +29,7 @@ class ControladorLibro
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function obtenerLibrosPrestados()
-    {
-        $conexion = Conexion::conectar();
-        $sql = "SELECT 
-                    Libros_Prestados.id, 
-                    Libros_Prestados.isbn, 
-                    Libros_Prestados.usuario_dni, 
-                    Libros_Prestados.fecha_prestamo, 
-                    Libros_Prestados.fecha_devolucion, 
-                    Usuario.nombre AS usuario_nombre, 
-                    Usuario.apellido AS usuario_apellido,
-                    Libro.titulo AS libro_titulo
-                FROM 
-                    Libros_Prestados 
-                JOIN 
-                    Usuario ON Libros_Prestados.usuario_dni = Usuario.dni 
-                JOIN 
-                    Libro ON Libros_Prestados.isbn = Libro.isbn";
-        $stmt = $conexion->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
+    /* MÉTODO PARA IMPRIMIR AUTORES EN EL ADMIN PANEL */
     public static function obtenerAutores()
     {
         $conexion = Conexion::conectar();
@@ -90,6 +39,7 @@ class ControladorLibro
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /* MÉTODO PARA IMPRIMIR LAS EDITORIALES EN EL ADMIN PANEL */
     public static function obtenerEditoriales()
     {
         $conexion = Conexion::conectar();
@@ -99,6 +49,7 @@ class ControladorLibro
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /* MÉTODO PARA ELIMINAR LIBROS DESDE EL ADMIN PANEL */
     public static function eliminarLibro($isbn)
     {
         $conexion = Conexion::conectar();
@@ -116,30 +67,7 @@ class ControladorLibro
         }
     }
 
-    public static function actualizarLibro($data)
-    {
-        $conexion = Conexion::conectar();
-        try {
-            $sql = "UPDATE Libro SET titulo = :titulo, año = :año, autor_dni = :autor, editorial_id = :editorial, genero = :genero, stock = :stock, portada = :portada WHERE isbn = :isbn";
-            $stmt = $conexion->prepare($sql);
-            $stmt->bindParam(":isbn", $data['isbn']);
-            $stmt->bindParam(":titulo", $data['titulo']);
-            $stmt->bindParam(":año", $data['año']);
-            $stmt->bindParam(":autor", $data['autor']);
-            $stmt->bindParam(":editorial", $data['editorial']);
-            $stmt->bindParam(":genero", $data['genero']);
-            $stmt->bindParam(":stock", $data['stock']);
-            $stmt->bindParam(":portada", $data['portada']);
-            if ($stmt->execute()) {
-                return ['status' => 'success', 'message' => 'Libro actualizado exitosamente'];
-            } else {
-                return ['status' => 'error', 'message' => 'Error al actualizar el libro'];
-            }
-        } catch (Exception $e) {
-            return ['status' => 'error', 'message' => $e->getMessage()];
-        }
-    }
-
+    /* MÉTODO PARA IMPRIMIR LOS LIBROS PRESTADOS AL USUARIO EN EL USER PANEL */
     public static function obtenerLibrosPrestadosPorUsuario($dni)
     {
         $conexion = Conexion::conectar();
@@ -153,7 +81,7 @@ class ControladorLibro
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
+    /* MÉTODO PARA IMPRIMIR EL HISTORIAL DE PRÉSTAMOS EN EL USER PANEL */
     public static function obtenerHistorialDePrestamos($dni)
     {
         $conexion = Conexion::conectar();
@@ -167,6 +95,7 @@ class ControladorLibro
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /* MÉTODO PARA RESERVAR LIBRO DESDE EL HOME */
     public static function reservarLibro($dni, $isbn)
     {
         try {
@@ -203,6 +132,7 @@ class ControladorLibro
         }
     }
 
+    /* MÉTODO PARA IMPRIMIR LAS RESERVAS PENDIENTES DE UN USUARIO EN EL USER PANEL */
     public static function obtenerReservasPendientesUsuario($dni)
     {
         $conexion = Conexion::conectar();
@@ -216,6 +146,7 @@ class ControladorLibro
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /* MÉTODO PARA IMPRIMIR LAS RESERVAS PENDIENTES DE ACEPTACIÓN DE ADMINISTRADOR EN EL ADMIN PANEL */
     public static function obtenerReservasPendientes()
     {
         $conexion = Conexion::conectar();
@@ -228,6 +159,7 @@ class ControladorLibro
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /* MÉTODO PARA ACEPTAR RESERVAS COMO ADMINISTRADOR Y TRANSFORMARLAS EN PRÉSTAMOS DESDE EL ADMIN PANEL */
     public function convertirReservaEnPrestamo($reservationId)
     {
         $conexion = Conexion::conectar();

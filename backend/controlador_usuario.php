@@ -3,6 +3,8 @@ require_once 'conexion.php';
 
 class ControladorUsuario
 {
+
+    /* MÉTODO LOGIN */
     public static function login($correo, $password)
     {
         $conexion = Conexion::conectar();
@@ -20,6 +22,7 @@ class ControladorUsuario
         }
     }
 
+    /* MÉTODO REGISTRO DE USUARIO PARA INTERFAZ USUARIO */
     public static function registro($dni, $nombre, $apellido, $telefono, $correo, $password)
     {
         $conexion = Conexion::conectar();
@@ -52,6 +55,17 @@ class ControladorUsuario
         }
     }
 
+    /* MÉTODOS OBTENER USUARIOS PARA IMPRIMIR EN ADMIN PANEL */
+    public static function obtenerUsuarioPorDni($dni)
+    {
+        $conexion = Conexion::conectar();
+        $sql = "SELECT * FROM Usuario WHERE dni = :dni";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bindParam(":dni", $dni);
+        $stmt->execute();
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $usuario ? ['status' => 'success', 'data' => $usuario] : ['status' => 'error', 'message' => 'Usuario no encontrado'];
+    }
     public static function obtenerUsuarios()
     {
         $conexion = Conexion::conectar();
@@ -61,23 +75,7 @@ class ControladorUsuario
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function eliminarUsuario($dni)
-    {
-        $conexion = Conexion::conectar();
-        try {
-            $sql = "DELETE FROM Usuario WHERE dni = :dni";
-            $stmt = $conexion->prepare($sql);
-            $stmt->bindParam(":dni", $dni);
-            if ($stmt->execute()) {
-                return ['status' => 'success', 'message' => 'Usuario eliminado exitosamente'];
-            } else {
-                return ['status' => 'error', 'message' => 'Error al eliminar el usuario'];
-            }
-        } catch (Exception $e) {
-            return ['status' => 'error', 'message' => $e->getMessage()];
-        }
-    }
-
+    /* MÉTODO PARA EDITAR USUARIOS DESDE ADMIN PANEL */
     public static function actualizarUsuario($data)
     {
         $conexion = Conexion::conectar();
@@ -99,14 +97,4 @@ class ControladorUsuario
         }
     }
 
-    public static function obtenerUsuarioPorDni($dni)
-    {
-        $conexion = Conexion::conectar();
-        $sql = "SELECT * FROM Usuario WHERE dni = :dni";
-        $stmt = $conexion->prepare($sql);
-        $stmt->bindParam(":dni", $dni);
-        $stmt->execute();
-        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $usuario ? ['status' => 'success', 'data' => $usuario] : ['status' => 'error', 'message' => 'Usuario no encontrado'];
-    }
 }

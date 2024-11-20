@@ -14,7 +14,8 @@ $request = isset($_GET['request']) ? $_GET['request'] : '';
 
 switch ($method) {
     case 'GET':
-        // Solicitudes para obtener información
+
+        /* IMPRIMIR LIBROS (HOME, SEARCH Y ADMIN PANEL) */
         if ($request === 'books') {
             $libros = ControladorLibro::obtenerLibros();
             if ($libros) {
@@ -22,21 +23,16 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron libros']);
             }
-        } elseif ($request === 'borrowedBooks') {
-            $librosPrestados = ControladorLibro::obtenerLibrosPrestados();
-            if ($librosPrestados) {
-                echo json_encode(['status' => 'success', 'data' => $librosPrestados]);
+        } 
+        
+        /* IMRPRIMIR TABLAS EN EL ADMIN PANEL (reservas, usuarios, autores, publishers, administrators) */
+        elseif ($request === 'pendingReservations') {
+            $reservas = ControladorLibro::obtenerReservasPendientes(); // Cambia aquí
+            if ($reservas) {
+                echo json_encode(['status' => 'success', 'data' => $reservas]);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'No se encontraron libros prestados']);
+                echo json_encode(['status' => 'error', 'message' => 'No hay reservas pendientes.']);
             }
-        } elseif ($request === 'reservasPendientes') {
-            $query = "SELECT r.id, r.usuario_dni, u.nombre, r.libro_isbn, l.titulo, r.fecha_reserva 
-                      FROM reservas r
-                      JOIN usuario u ON r.usuario_dni = u.dni
-                      JOIN libro l ON r.libro_isbn = l.isbn";
-            $result = $conn->query($query);
-            $reservas = $result->fetch_all(MYSQLI_ASSOC);
-            echo json_encode(['status' => 'success', 'data' => $reservas]);
         } elseif ($request === 'users') {
             if (isset($_GET['dni'])) {
                 $dni = $_GET['dni'];
@@ -54,32 +50,6 @@ switch ($method) {
                     echo json_encode(['status' => 'error', 'message' => 'No se encontraron usuarios']);
                 }
             }
-        } elseif ($request === 'currentLoans') {
-            // Ruta para obtener préstamos actuales
-            if (isset($_GET['dni'])) {
-                $dni = $_GET['dni'];
-                $loans = ControladorLibro::obtenerLibrosPrestadosPorUsuario($dni);
-                if ($loans) {
-                    echo json_encode(['status' => 'success', 'data' => $loans]);
-                } else {
-                    echo json_encode(['status' => 'error', 'message' => 'No se encontraron préstamos actuales']);
-                }
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
-            }
-        } elseif ($request === 'loanHistory') {
-            // Ruta para obtener historial de préstamos
-            if (isset($_GET['dni'])) {
-                $dni = $_GET['dni'];
-                $history = ControladorLibro::obtenerHistorialDePrestamos($dni);
-                if ($history) {
-                    echo json_encode(['status' => 'success', 'data' => $history]);
-                } else {
-                    echo json_encode(['status' => 'error', 'message' => 'No se encontraron datos de historial']);
-                }
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
-            }
         } elseif ($request === 'authors') {
             $autores = ControladorLibro::obtenerAutores();
             if ($autores) {
@@ -94,12 +64,32 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron editoriales']);
             }
-        } elseif ($request === 'administrators') {
-            $administradores = ControladorAdmin::obtenerAdministradores();
-            if ($administradores) {
-                echo json_encode(['status' => 'success', 'data' => $administradores]);
+        } 
+        
+        /* IMPRIMIR DATOS DE USER PANEL (prestamos, hitorial de prestamos y reservas pendientes) */
+        elseif ($request === 'currentLoans') {
+            if (isset($_GET['dni'])) {
+                $dni = $_GET['dni'];
+                $loans = ControladorLibro::obtenerLibrosPrestadosPorUsuario($dni);
+                if ($loans) {
+                    echo json_encode(['status' => 'success', 'data' => $loans]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se encontraron préstamos actuales']);
+                }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'No se encontraron administradores']);
+                echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
+            }
+        } elseif ($request === 'loanHistory') {
+            if (isset($_GET['dni'])) {
+                $dni = $_GET['dni'];
+                $history = ControladorLibro::obtenerHistorialDePrestamos($dni);
+                if ($history) {
+                    echo json_encode(['status' => 'success', 'data' => $history]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se encontraron datos de historial']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
             }
         } elseif ($request === 'pendingReservationsUsuario') {
             $dni = isset($_GET['dni']) ? $_GET['dni'] : null;
@@ -114,20 +104,14 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'El DNI no ha sido proporcionado.']);
             }
-        } elseif ($request === 'pendingReservations') {
-            $reservas = ControladorLibro::obtenerReservasPendientes(); // Cambia aquí
-            if ($reservas) {
-                echo json_encode(['status' => 'success', 'data' => $reservas]);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'No hay reservas pendientes.']);
-            }
         }
         break;
 
-    case 'POST':
+    case 'POST':        
         $input = json_decode(file_get_contents("php://input"), true);
+
+        /* REGISTRO Y LOGIN PARA INTERFAZ DE USUARIO */
         if ($request === 'registerUser') {
-            // Solicitud para registrar un nuevo usuario
             $resultado = ControladorUsuario::registro(
                 $input['dni'],
                 $input['nombre'],
@@ -144,19 +128,10 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Correo o contraseña incorrectos']);
             }
-        } elseif ($request === 'registerBook') {
-            $input = json_decode(file_get_contents("php://input"), true);
-            $resultado = ControladorLibro::registrarLibro($input);
-            echo json_encode($resultado);
-        } elseif ($request === 'addAuthor') {
-            $input = json_decode(file_get_contents("php://input"), true);
-            $resultado = ControladorAutor::registrarAutor($input);
-            echo json_encode($resultado);
-        } elseif ($request === 'addPublisher') {
-            $input = json_decode(file_get_contents("php://input"), true);
-            $resultado = ControladorEditorial::registrarEditorial($input);
-            echo json_encode($resultado);
-        } elseif ($request === 'reserveBook') {
+        } 
+        
+        /* RESERVA LIBROS DESDE INTERFAZ USUARIO */
+        elseif ($request === 'reserveBook') {
             $dni = $input['dni'];
             $isbn = $input['isbn'];
             $resultado = ControladorLibro::reservarLibro($dni, $isbn);
@@ -165,7 +140,11 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se pudo realizar la reserva.']);
             }
-        } elseif ($request === 'convertReservation') {
+        } 
+        
+        
+        /* CONVERTIR RESERVAS A PRESTAMOS DESDE INTERFAZ ADMNISTRADOR */
+        elseif ($request === 'convertReservation') {
             $reservationId = $input['reservationId'];
 
             $controladorLibro = new ControladorLibro();
@@ -175,16 +154,11 @@ switch ($method) {
             echo json_encode($result);
         }
         break;
+
     case 'DELETE':
-        if ($request === 'deleteUser') {
-            $dni = $_GET['dni'];
-            if (isset($dni) && !empty($dni)) {
-                $resultado = ControladorUsuario::eliminarUsuario($dni);
-                echo json_encode($resultado);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'DNI del usuario no proporcionado']);
-            }
-        } elseif ($request === 'deleteBook') {
+        
+        /* ELIMINAR LIBRO DESDE INTERFAZ ADMINISTRADOR */
+        if ($request === 'deleteBook') {
             $isbn = $_GET['isbn'];
             if (isset($isbn) && !empty($isbn)) {
                 $resultado = ControladorLibro::eliminarLibro($isbn);
@@ -192,34 +166,16 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'ISBN no proporcionado']);
             }
-        } elseif ($request === 'deleteAuthor') {
-            $dni = $_GET['dni'];
-            $resultado = ControladorAutor::eliminarAutor($dni);
-            echo json_encode($resultado);
-        } elseif ($request === 'deletePublisher') {
-            $id = $_GET['id'];
-            $resultado = ControladorEditorial::eliminarEditorial($id);
-            echo json_encode($resultado);
         } elseif ($request === 'deleteReserva') {
         }
         break;
 
     case 'PUT':
+
+        /* ACTUALIZAR/EDITAR USUARIO DESDE INTERFAZ ADMINISTRADOR */
         if ($request === 'updateUser') {
             $input = json_decode(file_get_contents("php://input"), true);
             $resultado = ControladorUsuario::actualizarUsuario($input);
-            echo json_encode($resultado);
-        } elseif ($request === 'updateBook') {
-            $input = json_decode(file_get_contents("php://input"), true);
-            $resultado = ControladorLibro::actualizarLibro($input);
-            echo json_encode($resultado);
-        } elseif ($request === 'updateAuthor') {
-            $input = json_decode(file_get_contents("php://input"), true);
-            $resultado = ControladorAutor::actualizarAutor($input);
-            echo json_encode($resultado);
-        } elseif ($request === 'updatePublisher') {
-            $input = json_decode(file_get_contents("php://input"), true);
-            $resultado = ControladorEditorial::actualizarEditorial($input);
             echo json_encode($resultado);
         }
         break;
