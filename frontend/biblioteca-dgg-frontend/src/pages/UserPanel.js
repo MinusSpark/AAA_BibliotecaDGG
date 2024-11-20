@@ -33,25 +33,20 @@ const UserPanel = () => {
                 console.error('Error fetching loan history:', error);
             }
         };
-
-        fetchLoans();
-        fetchLoanHistory();
-    }, [user.dni]);
-
-    // Obtener reservas pendientes
-    useEffect(() => {
         const fetchPendingReservations = async () => {
             try {
-                const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=currentReservations&dni=${user.dni}`);
+                const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=pendingReservations&dni=${user.dni}`);
                 if (response.data.status === 'success') {
                     setPendingReservations(response.data.data || []);
                 }
             } catch (error) {
-                console.error('Error fetching reservations:', error);
+                console.error('Error fetching pending reservations:', error);
             }
         };
 
         fetchPendingReservations();
+        fetchLoans();
+        fetchLoanHistory();
     }, [user.dni]);
 
     return (
@@ -101,20 +96,14 @@ const UserPanel = () => {
                             </div>
                         )}
                     </div>
-                </div>
-
-                {/* Sección de Reservas Pendientes */}
-                <div className="row mt-5">
-                    <div className="col-md-12">
-                        <h3 className="text-warning">Reservas Pendientes</h3>
+                    <div className="col-md-6">
+                        <h3 className="text-info">Reservas Pendientes</h3>
                         {pendingReservations.length > 0 ? (
                             <ul className="list-group">
                                 {pendingReservations.map((reservation, index) => (
-                                    <li key={`${reservation.libro_isbn}-${index}`} className="list-group-item">
+                                    <li key={`${reservation.isbn}-${index}`} className="list-group-item">
                                         <strong>{reservation.titulo}</strong> <br />
-                                        <small className="text-muted">
-                                            Fecha de Reserva: {reservation.fecha_reserva}
-                                        </small>
+                                        <small className="text-muted">Fecha de Reserva: {reservation.fecha_reserva}</small>
                                     </li>
                                 ))}
                             </ul>

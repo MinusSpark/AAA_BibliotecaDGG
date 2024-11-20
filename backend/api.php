@@ -101,12 +101,20 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron administradores']);
             }
+        } elseif ($request === 'pendingReservations') {
+            $dni = $_GET['dni'];
+            $reservas = ControladorLibro::obtenerReservasPendientes($dni);
+            if ($reservas) {
+                echo json_encode(['status' => 'success', 'data' => $reservas]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No tienes reservas pendientes.']);
+            }
         }
+
         break;
 
     case 'POST':
         $input = json_decode(file_get_contents("php://input"), true);
-        file_put_contents('debug.txt', print_r($input, true));
         if ($request === 'registerUser') {
             // Solicitud para registrar un nuevo usuario
             $resultado = ControladorUsuario::registro(
@@ -137,43 +145,14 @@ switch ($method) {
             $input = json_decode(file_get_contents("php://input"), true);
             $resultado = ControladorEditorial::registrarEditorial($input);
             echo json_encode($resultado);
-        } elseif ($request === 'reservarLibro') {
-            // Solicitud para reservar un libro
-            $usuario_dni = $_POST['usuario_dni'];
-            $libro_isbn = $_POST['libro_isbn'];
-
-            $query = "INSERT INTO reservas (usuario_dni, libro_isbn) VALUES ('$usuario_dni', '$libro_isbn')";
-            if ($conn->query($query)) {
-                echo json_encode(['status' => 'success', 'message' => 'Reserva creada exitosamente.']);
+        } elseif ($request === 'reserveBook') {
+            $dni = $input['dni'];
+            $isbn = $input['isbn'];
+            $resultado = ControladorLibro::reservarLibro($dni, $isbn);
+            if ($resultado) {
+                echo json_encode(['status' => 'success', 'message' => 'Reserva realizada con éxito.']);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Error al crear la reserva.']);
-            }
-        } elseif ($request === 'aceptarReserva') {
-            // Solicitud para aceptar una reserva y crear el préstamo
-            $reserva_id = $_POST['reserva_id'];
-
-            $query_reserva = "SELECT * FROM reservas WHERE id = '$reserva_id'";
-            $reserva = $conn->query($query_reserva)->fetch_assoc();
-
-            if ($reserva) {
-                $usuario_dni = $reserva['usuario_dni'];
-                $libro_isbn = $reserva['libro_isbn'];
-
-                // Crear el préstamo
-                $query_prestamo = "INSERT INTO libros_prestados (usuario_dni, libro_isbn) VALUES ('$usuario_dni', '$libro_isbn')";
-                $conn->query($query_prestamo);
-
-                // Actualizar el stock del libro
-                $query_update_stock = "UPDATE libro SET stock = stock - 1 WHERE isbn = '$libro_isbn'";
-                $conn->query($query_update_stock);
-
-                // Eliminar la reserva
-                $query_delete_reserva = "DELETE FROM reservas WHERE id = '$reserva_id'";
-                $conn->query($query_delete_reserva);
-
-                echo json_encode(['status' => 'success', 'message' => 'Reserva aceptada y préstamo creado.']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Reserva no encontrada.']);
+                echo json_encode(['status' => 'error', 'message' => 'No se pudo realizar la reserva.']);
             }
         }
         break;

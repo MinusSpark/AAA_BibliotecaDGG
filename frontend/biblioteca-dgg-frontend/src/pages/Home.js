@@ -63,35 +63,26 @@ const Home = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleReserve = async (isbn) => {
+  const handleReservation = async (isbn) => {
     if (!user) {
-      console.error("Error: usuario no definido.");
-      navigate('/login');
-      return;
-    }
-
-    console.log('Usuario:', JSON.stringify(user, null, 2));
-
-    if (user.role === 'user') {
+      navigate('/login'); // Redirigir al login si no hay usuario autenticado
+    } else {
       try {
-        const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=reservarLibro', {
-          usuario_dni: user.dni,
-          libro_isbn: isbn,
-        });
+        const response = await axios.post(
+          'http://localhost/AAA_BibliotecaDGG/backend/api.php?request=reserveBook',
+          { dni: user.dni, isbn }
+        );
         if (response.data.status === 'success') {
-          alert('Libro reservado exitosamente.');
+          alert('Reserva realizada con éxito.');
         } else {
-          alert('Error al reservar el libro.');
+          alert('Error al realizar la reserva: ' + response.data.message);
         }
       } catch (error) {
-        console.error('Error al reservar libro:', error);
-        alert('Hubo un error al intentar reservar el libro.');
+        console.error('Error realizando la reserva:', error);
+        alert('Error al realizar la reserva.');
       }
-    } else {
-      alert('Solo los usuarios pueden reservar libros.');
     }
   };
-
 
   return (
     <div className="d-flex flex-column min-vh-100">
@@ -190,7 +181,7 @@ const Home = () => {
                       <div className="mt-auto">
                         <button
                           className="btn btn-primary me-2"
-                          onClick={() => handleReserve(book.isbn)}>
+                          onClick={() => handleReservation(book.isbn)}>
                           Reservar
                         </button>
                       </div>

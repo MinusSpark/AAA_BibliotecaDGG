@@ -166,4 +166,53 @@ class ControladorLibro
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public static function reservarLibro($dni, $isbn)
+    {
+        try {
+            $conexion = Conexion::conectar();
+
+            // Comprobar stock disponible
+            $sqlCheckStock = "SELECT stock FROM Libro WHERE isbn = :isbn";
+            $stmtCheckStock = $conexion->prepare($sqlCheckStock);
+            $stmtCheckStock->bindParam(':isbn', $isbn);
+            $stmtCheckStock->execute();
+            $book = $stmtCheckStock->fetch(PDO::FETCH_ASSOC);
+
+            if ($book['stock'] <= 0) {
+                return false; // No hay stock disponible
+            }
+
+            // Registrar la reserva
+            $sqlInsertReserva = "INSERT INTO reservas (usuario_dni, libro_isbn) VALUES (:dni, :isbn)";
+            $stmtInsertReserva = $conexion->prepare($sqlInsertReserva);
+            $stmtInsertReserva->bindParam(':dni', $dni);
+            $stmtInsertReserva->bindParam(':isbn', $isbn);
+            $stmtInsertReserva->execute();
+
+            // Reducir el stock
+            $sqlUpdateStock = "UPDATE Libro SET stock = stock - 1 WHERE isbn = :isbn";
+            $stmtUpdateStock = $conexion->prepare($sqlUpdateStock);
+            $stmtUpdateStock->bindParam(':isbn', $isbn);
+            $stmtUpdateStock->execute();
+
+            return true;
+        } catch (Exception $e) {
+            error_log("Error en reservarLibro: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public static function obtenerReservasPendientes($dni)
+    {
+        $conexion = Conexion::conectar();
+        $sql = "SELECT reservas.id, Libro.titulo, reservas.fecha_reserva 
+            FROM reservas 
+            JOIN Libro ON reservas.libro_isbn = Libro.isbn 
+            WHERE reservas.usuario_dni = :dni";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bindParam(':dni', $dni);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

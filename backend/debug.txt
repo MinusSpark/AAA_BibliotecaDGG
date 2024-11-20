@@ -1,5 +1,5 @@
 Array
 (
-    [email] => pepe@gmail.com
-    [password] => 1
+    [email] => javier@gmail.com
+    [password] => adminpass1
 )
