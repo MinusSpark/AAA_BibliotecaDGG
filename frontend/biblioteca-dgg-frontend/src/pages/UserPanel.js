@@ -35,7 +35,7 @@ const UserPanel = () => {
         };
         const fetchPendingReservations = async () => {
             try {
-                const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=pendingReservations&dni=${user.dni}`);
+                const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=pendingReservationsUsuario&dni=${user.dni}`);
                 if (response.data.status === 'success') {
                     setPendingReservations(response.data.data || []);
                 }

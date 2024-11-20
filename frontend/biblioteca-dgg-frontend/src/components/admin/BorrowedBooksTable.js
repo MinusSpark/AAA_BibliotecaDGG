@@ -21,7 +21,7 @@ const BorrowedBooksTable = ({ borrowedBooks }) => {
                     </thead>
                     <tbody>
                         {borrowedBooks.map(borrowed => (
-                            <tr key={borrowed.id}>
+                            <tr key={`${borrowed.id}-${borrowed.isbn}`}>
                                 <td className="text-center">{borrowed.id}</td>
                                 <td className="text-center">{borrowed.isbn}</td>
                                 <td>{borrowed.libro_titulo}</td>

@@ -10,17 +10,20 @@ import BookTable from '../components/admin/BookTable';
 import BorrowedBooksTable from '../components/admin/BorrowedBooksTable';
 import AuthorTable from '../components/admin/AuthorTable';
 import PublisherTable from '../components/admin/PublisherTable';
+import ReservationsTable from '../components/admin/ReservationsTable';
 
 const AdminPanel = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const [administradores, setAdministradores] = useState([]);
+    //const [administradores, setAdministradores] = useState([]);
     const [users, setUsers] = useState([]);
     const [books, setBooks] = useState([]);
+    const [reservations, setReservations] = useState([]);
     const [borrowedBooks, setBorrowedBooks] = useState([]);
     const [authors, setAuthors] = useState([]);
     const [publishers, setPublishers] = useState([]);
+
 
     // Comprobar que el usuario sea admin
     useEffect(() => {
@@ -44,6 +47,7 @@ const AdminPanel = () => {
 
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=users', setUsers);
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=books', setBooks);
+        fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=pendingReservations', setReservations);
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=borrowedBooks', setBorrowedBooks);
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=authors', setAuthors);
         fetchData('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=publishers', setPublishers);
@@ -56,7 +60,7 @@ const AdminPanel = () => {
                 <h1 className="text-center mb-4">Panel de Administrador</h1>
                 <p className="text-center mb-5">Gestiona usuarios, inventario de libros y más desde aquí.</p>
 
-                {/* Otros componentes */}
+                <ReservationsTable reservations={reservations} setReservations={setReservations} setBorrowedBooks={setBorrowedBooks} />
                 <UserTable users={users} setUsers={setUsers} />
                 <BookTable books={books} setBooks={setBooks} authors={authors} publishers={publishers} />
                 <BorrowedBooksTable borrowedBooks={borrowedBooks} />

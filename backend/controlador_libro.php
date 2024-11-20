@@ -203,7 +203,7 @@ class ControladorLibro
         }
     }
 
-    public static function obtenerReservasPendientes($dni)
+    public static function obtenerReservasPendientesUsuario($dni)
     {
         $conexion = Conexion::conectar();
         $sql = "SELECT reservas.id, Libro.titulo, reservas.fecha_reserva 
@@ -214,5 +214,67 @@ class ControladorLibro
         $stmt->bindParam(':dni', $dni);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function obtenerReservasPendientes()
+    {
+        $conexion = Conexion::conectar();
+        // Consulta sin necesidad de filtro por dni
+        $sql = "SELECT reservas.id, Libro.titulo, reservas.usuario_dni, reservas.libro_isbn, reservas.fecha_reserva 
+            FROM reservas 
+            JOIN Libro ON reservas.libro_isbn = Libro.isbn";
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function convertirReservaEnPrestamo($reservationId)
+    {
+        $conexion = Conexion::conectar();
+
+        // 1. Obtener los detalles de la reserva
+        $query = "SELECT * FROM reservas WHERE id = ?";
+        $stmt = $conexion->prepare($query);
+        $stmt->execute([$reservationId]);
+        $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($reservation) {
+            $usuarioDni = $reservation['usuario_dni'];
+            $libroIsbn = $reservation['libro_isbn'];
+
+            try {
+                // 2. Insertar en la tabla libros_prestados
+                $insertQuery = "INSERT INTO libros_prestados (usuario_dni, libro_isbn) VALUES (?, ?)";
+                $insertStmt = $conexion->prepare($insertQuery);
+                $insertStmt->execute([$usuarioDni, $libroIsbn]);
+
+                // 3. Eliminar la reserva de la tabla reservas
+                $deleteQuery = "DELETE FROM reservas WHERE id = ?";
+                $deleteStmt = $conexion->prepare($deleteQuery);
+                $deleteStmt->execute([$reservationId]);
+
+                // 4. Devolver el libro prestado con sus detalles
+                $borrowedBookId = $conexion->lastInsertId();
+                $borrowedBookQuery = "SELECT * FROM libros_prestados WHERE id = ?";
+                $borrowedBookStmt = $conexion->prepare($borrowedBookQuery);
+                $borrowedBookStmt->execute([$borrowedBookId]);
+                $borrowedBook = $borrowedBookStmt->fetch(PDO::FETCH_ASSOC);
+
+                return [
+                    'status' => 'success',
+                    'borrowedBook' => $borrowedBook
+                ];
+            } catch (PDOException $e) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Error al procesar la reserva: ' . $e->getMessage()
+                ];
+            }
+        } else {
+            return [
+                'status' => 'error',
+                'message' => 'Reserva no encontrada.'
+            ];
+        }
     }
 }

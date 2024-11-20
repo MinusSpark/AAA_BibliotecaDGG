@@ -101,16 +101,27 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron administradores']);
             }
+        } elseif ($request === 'pendingReservationsUsuario') {
+            $dni = isset($_GET['dni']) ? $_GET['dni'] : null;
+
+            if ($dni) {
+                $reservas = ControladorLibro::obtenerReservasPendientesUsuario($dni);
+                if ($reservas) {
+                    echo json_encode(['status' => 'success', 'data' => $reservas]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No hay reservas pendientes.']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'El DNI no ha sido proporcionado.']);
+            }
         } elseif ($request === 'pendingReservations') {
-            $dni = $_GET['dni'];
-            $reservas = ControladorLibro::obtenerReservasPendientes($dni);
+            $reservas = ControladorLibro::obtenerReservasPendientes(); // Cambia aquí
             if ($reservas) {
                 echo json_encode(['status' => 'success', 'data' => $reservas]);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'No tienes reservas pendientes.']);
+                echo json_encode(['status' => 'error', 'message' => 'No hay reservas pendientes.']);
             }
         }
-
         break;
 
     case 'POST':
@@ -154,9 +165,16 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se pudo realizar la reserva.']);
             }
+        } elseif ($request === 'convertReservation') {
+            $reservationId = $input['reservationId'];
+
+            $controladorLibro = new ControladorLibro();
+
+            $result = $controladorLibro->convertirReservaEnPrestamo($reservationId);
+
+            echo json_encode($result);
         }
         break;
-
     case 'DELETE':
         if ($request === 'deleteUser') {
             $dni = $_GET['dni'];
@@ -183,13 +201,6 @@ switch ($method) {
             $resultado = ControladorEditorial::eliminarEditorial($id);
             echo json_encode($resultado);
         } elseif ($request === 'deleteReserva') {
-            $reserva_id = $_GET['id'];
-            $query_delete_reserva = "DELETE FROM reservas WHERE id = '$reserva_id'";
-            if ($conn->query($query_delete_reserva)) {
-                echo json_encode(['status' => 'success', 'message' => 'Reserva eliminada exitosamente.']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Error al eliminar la reserva.']);
-            }
         }
         break;
 
