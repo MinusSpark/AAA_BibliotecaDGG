@@ -10,6 +10,7 @@ import Search from './pages/Search';
 import AdminLogin from './pages/AdminLogin';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
+import Donacion from './pages/Donation';
 
 const App = () => {
     return (
@@ -25,9 +26,11 @@ const App = () => {
                 <Route path="/search" element={<Search />} />
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
+                <Route path="/donacion" element={<Donacion />} />
+
             </Routes>
         </Router>
     );
 };
 
-export default App;
+export default App; 

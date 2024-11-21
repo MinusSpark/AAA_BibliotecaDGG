@@ -82,6 +82,15 @@ CREATE TABLE reservas (
     FOREIGN KEY (libro_isbn) REFERENCES libro(isbn)
 );
 
+-- Tabla Donaciones
+CREATE TABLE donaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255),
+    monto DECIMAL(10, 2),
+    mensaje VARCHAR(255),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Insertar usuarios
 INSERT INTO Usuario (dni, nombre, apellido, telefono, correo, contraseña) VALUES
 ('12345678A', 'Carlos', 'Martinez', 987654321, 'carlos@example.com', 'password1'),

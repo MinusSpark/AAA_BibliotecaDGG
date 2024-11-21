@@ -25,13 +25,16 @@ function Header() {
                     <div className="collapse navbar-collapse" id="navbarNav">
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item">
-                                <Link className="nav-link text-white" to="/">Home</Link> {/* Texto blanco */}
+                                <Link className="nav-link text-white" to="/">Home</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link text-white" to="/search">Buscar</Link> {/* Texto blanco */}
+                                <Link className="nav-link text-white" to="/search">Buscar</Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link text-white" to="/contact">Contacto</Link> {/* Texto blanco */}
+                                <Link className="nav-link text-white" to="/contact">Contacto</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link className="nav-link text-white" to="/donacion">Donaciones</Link>
                             </li>
                             {user ? (
                                 <>
