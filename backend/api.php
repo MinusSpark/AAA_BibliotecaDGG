@@ -1,8 +1,12 @@
 <?php
 
-require_once 'controlador_usuario.php';
-require_once 'controlador_libro.php';
 require_once 'controlador_admin.php';
+require_once 'controlador_autor.php';
+require_once 'controlador_editorial.php';
+require_once 'controlador_libro.php';
+require_once 'controlador_libros_prestados.php';
+require_once 'controlador_reservas.php';
+require_once 'controlador_usuario.php';
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -27,7 +31,7 @@ switch ($method) {
         
         /* IMRPRIMIR TABLAS EN EL ADMIN PANEL (reservas, usuarios, autores, publishers, administrators) */
         elseif ($request === 'pendingReservations') {
-            $reservas = ControladorLibro::obtenerReservasPendientes(); // Cambia aquí
+            $reservas = ControladorReservas::obtenerReservasPendientes(); // Cambia aquí
             if ($reservas) {
                 echo json_encode(['status' => 'success', 'data' => $reservas]);
             } else {
@@ -51,14 +55,14 @@ switch ($method) {
                 }
             }
         } elseif ($request === 'authors') {
-            $autores = ControladorLibro::obtenerAutores();
+            $autores = ControladorAutor::obtenerAutores();
             if ($autores) {
                 echo json_encode(['status' => 'success', 'data' => $autores]);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron autores']);
             }
         } elseif ($request === 'publishers') {
-            $editoriales = ControladorLibro::obtenerEditoriales();
+            $editoriales = ControladorEditorial::obtenerEditoriales();
             if ($editoriales) {
                 echo json_encode(['status' => 'success', 'data' => $editoriales]);
             } else {
@@ -70,7 +74,7 @@ switch ($method) {
         elseif ($request === 'currentLoans') {
             if (isset($_GET['dni'])) {
                 $dni = $_GET['dni'];
-                $loans = ControladorLibro::obtenerLibrosPrestadosPorUsuario($dni);
+                $loans = ControladorLibrosPrestados::obtenerLibrosPrestadosPorUsuario($dni);
                 if ($loans) {
                     echo json_encode(['status' => 'success', 'data' => $loans]);
                 } else {
@@ -82,7 +86,7 @@ switch ($method) {
         } elseif ($request === 'loanHistory') {
             if (isset($_GET['dni'])) {
                 $dni = $_GET['dni'];
-                $history = ControladorLibro::obtenerHistorialDePrestamos($dni);
+                $history = ControladorLibrosPrestados::obtenerHistorialDePrestamos($dni);
                 if ($history) {
                     echo json_encode(['status' => 'success', 'data' => $history]);
                 } else {
@@ -95,7 +99,7 @@ switch ($method) {
             $dni = isset($_GET['dni']) ? $_GET['dni'] : null;
 
             if ($dni) {
-                $reservas = ControladorLibro::obtenerReservasPendientesUsuario($dni);
+                $reservas = ControladorReservas::obtenerReservasPendientesUsuario($dni);
                 if ($reservas) {
                     echo json_encode(['status' => 'success', 'data' => $reservas]);
                 } else {
@@ -134,7 +138,7 @@ switch ($method) {
         elseif ($request === 'reserveBook') {
             $dni = $input['dni'];
             $isbn = $input['isbn'];
-            $resultado = ControladorLibro::reservarLibro($dni, $isbn);
+            $resultado = ControladorReservas::reservarLibro($dni, $isbn);
             if ($resultado) {
                 echo json_encode(['status' => 'success', 'message' => 'Reserva realizada con éxito.']);
             } else {
@@ -147,7 +151,7 @@ switch ($method) {
         elseif ($request === 'convertReservation') {
             $reservationId = $input['reservationId'];
 
-            $controladorLibro = new ControladorLibro();
+            $controladorLibro = new ControladorReservas();
 
             $result = $controladorLibro->convertirReservaEnPrestamo($reservationId);
 
