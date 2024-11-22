@@ -26,12 +26,17 @@ const UserTable = ({ users, setUsers }) => {
                 const response = await axios.delete(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteUser&dni=${dni}`);
                 if (response.data.status === 'success') {
                     setUsers(users.filter(user => user.dni !== dni));
+                    alert('Usuario eliminado exitosamente');
+                } else {
+                    alert('Error: ' + response.data.message);
                 }
             } catch (error) {
                 console.error('Error deleting user:', error);
+                alert('Hubo un error al eliminar el usuario.');
             }
         }
     };
+
 
     const handleEditUser = async () => {
         try {

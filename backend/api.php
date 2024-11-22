@@ -120,7 +120,7 @@ switch ($method) {
     case 'POST':
         $input = json_decode(file_get_contents("php://input"), true);
 
-        /* REGISTRO Y LOGIN PARA INTERFAZ DE USUARIO */
+        /* REGISTRO Y LOGIN PARA INTERFAZ DE USUARIO Y TAMBIÉN DESDE ADMINPANEL */
         if ($request === 'registerUser') {
             $resultado = ControladorUsuario::registro(
                 $input['dni'],
@@ -138,6 +138,11 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Correo o contraseña incorrectos']);
             }
+        }
+
+        /* REGISTRAR LIBROS DESDE EL ADMIN PANEL */ elseif ($request === 'registerBook') {
+            $resultado = ControladorLibro::registrarLibro($input);
+            echo json_encode($resultado);
         }
 
         /* RESERVA LIBROS DESDE INTERFAZ USUARIO */ elseif ($request === 'reserveBook') {
@@ -176,8 +181,16 @@ switch ($method) {
 
     case 'DELETE':
 
-        /* ELIMINAR LIBRO DESDE INTERFAZ ADMINISTRADOR */
-        if ($request === 'deleteBook') {
+        /* ELIMINAR USUARIO DESDE INTERFAZ ADMINISTRADOR */
+        if ($request === 'deleteUser') {
+            $dni = $_GET['dni'];
+            if (isset($dni) && !empty($dni)) {
+                $resultado = ControladorUsuario::eliminarUsuario($dni);
+                echo json_encode($resultado);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
+            }
+        } /* ELIMINAR LIBRO DESDE INTERFAZ ADMINISTRADOR */ elseif ($request === 'deleteBook') {
             $isbn = $_GET['isbn'];
             if (isset($isbn) && !empty($isbn)) {
                 $resultado = ControladorLibro::eliminarLibro($isbn);
@@ -185,7 +198,6 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'ISBN no proporcionado']);
             }
-        } elseif ($request === 'deleteReserva') {
         }
         break;
 
@@ -197,6 +209,13 @@ switch ($method) {
             $resultado = ControladorUsuario::actualizarUsuario($input);
             echo json_encode($resultado);
         }
+
+        /* ACTUALIZAR LIBROS DESDE EL ADMIN PANEL */ elseif ($request === 'updateBook') {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $resultado = ControladorLibro::actualizarLibro($input);
+            echo json_encode($resultado);
+        }
+
         break;
 
     case 'OPTIONS':

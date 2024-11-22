@@ -97,4 +97,21 @@ class ControladorUsuario
         }
     }
 
+    /* MÉTODO PARA ELIMINAR USUARIOS DESDE ADMIN PANEL */
+    public static function eliminarUsuario($dni)
+    {
+        $conexion = Conexion::conectar();
+        try {
+            $sql = "DELETE FROM Usuario WHERE dni = :dni";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(":dni", $dni);
+            if ($stmt->execute()) {
+                return ['status' => 'success', 'message' => 'Usuario eliminado exitosamente'];
+            } else {
+                return ['status' => 'error', 'message' => 'Error al eliminar el usuario'];
+            }
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
 }

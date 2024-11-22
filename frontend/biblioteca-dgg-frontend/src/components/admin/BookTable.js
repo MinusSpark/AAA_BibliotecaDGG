@@ -1,52 +1,83 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const BookTable = ({ books, setBooks, authors, publishers }) => {
-    const [newBook, setNewBook] = useState({ isbn: '', titulo: '', año: '', autor: '', editorial: '', genero: '', stock: '', portada: '' });
-    const [editBook, setEditBook] = useState(null);
+const BookTable = ({ books, setBooks }) => {
+    const [newBook, setNewBook] = useState({
+        isbn: '',
+        titulo: '',
+        año: '',
+        autor_dni: '',
+        editorial_id: '',
+        genero: '',
+        stock: '',
+        portada: ''
+    });
+    const [editingBook, setEditingBook] = useState(null);
     const [showAddForm, setShowAddForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
 
     const handleAddBook = async () => {
+        if (!newBook.isbn || !newBook.titulo || !newBook.año || !newBook.autor_dni || !newBook.editorial_id || !newBook.stock) {
+            alert('Por favor, completa todos los campos obligatorios.');
+            return;
+        }
+
         try {
             const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=registerBook', newBook);
             if (response.data.status === 'success') {
                 setBooks([...books, newBook]);
                 setShowAddForm(false);
-                setNewBook({ isbn: '', titulo: '', año: '', autor: '', editorial: '', genero: '', stock: '', portada: '' });
+                setNewBook({ isbn: '', titulo: '', año: '', autor_dni: '', editorial_id: '', genero: '', stock: '', portada: '' });
+                alert('Libro añadido exitosamente.');
+            } else {
+                alert('Error: ' + response.data.message);
             }
         } catch (error) {
-            console.error('Error adding book:', error);
+            console.error('Error adding book: ', error);
+            alert('Hubo un error al añadir el libro.');
         }
     };
 
+
     const handleDeleteBook = async (isbn) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este libro?')) {
+        if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
             try {
                 const response = await axios.delete(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteBook&isbn=${isbn}`);
                 if (response.data.status === 'success') {
                     setBooks(books.filter(book => book.isbn !== isbn));
+                    alert('Libro eliminado exitosamente');
+                } else {
+                    alert('Error:' + response.data.message);
                 }
             } catch (error) {
-                console.error('Error deleting book:', error);
+                console.error('Error al eliminar el libro:', error);
+                alert('Hubo un error al eliminar el libro.');
             }
         }
     };
 
     const handleEditBook = async () => {
+        if (!editingBook.isbn || !editingBook.titulo || !editingBook.año || !editingBook.autor_dni || !editingBook.editorial_id || !editingBook.stock) {
+            alert('Por favor, completa todos los campos obligatorios.');
+            return;
+        }
+
         try {
-            const response = await axios.put('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=updateBook', editBook);
+            const response = await axios.put('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=updateBook', editingBook);
             if (response.data.status === 'success') {
-                setBooks(books.map(book => (book.isbn === editBook.isbn ? editBook : book)));
+                setBooks(books.map(book => (book.isbn === editingBook.isbn ? editingBook : book)));
                 setShowEditForm(false);
-                setEditBook(null);
+                setEditingBook(null);
+                alert('Libro actualizado exitosamente.');
             } else {
-                console.error('Error updating book:', response.data.message);
+                alert('Error: ' + response.data.message);
             }
         } catch (error) {
             console.error('Error updating book:', error);
+            alert('Hubo un error al actualizar el libro.');
         }
     };
+
 
     return (
         <div className="card mb-3 shadow-sm">
@@ -78,76 +109,153 @@ const BookTable = ({ books, setBooks, authors, publishers }) => {
                                 <td>{book.genero}</td>
                                 <td className="text-center">{book.stock}</td>
                                 <td className="text-center">
-                                    <button onClick={() => { setEditBook(book); setShowEditForm(true); }} className="btn btn-warning btn-sm me-1">Editar</button>
-                                    <button onClick={() => handleDeleteBook(book.isbn)} className="btn btn-danger btn-sm">Eliminar</button>
+                                    <button
+                                        onClick={() => {
+                                            setEditingBook({ ...book });  // Asegúrate de copiar todos los valores del libro
+                                            setShowEditForm(true);
+                                        }}
+                                        className="btn btn-warning btn-sm me-1"
+                                    >
+                                        Editar
+                                    </button>
+
+                                    <button
+                                        onClick={() => handleDeleteBook(book.isbn)}
+                                        className="btn btn-danger btn-sm"
+                                    >
+                                        Eliminar
+                                    </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                <button onClick={() => setShowAddForm(true)} className="btn btn-success btn-sm mt-2">Añadir Libro</button>
-                {/* Formulario para Añadir Libro */}
-                {showAddForm && (
-                    <div className="card mb-3 shadow-sm mt-2">
-                        <div className="card-header bg-primary text-white p-2">
-                            <h2 className="h6 mb-0">Añadir Libro</h2>
-                        </div>
-                        <div className="card-body p-2">
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="ISBN" value={newBook.isbn} onChange={(e) => setNewBook({ ...newBook, isbn: e.target.value })} />
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="Título" value={newBook.titulo} onChange={(e) => setNewBook({ ...newBook, titulo: e.target.value })} />
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="Año" value={newBook.año} onChange={(e) => setNewBook({ ...newBook, año: e.target.value })} />
-                            <select className="form-select form-select-sm mb-2" value={newBook.autor} onChange={(e) => setNewBook({ ...newBook, autor: e.target.value })}>
-                                <option value="">Seleccionar Autor</option>
-                                {authors.map(author => (
-                                    <option key={author.dni} value={author.dni}>{author.nombre} {author.apellido}</option>
-                                ))}
-                            </select>
-                            <select className="form-select form-select-sm mb-2" value={newBook.editorial} onChange={(e) => setNewBook({ ...newBook, editorial: e.target.value })}>
-                                <option value="">Seleccionar Editorial</option>
-                                {publishers.map(publisher => (
-                                    <option key={publisher.id} value={publisher.id}>{publisher.nombre}</option>
-                                ))}
-                            </select>
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="Género" value={newBook.genero} onChange={(e) => setNewBook({ ...newBook, genero: e.target.value })} />
-                            <input className="form-control form-control-sm mb-2" type="number" placeholder="Stock" value={newBook.stock} onChange={(e) => setNewBook({ ...newBook, stock: e.target.value })} />
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="Portada (URL)" value={newBook.portada} onChange={(e) => setNewBook({ ...newBook, portada: e.target.value })} />
-                            <button onClick={handleAddBook} className="btn btn-primary btn-sm me-1">Guardar</button>
-                            <button onClick={() => setShowAddForm(false)} className="btn btn-secondary btn-sm">Cancelar</button>
-                        </div>
-                    </div>
-                )}
-
-                {/* Formulario para Editar Libro */}
-                {showEditForm && editBook && (
-                    <div className="card mb-3 shadow-sm mt-2">
-                        <div className="card-header bg-warning text-white p-2">
-                            <h2 className="h6 mb-0">Editar Libro</h2>
-                        </div>
-                        <div className="card-body p-2">
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="ISBN" value={editBook.isbn} readOnly />
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="Título" value={editBook.titulo} onChange={(e) => setEditBook({ ...editBook, titulo: e.target.value })} />
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="Año" value={editBook.año} onChange={(e) => setEditBook({ ...editBook, año: e.target.value })} />
-                            <select className="form-select form-select-sm mb-2" value={editBook.autor} onChange={(e) => setEditBook({ ...editBook, autor: e.target.value })}>
-                                <option value="">Seleccionar Autor</option>
-                                {authors.map(author => (
-                                    <option key={author.dni} value={author.dni}>{author.nombre} {author.apellido}</option>
-                                ))}
-                            </select>
-                            <select className="form-select form-select-sm mb-2" value={editBook.editorial} onChange={(e) => setEditBook({ ...editBook, editorial: e.target.value })}>
-                                <option value="">Seleccionar Editorial</option>
-                                {publishers.map(publisher => (
-                                    <option key={publisher.id} value={publisher.id}>{publisher.nombre}</option>
-                                ))}
-                            </select>
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="Género" value={editBook.genero} onChange={(e) => setEditBook({ ...editBook, genero: e.target.value })} />
-                            <input className="form-control form-control-sm mb-2" type="number" placeholder="Stock" value={editBook.stock} onChange={(e) => setEditBook({ ...editBook, stock: e.target.value })} />
-                            <input className="form-control form-control-sm mb-2" type="text" placeholder="Portada (URL)" value={editBook.portada} onChange={(e) => setEditBook({ ...editBook, portada: e.target.value })} />
-                            <button onClick={handleEditBook} className="btn btn-primary btn-sm me-1">Guardar Cambios</button>
-                            <button onClick={() => setShowEditForm(false)} className="btn btn-secondary btn-sm">Cancelar</button>
-                        </div>
-                    </div>
-                )}
+                <button
+                    onClick={() => setShowAddForm(true)}
+                    className='btn btn-success btn-sm mt-2'
+                >
+                    Añadir Usuario
+                </button>
             </div>
+
+            {/* Formulario para Añadir Libros */}
+            {showAddForm && (
+                <div className="card mt-3 p-2">
+                    <div className="card-header bg-success text-white p-1">
+                        <h3 className="h6 mb-0">Añadir Libros</h3>
+                    </div>
+                    <div className="card-body p-2">
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="ISBN"
+                            value={newBook.isbn}
+                            onChange={(e) => setNewBook({ ...newBook, isbn: e.target.value })} />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="titulo"
+                            value={newBook.titulo}
+                            onChange={(e) => setNewBook({ ...newBook, titulo: e.target.value })} />
+                        <input
+                            type="date"  // Cambia de "text" a "date"
+                            className="form-control mb-2"
+                            value={newBook.año}
+                            onChange={(e) => setNewBook({ ...newBook, año: e.target.value })}
+                        />
+
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="autor_dni"
+                            value={newBook.autor_dni}
+                            onChange={(e) => setNewBook({ ...newBook, autor_dni: e.target.value })} />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="editorial_id"
+                            value={newBook.editorial_id}
+                            onChange={(e) => setNewBook({ ...newBook, editorial_id: e.target.value })} />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="genero"
+                            value={newBook.genero}
+                            onChange={(e) => setNewBook({ ...newBook, genero: e.target.value })} />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="stock"
+                            value={newBook.stock}
+                            onChange={(e) => setNewBook({ ...newBook, stock: e.target.value })} />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            placeholder="portada"
+                            value={newBook.portada}
+                            onChange={(e) => setNewBook({ ...newBook, portada: e.target.value })} />
+
+                        <button onClick={handleAddBook} className="btn btn-primary btn-sm me-2">Guardar</button>
+                        <button onClick={() => setShowAddForm(false)} className="btn btn-secondary btn-sm">Cancelar</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Formulario para Editar Libro */}
+            {showEditForm && editingBook && (
+                <div className="card mt-3 p-2">
+                    <div className="card-header bg-warning text-white p-1">
+                        <h3 className="h6 mb-0">Editar Libro</h3>
+                    </div>
+                    <div className="card-body p-2">
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            value={editingBook.isbn}
+                            readOnly />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            value={editingBook.titulo}
+                            onChange={(e) => setEditingBook({ ...editingBook, titulo: e.target.value })} />
+                        <input
+                            type="date"  // Cambia de "text" a "date"
+                            className="form-control mb-2"
+                            value={editingBook.año}
+                            onChange={(e) => setEditingBook({ ...editingBook, año: e.target.value })}
+                        />
+
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            value={editingBook.autor_dni}
+                            onChange={(e) => setEditingBook({ ...editingBook, autor_dni: e.target.value })} />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            value={editingBook.editorial_id}
+                            onChange={(e) => setEditingBook({ ...editingBook, editorial_id: e.target.value })} />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            value={editingBook.genero}
+                            onChange={(e) => setEditingBook({ ...editingBook, genero: e.target.value })} />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            value={editingBook.stock}
+                            onChange={(e) => setEditingBook({ ...editingBook, stock: e.target.value })} />
+                        <input
+                            type="text"
+                            className="form-control mb-2"
+                            value={editingBook.portada}
+                            onChange={(e) => setEditingBook({ ...editingBook, portada: e.target.value })} />
+
+                        <button onClick={handleEditBook} className="btn btn-primary btn-sm me-2">Guardar Cambios</button>
+                        <button onClick={() => setShowEditForm(false)} className="btn btn-secondary btn-sm">Cancelar</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

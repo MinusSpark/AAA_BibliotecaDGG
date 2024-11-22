@@ -1,6 +1,6 @@
 // AdminLogin.js
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../services/AuthContext';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -61,6 +61,9 @@ function AdminLogin() {
                             >
                                 Ingresar
                             </button>
+                            <div className="text-center mt-3">
+                                <Link to="/login">Iniciar sesión como Usuario cliente</Link>
+                            </div>
                         </div>
                     </div>
                 </div>

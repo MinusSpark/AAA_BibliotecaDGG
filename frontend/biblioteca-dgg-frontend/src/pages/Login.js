@@ -53,10 +53,10 @@ function Login() {
                                 Ingresar
                             </button>
                             <div className="text-center mt-3">
-                                <Link to="/admin-login">Iniciar sesión como administrador</Link> {/* Enlace a administrador */}
+                                <Link to="/admin-login">Iniciar sesión como administrador</Link>
                             </div>
                             <div className="text-center mt-3">
-                                <p>¿No tienes cuenta? <Link to="/register">Regístrate</Link></p> {/* Enlace a Registro */}
+                                <p>¿No tienes cuenta? <Link to="/register">Regístrate</Link></p>
                             </div>
                         </div>
                     </div>
