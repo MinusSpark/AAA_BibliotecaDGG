@@ -1,22 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
 import manos from '../images/manosAyudar.png';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-import { Modal, Button } from 'react-bootstrap'; // Importar componentes de Bootstrap
 
 const Donacion = () => {
-    const [showReceipt, setShowReceipt] = useState(false);
-    const [receiptData, setReceiptData] = useState(null);
-
     const handleApprove = (data, actions) => {
         return actions.order.capture().then((details) => {
             const { payer } = details;
             const nombre = `${payer.name.given_name} ${payer.name.surname}`;
             const correo = payer.email_address;
             const monto = details.purchase_units[0].amount.value;
-            const mensaje = "Gracias por tu donación!";
+            const mensaje = "Gracias por tu donación!"; // Mensaje fijo o variable si prefieres
             const comprobante = details.id;
 
             // Enviar los datos al backend
@@ -28,8 +24,7 @@ const Donacion = () => {
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.status === "success") {
-                        setReceiptData({ nombre, correo, monto, comprobante });
-                        setShowReceipt(true);
+                        alert("¡Gracias por tu donación! Comprobante: " + comprobante);
                     } else {
                         alert("Error al registrar la donación.");
                     }
@@ -37,6 +32,8 @@ const Donacion = () => {
                 .catch((error) => console.error("Error:", error));
         });
     };
+
+
 
     return (
         <div className="d-flex flex-column min-vh-100">
@@ -78,20 +75,24 @@ const Donacion = () => {
                 </p>
             </div>
 
-            <div className="container text-center my-5">
-                <div className="row d-flex align-items-center">
-                    <div className="col-md-6 escrito">
-                        <h4 className="mb-4">¡Ayúdanos a llevar libros donde más se necesitan!</h4>
+            <div class="container text-center my-5">
+                <div class="row d-flex align-items-center">
+                    <div class="col-md-6 escrito" >
+                        <h4 class="mb-4">¡Ayúdanos a llevar libros donde más se necesitan!</h4>
                         <p>La DANA ha dejado su huella en Valencia, afectando gravemente a numerosos colegios que ahora carecen de los recursos necesarios para seguir ofreciendo educación de calidad a sus estudiantes.
                             Queremos cambiar eso, y tú puedes ser parte de esta misión.</p>
+
                         <p>Con tu donación de tan solo 10 euros, contribuiremos a la compra de libros para que estos colegios puedan reconstruir sus bibliotecas y brindar a los niños la oportunidad de seguir aprendiendo y soñando</p>
                         <p>Cada aportación cuenta. Juntos podemos marcar la diferencia en la vida de cientos de estudiantes que dependen de nuestra ayuda para mirar hacia un futuro mejor.</p>
                         <p>"Un libro es un puente hacia la esperanza."</p>
+
                     </div>
-                    <div className="col-md-6 zonaDePago d-flex flex-column">
-                        <div className="imagen">
-                            <img src={manos} className="w-50 mb-5" alt="manosAyudar" />
+                    <div class="col-md-6 zonaDePago d-flex flex-column">
+
+                        <div class="imagen">
+                            <img src={manos} class="w-50 mb-5" alt="manosAyudar" />
                         </div>
+
 
                         <PayPalScriptProvider options={{ "client-id": "AbA4bNp5WeicyKUXcZJh0iGAQER4TMUIA3pNNjLHLU7UXRckNyjuVsyNS2RPixexbP9lPLM73EXqk2hs" }}>
                             <PayPalButtons
@@ -110,30 +111,12 @@ const Donacion = () => {
                                     console.error("Error en PayPal:", err);
                                     alert("Hubo un error al procesar tu donación.");
                                 }}
-                                fundingSource="paypal"
+                                fundingSource="paypal"  // Asegura que solo PayPal esté habilitado
                             />
                         </PayPalScriptProvider>
                     </div>
                 </div>
             </div>
-
-            {/* Modal de recibo de donación */}
-            <Modal show={showReceipt} onHide={() => setShowReceipt(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Recibo de Donación</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>Nombre: {receiptData?.nombre}</p>
-                    <p>Correo: {receiptData?.correo}</p>
-                    <p>Monto: {receiptData?.monto}€</p>
-                    <p>Comprobante: {receiptData?.comprobante}</p>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowReceipt(false)}>
-                        Cerrar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
 
             <Footer />
         </div>
