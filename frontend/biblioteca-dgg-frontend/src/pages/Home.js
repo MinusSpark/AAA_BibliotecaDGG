@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Carousel } from 'react-bootstrap';
 import Header from '../components/Header';
@@ -10,31 +10,30 @@ import prestamoLibros from '../images/prestamoLibros.jpg';
 import salaEstudio from '../images/salaEstudio.jpg';
 import personaLeyendo from '../images/personaLeyendo.jpg';
 import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
-import { Book } from 'react-bootstrap-icons'; // Importamos el icono del libro
+import { Book } from 'react-bootstrap-icons';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import CookieConsent from '../components/CookieConsent';
-// Importar la librería del calendario
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
 import { AuthContext } from '../services/AuthContext';
 
 const Home = () => {
   const [books, setBooks] = useState([]);
-  const [counter, setCounter] = useState(0); // Estado para el contador
-  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false); // Estado para mostrar el mensaje de bienvenida
-  const { user } = useContext(AuthContext); // Obtener usuario desde el contexto
-  const navigate = useNavigate(); // Estado para redirigir
+  const [events, setEvents] = useState([]);
+  const [newEvent, setNewEvent] = useState({ fecha: '', descripcion: '' });
+  const [counter, setCounter] = useState(0);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
+  const { user, getEvents, addEvent, deleteEvent } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Comprobar si ya existe una cookie para mostrar el mensaje de bienvenida
     const welcomeCookie = localStorage.getItem("welcomeMessageShown");
     if (!welcomeCookie) {
-      setShowWelcomeMessage(true); // Si no existe la cookie, mostramos el mensaje
-      localStorage.setItem("welcomeMessageShown", "true"); // Establecer la cookie para que no se muestre de nuevo
+      setShowWelcomeMessage(true);
+      localStorage.setItem("welcomeMessageShown", "true");
     }
 
     const fetchBooks = async () => {
@@ -47,25 +46,29 @@ const Home = () => {
     };
     fetchBooks();
 
-    // Contador que va incrementando de 0 a 10 con un intervalo más lento
+    const fetchEvents = async () => {
+      const eventsData = await getEvents();
+      setEvents(eventsData || []);
+    };
+    fetchEvents();
+
     const interval = setInterval(() => {
       setCounter((prevCounter) => {
         if (prevCounter < 4) {
           return prevCounter + 1;
         } else {
-          clearInterval(interval); // Detener el intervalo cuando llegue a 10
+          clearInterval(interval);
           return prevCounter;
         }
       });
-    }, 500); // 500ms para incrementar el contador
+    }, 500);
 
-    // Limpiar el intervalo al desmontar el componente
     return () => clearInterval(interval);
-  }, []);
+  }, [getEvents]);
 
   const handleReservation = async (isbn) => {
     if (!user) {
-      navigate('/login'); // Redirigir al login si no hay usuario autenticado
+      navigate('/login');
     } else {
       try {
         const response = await axios.post(
@@ -84,24 +87,48 @@ const Home = () => {
     }
   };
 
+  const handleAddEvent = async () => {
+    console.log('Datos del nuevo evento:', newEvent); // Verifica los datos antes de enviar
+    const response = await addEvent(newEvent.fecha, newEvent.descripcion);
+    console.log('Respuesta del servidor:', response); // Verifica la respuesta del servidor
+    if (response.status === 'success') {
+        const updatedEvents = await getEvents();
+        setEvents(updatedEvents);
+        setNewEvent({ fecha: '', descripcion: '' });
+    } else {
+        alert('Error al añadir evento: ' + response.message);
+    }
+};
+
+
+const handleDeleteEvent = async (id) => {
+  const response = await deleteEvent(id);
+  if (response.status === 'success') {
+      const updatedEvents = await getEvents();
+      setEvents(updatedEvents || []);
+  } else {
+      alert('Error al borrar evento: ' + response.message);
+  }
+};
+
+
   return (
     <div className="d-flex flex-column min-vh-100">
       <Header />
-      {/* Contenedor del título con imagen de fondo y estilos en línea */}
+
       <div
         style={{
-          backgroundImage: `url(${fondoBiblioteca})`, // Imagen de fondo
-          backgroundSize: 'cover', // Ajustar la imagen para que cubra todo el contenedor
-          backgroundPosition: 'center', // Centrar la imagen
-          backgroundRepeat: 'no-repeat', // Evitar repeticiones
-          filter: 'blur(0px)', // Difuminado de la imagen de fondo
-          position: 'relative', // Para capas internas
-          color: 'white', // Texto en blanco
-          textAlign: 'center', // Centrar el texto horizontalmente
-          padding: '5rem 0', // Espaciado interno para altura del contenedor
+          backgroundImage: `url(${fondoBiblioteca})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          filter: 'blur(0px)',
+          position: 'relative',
+          color: 'white',
+          textAlign: 'center',
+          padding: '5rem 0',
         }}
       >
-        {/* Capa semitransparente para oscurecer el fondo */}
         <div
           style={{
             position: 'absolute',
@@ -109,16 +136,15 @@ const Home = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Oscurecimiento semitransparente
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
             zIndex: 1,
           }}
         ></div>
 
-        {/* Título del texto */}
         <h1
           style={{
-            position: 'relative', // Colocar encima de la capa de oscurecimiento
-            zIndex: 2, // Asegurar que esté por encima de todo lo demás
+            position: 'relative',
+            zIndex: 2,
           }}
         >
           Bienvenido a la Biblioteca DGG
@@ -126,15 +152,14 @@ const Home = () => {
 
         <h4
           style={{
-            position: 'relative', // Colocar encima de la capa de oscurecimiento
-            zIndex: 2, // Asegurar que esté por encima de todo lo demás
+            position: 'relative',
+            zIndex: 2,
           }}
         >
           Un Mundo de Conocimiento a tu Alcance
         </h4>
       </div>
 
-      {/* Carousel */}
       <Carousel className="my-4" style={{ maxWidth: '750px', margin: '0 auto' }}>
         <Carousel.Item>
           <img className="d-block w-100" src={carousel1} alt="Primera imagen" />
@@ -162,7 +187,6 @@ const Home = () => {
       <div className="container text-center my-5">
         <p className="lead">Explora nuestra colección de libros y gestiona tus préstamos.</p>
 
-        {/* Sección de Libros Disponibles */}
         <div className="card mb-4 shadow-sm">
           <div className="card-header bg-success text-white">
             <h2 className="h5 mb-0">Libros Disponibles</h2>
@@ -181,7 +205,8 @@ const Home = () => {
                       <div className="mt-auto">
                         <button
                           className="btn btn-primary me-2"
-                          onClick={() => handleReservation(book.isbn)}>
+                          onClick={() => handleReservation(book.isbn)}
+                        >
                           Reservar
                         </button>
                       </div>
@@ -200,7 +225,7 @@ const Home = () => {
               <p>En la Biblioteca DGG no solo encontrarás libros, sino también un espacio vibrante lleno de actividades que enriquecerán tu experiencia como lector y miembro de nuestra comunidad. Te invitamos a que te sumes a nuestros Eventos Destacados, diseñados para inspirarte, conectar con otros y ampliar tus conocimientos de forma divertida y significativa.</p>
               <div className="d-flex align-items-center justify-content-center text-center">
                 <div className="me-2">
-                  <h2>{counter}+</h2> {/* Aquí se muestra el contador */}
+                  <h2>{counter}+</h2>
                   <p className="text-center">Actividades Mensuales</p>
                 </div>
                 <div>
@@ -212,58 +237,84 @@ const Home = () => {
             <div className="calendario col-xxl-6 col-md-6 d-flex justify-content-center align-items-center p-4" style={{ background: '#002B5B' }}>
               <div className="calendar-container">
                 <h4 className="mb-3" style={{ color: '#FFFFFF' }}>Eventos Destacados</h4>
-                <Calendar style={{ backgroundColor: '#F5F5F5' }} />
+                <Calendar 
+                  style={{ backgroundColor: '#F5F5F5' }} 
+                  tileContent={({ date, view }) => {
+                    const event = events.find(event => new Date(event.fecha).toDateString() === date.toDateString());
+                    return event ? <p>{event.descripcion}</p> : null;
+                  }} 
+                />
+                {user && user.role === 'admin' && (
+                  <div>
+                    <h3 class="text text-white">Añadir Evento</h3>
+                    <input
+                      type="date"
+                      value={newEvent.fecha}
+                      onChange={(e) => setNewEvent({ ...newEvent, fecha: e.target.value })}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Descripción"
+                      value={newEvent.descripcion}
+                      onChange={(e) => setNewEvent({ ...newEvent, descripcion: e.target.value })}
+                    />
+                    <button onClick={handleAddEvent} class="mt-2 p-2">Añadir</button>
+                  </div>
+                )}
+                {user && user.role === 'admin' && (
+                  <div>
+                    <h3 class="text text-white">Eliminar Evento</h3>
+                    <ul>
+                      {events.map(event => (
+                        <li key={event.id} class="text text-white">
+                          {event.fecha}: {event.descripcion}
+                          <button onClick={() => handleDeleteEvent(event.id)}>Eliminar</button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Sección de Servicios de la Biblioteca */}
         <div className="container my-5">
           <h2 className="text-center" style={{ color: '#000000' }}>Servicios de la Biblioteca</h2>
           <div className="row">
-
             <div className="col-md-4 mb-3 mt-4">
               <div className="card h-100">
                 <img src={prestamoLibros} className="card-img-top" alt="Préstamo de Libros" />
                 <div className="card-body" style={{ background: '#F5F5F5' }}>
                   <h5 className="card-title">Préstamo de Libros</h5>
-                  <p className="card-text">Realiza préstamos de libros y disfruta de lecturas en casa. Disponemos de una amplia variedad de títulos, tanto en formato físico como digital. Si no encuentras lo que buscas, te ayudamos a realizar una búsqueda personalizada.
-                  </p>
+                  <p className="card-text">Realiza préstamos de libros y disfruta de lecturas en casa. Disponemos de una amplia variedad de títulos, tanto en formato físico como digital. Si no encuentras lo que buscas, te ayudamos a realizar una búsqueda personalizada.</p>
                 </div>
               </div>
             </div>
-
             <div className="col-md-4 mb-3 mt-4">
               <div className="card h-100">
                 <img src={salaEstudio} className="card-img-top" alt="Sala de Estudio" />
                 <div className="card-body" style={{ background: '#F5F5F5' }}>
                   <h5 className="card-title">Compra tus libros favoritos</h5>
-                  <p className="card-text"> Disfruta de un espacio tranquilo para estudiar y trabajar. Además de nuestra oferta de libros en préstamo, contamos con una tienda de libros en la que puedes adquirir tus títulos favoritos.</p>
+                  <p className="card-text">Disfruta de un espacio tranquilo para estudiar y trabajar. Además de nuestra oferta de libros en préstamo, contamos con una tienda de libros en la que puedes adquirir tus títulos favoritos.</p>
                 </div>
               </div>
             </div>
-
             <div className="col-md-4 mb-3 mt-4">
               <div className="card h-100">
                 <img src={personaLeyendo} className="card-img-top" alt="Lectura Personalizada" />
                 <div className="card-body" style={{ background: '#F5F5F5' }}>
-                  <h5 className="card-title">Unete a nuestras actividades</h5>
-                  <p className="card-text">  Contamos con un servicio personalizado para lectores. Además de nuestros préstamos y venta de libros, organizamos actividades como clubes de lectura, talleres de escritura, y eventos con autores invitados.</p>
+                  <h5 className="card-title">Únete a nuestras actividades</h5>
+                  <p className="card-text">Contamos con un servicio personalizado para lectores. Además de nuestros préstamos y venta de libros, organizamos actividades como clubes de lectura, talleres de escritura, y eventos con autores invitados.</p>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
 
-
-
       <div className="container d-flex flex-column" style={{ background: '#F5F5F5', padding: 50, paddingBottom: 80 }}>
-
         <h2 className="text-center mb-4">Preguntas Frecuentes</h2>
-
         <div className="accordion accordion-flush" id="accordionFlushExample">
           <div className="accordion-item">
             <h2 className="accordion-header">
@@ -272,7 +323,7 @@ const Home = () => {
               </button>
             </h2>
             <div id="flush-collapseOne" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-              <div className="accordion-body">Puedes buscar el libro en el catálogo de nuestra página web. Una vez encontrado,inicia sesión y busca el libro que quieres pedir prestado.</div>
+              <div className="accordion-body">Puedes buscar el libro en el catálogo de nuestra página web. Una vez encontrado, inicia sesión y busca el libro que quieres pedir prestado.</div>
             </div>
           </div>
           <div className="accordion-item">
@@ -282,9 +333,7 @@ const Home = () => {
               </button>
             </h2>
             <div id="flush-collapseTwo" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-              <div className="accordion-body">El período estándar de préstamo es de 14 días, con posibilidad de una renovación si el libro no está reservado por otro usuario.
-
-              </div>
+              <div className="accordion-body">El período estándar de préstamo es de 14 días, con posibilidad de una renovación si el libro no está reservado por otro usuario.</div>
             </div>
           </div>
           <div className="accordion-item">
@@ -298,7 +347,6 @@ const Home = () => {
             </div>
           </div>
         </div>
-
       </div>
 
       <Footer />

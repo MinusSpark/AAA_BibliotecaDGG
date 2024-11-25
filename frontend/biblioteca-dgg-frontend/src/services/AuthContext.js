@@ -42,10 +42,43 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('user');
     };
 
-    return (
-        <AuthContext.Provider value={{ user, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
-};
+  
+        const getEvents = async () => {
+            try {
+                const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=getEvents');
+                return response.data.data;
+            } catch (error) {
+                console.error('Error al obtener eventos:', error);
+                return [];
+            }
+        };
+    
+        const addEvent = async (fecha, descripcion) => {
+            try {
+                const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=addEvent', { fecha, descripcion });
+                return response.data;
+            } catch (error) {
+                console.error('Error al añadir evento:', error);
+                return { status: 'error', message: error.message };
+            }
+        };
+    
+        const deleteEvent = async (id) => {
+            try {
+                const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteEvent', { id });
+                return response.data;
+            } catch (error) {
+                console.error('Error al borrar evento:', error);
+                return { status: 'error', message: error.message };
+            }
+        };
+    
+        return (
+            <AuthContext.Provider value={{ user, login, logout, getEvents, addEvent, deleteEvent }}>
+                {children}
+            </AuthContext.Provider>
+        );
+    };
+    
+
 

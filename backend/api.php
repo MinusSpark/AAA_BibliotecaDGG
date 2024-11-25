@@ -8,7 +8,7 @@ require_once 'controlador_libro.php';
 require_once 'controlador_libros_prestados.php';
 require_once 'controlador_reservas.php';
 require_once 'controlador_usuario.php';
-
+require_once 'controlador_eventos.php';
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -115,6 +115,17 @@ switch ($method) {
                 echo json_encode(['status' => 'error', 'message' => 'No se encontraron donaciones']);
             }
         }
+
+        // Obtener eventos
+        if ($_GET['request'] === 'getEvents') {
+            $eventos = ControladorEventos::obtenerEventos();
+            if ($eventos) {
+                echo json_encode(['status' => 'success', 'data' => $eventos]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Error al obtener eventos']);
+            }
+        }
+
         break;
 
     case 'POST':
@@ -177,6 +188,25 @@ switch ($method) {
                 echo json_encode(['status' => 'error', 'message' => 'No se pudo registrar la donación.']);
             }
         }
+
+      
+        // Añadir evento
+        elseif ($request === 'addEvent') {
+            $fecha = $input['fecha'];
+            $descripcion = $input['descripcion'];
+            $resultado = ControladorEventos::añadirEvento($fecha, $descripcion);
+            echo json_encode($resultado ? ['status' => 'success'] : ['status' => 'error', 'message' => 'Error al añadir evento']);
+        }
+        
+        // Borrar evento
+        elseif ($request === 'deleteEvent') {
+            $id = $input['id'];
+            $resultado = ControladorEventos::borrarEvento($id);
+            echo json_encode($resultado ? ['status' => 'success'] : ['status' => 'error', 'message' => 'Error al borrar evento']);
+        }
+        
+        
+        
         break;
 
     case 'DELETE':

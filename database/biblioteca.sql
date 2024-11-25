@@ -91,6 +91,14 @@ CREATE TABLE donaciones (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Crear tabla de eventos
+CREATE TABLE eventos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    descripcion VARCHAR(255) NOT NULL
+);
+
+
 -- Insertar usuarios
 INSERT INTO Usuario (dni, nombre, apellido, telefono, correo, contraseña) VALUES
 ('12345678A', 'Carlos', 'Martinez', 987654321, 'carlos@example.com', 'password1'),

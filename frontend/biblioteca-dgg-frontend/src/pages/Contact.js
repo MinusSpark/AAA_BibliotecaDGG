@@ -61,14 +61,6 @@ function Contact() {
 Contacto
   </h1>
 
-  <h4
-    style={{
-      position: 'relative', // Colocar encima de la capa de oscurecimiento
-      zIndex: 2, // Asegurar que esté por encima de todo lo demás
-    }}
-  >
-  Home<strong style={{color:'#FFC300'}}> / </strong> Contacto
-  </h4>
 
 </div>
             <div className="container my-auto">

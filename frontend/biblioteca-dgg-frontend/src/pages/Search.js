@@ -147,6 +147,8 @@ const Search = () => {
                 </div>
                 */}
 
+
+            <div class="container d-flex flex-row justify-content-center mt-4">
                 <button
                     onClick={() => handleSort('stock')}
                     className="btn btn-primary me-2"
@@ -162,7 +164,7 @@ const Search = () => {
                     Ordenar por Año 
                     {sortOrder.year === 'asc' ? '↑' : '↓'}
                 </button>
-
+            </div>
                 <div className="row mt-4">
                     {filteredBooks.map(book => (
                         <div className="col-md-3 mb-3" key={book.isbn}>
