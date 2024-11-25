@@ -1,25 +1,19 @@
 import React, { useEffect, useState, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Carousel } from 'react-bootstrap';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import carousel1 from '../images/carousel1.jpg';
-import carousel2 from '../images/carousel2.jpg';
-import carousel3 from '../images/carousel3.jpg';
-import prestamoLibros from '../images/prestamoLibros.jpg';
-import salaEstudio from '../images/salaEstudio.jpg';
-import personaLeyendo from '../images/personaLeyendo.jpg';
 import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
 import { Book } from 'react-bootstrap-icons';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min';
 import CookieConsent from '../components/CookieConsent';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../services/AuthContext';
-
+import HomeCarousel from '../components/Carousel';
+import Cards from '../components/Cards';
+import FAQ from '../components/FAQ';
+import TitleBanner from '../components/TitleBanner'; 
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [events, setEvents] = useState([]);
@@ -88,9 +82,7 @@ const Home = () => {
   };
 
   const handleAddEvent = async () => {
-    console.log('Datos del nuevo evento:', newEvent); // Verifica los datos antes de enviar
     const response = await addEvent(newEvent.fecha, newEvent.descripcion);
-    console.log('Respuesta del servidor:', response); // Verifica la respuesta del servidor
     if (response.status === 'success') {
         const updatedEvents = await getEvents();
         setEvents(updatedEvents);
@@ -98,91 +90,25 @@ const Home = () => {
     } else {
         alert('Error al añadir evento: ' + response.message);
     }
-};
+  };
 
-
-const handleDeleteEvent = async (id) => {
-  const response = await deleteEvent(id);
-  if (response.status === 'success') {
-      const updatedEvents = await getEvents();
-      setEvents(updatedEvents || []);
-  } else {
-      alert('Error al borrar evento: ' + response.message);
-  }
-};
-
+  const handleDeleteEvent = async (id) => {
+    const response = await deleteEvent(id);
+    if (response.status === 'success') {
+        const updatedEvents = await getEvents();
+        setEvents(updatedEvents || []);
+    } else {
+        alert('Error al borrar evento: ' + response.message);
+    }
+  };
 
   return (
     <div className="d-flex flex-column min-vh-100">
       <Header />
 
-      <div
-        style={{
-          backgroundImage: `url(${fondoBiblioteca})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          filter: 'blur(0px)',
-          position: 'relative',
-          color: 'white',
-          textAlign: 'center',
-          padding: '5rem 0',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            zIndex: 1,
-          }}
-        ></div>
+      <TitleBanner />
 
-        <h1
-          style={{
-            position: 'relative',
-            zIndex: 2,
-          }}
-        >
-          Bienvenido a la Biblioteca DGG
-        </h1>
-
-        <h4
-          style={{
-            position: 'relative',
-            zIndex: 2,
-          }}
-        >
-          Un Mundo de Conocimiento a tu Alcance
-        </h4>
-      </div>
-
-      <Carousel className="my-4" style={{ maxWidth: '750px', margin: '0 auto' }}>
-        <Carousel.Item>
-          <img className="d-block w-100" src={carousel1} alt="Primera imagen" />
-          <Carousel.Caption className="bg-dark bg-opacity-50 p-4">
-            <h3 className="text-light">Explora Nuestros Libros</h3>
-            <p className="text-light">Encuentra una gran variedad de títulos y categorías.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item>
-          <img className="d-block w-100" src={carousel2} alt="Segunda imagen" />
-          <Carousel.Caption className="bg-dark bg-opacity-50 p-4">
-            <h3 className="text-light">Gestiona tu Biblioteca</h3>
-            <p className="text-light">Accede a préstamos y devoluciones fácilmente.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item>
-          <img className="d-block w-100" src={carousel3} alt="Tercera imagen" />
-          <Carousel.Caption className="bg-dark bg-opacity-50 p-4">
-            <h3 className="text-light">Únete Hoy Mismo</h3>
-            <p className="text-light">Regístrate y disfruta de nuestros servicios.</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-      </Carousel>
+      <HomeCarousel />
 
       <div className="container text-center my-5">
         <p className="lead">Explora nuestra colección de libros y gestiona tus préstamos.</p>
@@ -278,75 +204,11 @@ const handleDeleteEvent = async (id) => {
             </div>
           </div>
         </div>
+        
+        <Cards />
 
-        <div className="container my-5">
-          <h2 className="text-center" style={{ color: '#000000' }}>Servicios de la Biblioteca</h2>
-          <div className="row">
-            <div className="col-md-4 mb-3 mt-4">
-              <div className="card h-100">
-                <img src={prestamoLibros} className="card-img-top" alt="Préstamo de Libros" />
-                <div className="card-body" style={{ background: '#F5F5F5' }}>
-                  <h5 className="card-title">Préstamo de Libros</h5>
-                  <p className="card-text">Realiza préstamos de libros y disfruta de lecturas en casa. Disponemos de una amplia variedad de títulos, tanto en formato físico como digital. Si no encuentras lo que buscas, te ayudamos a realizar una búsqueda personalizada.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 mb-3 mt-4">
-              <div className="card h-100">
-                <img src={salaEstudio} className="card-img-top" alt="Sala de Estudio" />
-                <div className="card-body" style={{ background: '#F5F5F5' }}>
-                  <h5 className="card-title">Compra tus libros favoritos</h5>
-                  <p className="card-text">Disfruta de un espacio tranquilo para estudiar y trabajar. Además de nuestra oferta de libros en préstamo, contamos con una tienda de libros en la que puedes adquirir tus títulos favoritos.</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 mb-3 mt-4">
-              <div className="card h-100">
-                <img src={personaLeyendo} className="card-img-top" alt="Lectura Personalizada" />
-                <div className="card-body" style={{ background: '#F5F5F5' }}>
-                  <h5 className="card-title">Únete a nuestras actividades</h5>
-                  <p className="card-text">Contamos con un servicio personalizado para lectores. Además de nuestros préstamos y venta de libros, organizamos actividades como clubes de lectura, talleres de escritura, y eventos con autores invitados.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="container d-flex flex-column" style={{ background: '#F5F5F5', padding: 50, paddingBottom: 80 }}>
-        <h2 className="text-center mb-4">Preguntas Frecuentes</h2>
-        <div className="accordion accordion-flush" id="accordionFlushExample">
-          <div className="accordion-item">
-            <h2 className="accordion-header">
-              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                ¿Cómo puedo solicitar el préstamo de un libro?
-              </button>
-            </h2>
-            <div id="flush-collapseOne" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-              <div className="accordion-body">Puedes buscar el libro en el catálogo de nuestra página web. Una vez encontrado, inicia sesión y busca el libro que quieres pedir prestado.</div>
-            </div>
-          </div>
-          <div className="accordion-item">
-            <h2 className="accordion-header">
-              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                ¿Cuánto tiempo puedo tener un libro prestado?
-              </button>
-            </h2>
-            <div id="flush-collapseTwo" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-              <div className="accordion-body">El período estándar de préstamo es de 14 días, con posibilidad de una renovación si el libro no está reservado por otro usuario.</div>
-            </div>
-          </div>
-          <div className="accordion-item">
-            <h2 className="accordion-header">
-              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                ¿Qué hago si pierdo un libro que tengo en préstamo?
-              </button>
-            </h2>
-            <div id="flush-collapseThree" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-              <div className="accordion-body">Debes comunicarte con la biblioteca lo antes posible. Se te pedirá reemplazar el libro perdido o cubrir su costo según la política de reposición.</div>
-            </div>
-          </div>
-        </div>
+        <FAQ />
+        
       </div>
 
       <Footer />
