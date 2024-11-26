@@ -45,7 +45,7 @@ const Search = () => {
 
         if (selectedYear) {
             updatedBooks = updatedBooks.filter(book => {
-                const year = new Date(book.año).getFullYear();
+                const year = new Date(book.anio).getFullYear();
                 return Math.floor(year / 10) * 10 === parseInt(selectedYear);
             });
         }
@@ -75,7 +75,7 @@ const Search = () => {
             if (criteria === 'stock') {
                 return newOrder === 'asc' ? a.stock - b.stock : b.stock - a.stock; // Ordenar según la dirección
             } else if (criteria === 'year') {
-                return newOrder === 'asc' ? new Date(a.año) - new Date(b.año) : new Date(b.año) - new Date(a.año); // Ordenar según la dirección
+                return newOrder === 'asc' ? new Date(a.anio) - new Date(b.anio) : new Date(b.anio) - new Date(a.anio); // Ordenar según la dirección
             }
             return 0;
         });
@@ -173,7 +173,7 @@ const Search = () => {
                                 <div className="card-body">
                                     <h5 className="card-title">{book.titulo}</h5>
                                     <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
-                                    <p className="card-text">Año: {book.año}</p>
+                                    <p className="card-text">Año: {book.anio}</p>
                                     <p className="card-text">Stock: {book.stock}</p>
                                     <button className="btn btn-primary">Reservar</button>
                                 </div>

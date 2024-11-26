@@ -13,7 +13,8 @@ import { AuthContext } from '../services/AuthContext';
 import HomeCarousel from '../components/Carousel';
 import Cards from '../components/Cards';
 import FAQ from '../components/FAQ';
-import TitleBanner from '../components/TitleBanner'; 
+import TitleBanner from '../components/TitleBanner';
+
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [events, setEvents] = useState([]);
@@ -84,21 +85,21 @@ const Home = () => {
   const handleAddEvent = async () => {
     const response = await addEvent(newEvent.fecha, newEvent.descripcion);
     if (response.status === 'success') {
-        const updatedEvents = await getEvents();
-        setEvents(updatedEvents);
-        setNewEvent({ fecha: '', descripcion: '' });
+      const updatedEvents = await getEvents();
+      setEvents(updatedEvents);
+      setNewEvent({ fecha: '', descripcion: '' });
     } else {
-        alert('Error al añadir evento: ' + response.message);
+      alert('Error al añadir evento: ' + response.message);
     }
   };
 
   const handleDeleteEvent = async (id) => {
     const response = await deleteEvent(id);
     if (response.status === 'success') {
-        const updatedEvents = await getEvents();
-        setEvents(updatedEvents || []);
+      const updatedEvents = await getEvents();
+      setEvents(updatedEvents || []);
     } else {
-        alert('Error al borrar evento: ' + response.message);
+      alert('Error al borrar evento: ' + response.message);
     }
   };
 
@@ -126,7 +127,7 @@ const Home = () => {
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{book.titulo}</h5>
                       <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
-                      <p className="card-text">Año: {book.año}</p>
+                      <p className="card-text">Año: {book.anio}</p>
                       <p className="card-text">Stock: {book.stock}</p>
                       <div className="mt-auto">
                         <button
@@ -163,16 +164,16 @@ const Home = () => {
             <div className="calendario col-xxl-6 col-md-6 d-flex justify-content-center align-items-center p-4" style={{ background: '#002B5B' }}>
               <div className="calendar-container">
                 <h4 className="mb-3" style={{ color: '#FFFFFF' }}>Eventos Destacados</h4>
-                <Calendar 
-                  style={{ backgroundColor: '#F5F5F5' }} 
+                <Calendar
+                  style={{ backgroundColor: '#F5F5F5' }}
                   tileContent={({ date, view }) => {
                     const event = events.find(event => new Date(event.fecha).toDateString() === date.toDateString());
                     return event ? <p>{event.descripcion}</p> : null;
-                  }} 
+                  }}
                 />
                 {user && user.role === 'admin' && (
                   <div>
-                    <h3 class="text text-white">Añadir Evento</h3>
+                    <h3 className="text text-white">Añadir Evento</h3>
                     <input
                       type="date"
                       value={newEvent.fecha}
@@ -184,15 +185,15 @@ const Home = () => {
                       value={newEvent.descripcion}
                       onChange={(e) => setNewEvent({ ...newEvent, descripcion: e.target.value })}
                     />
-                    <button onClick={handleAddEvent} class="mt-2 p-2">Añadir</button>
+                    <button onClick={handleAddEvent} className="mt-2 p-2">Añadir</button>
                   </div>
                 )}
                 {user && user.role === 'admin' && (
                   <div>
-                    <h3 class="text text-white">Eliminar Evento</h3>
+                    <h3 className="text text-white">Eliminar Evento</h3>
                     <ul>
                       {events.map(event => (
-                        <li key={event.id} class="text text-white">
+                        <li key={event.id} className="text text-white">
                           {event.fecha}: {event.descripcion}
                           <button onClick={() => handleDeleteEvent(event.id)}>Eliminar</button>
                         </li>
@@ -204,11 +205,11 @@ const Home = () => {
             </div>
           </div>
         </div>
-        
+
         <Cards />
 
         <FAQ />
-        
+
       </div>
 
       <Footer />

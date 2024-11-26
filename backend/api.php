@@ -152,8 +152,7 @@ switch ($method) {
         }
 
         /* REGISTRAR LIBROS DESDE EL ADMIN PANEL */ elseif ($request === 'registerBook') {
-            $resultado = ControladorLibro::registrarLibro($input);
-            echo json_encode($resultado);
+            
         }
 
         /* RESERVA LIBROS DESDE INTERFAZ USUARIO */ elseif ($request === 'reserveBook') {
@@ -241,9 +240,6 @@ switch ($method) {
         }
 
         /* ACTUALIZAR LIBROS DESDE EL ADMIN PANEL */ elseif ($request === 'updateBook') {
-            $input = json_decode(file_get_contents("php://input"), true);
-            $resultado = ControladorLibro::actualizarLibro($input);
-            echo json_encode($resultado);
         }
 
         break;

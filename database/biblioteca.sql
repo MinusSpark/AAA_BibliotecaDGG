@@ -48,7 +48,7 @@ CREATE TABLE Editorial (
 CREATE TABLE Libro (
     isbn VARCHAR(13) PRIMARY KEY,
     titulo VARCHAR(50) NOT NULL,
-    año DATE NOT NULL,
+    anio DATE NOT NULL,
     autor_dni VARCHAR(9) NOT NULL,
     editorial_id INT NOT NULL,
     genero VARCHAR(20),
@@ -149,7 +149,7 @@ INSERT INTO Editorial (nombre, telefono, direccion, fecha_nacimiento) VALUES
 ('Anaya', 912345687, 'Carrer de Bac de Roda, 64, Edifici D, planta baixa, local 2B, Sant Martí, 08019 Barcelona', '1959-01-01');
 
 -- Insertar libros
-INSERT INTO Libro (isbn, titulo, año, autor_dni, editorial_id, genero, stock, portada) VALUES
+INSERT INTO Libro (isbn, titulo, anio, autor_dni, editorial_id, genero, stock, portada) VALUES
 ('9781234567891', 'Cien Años de Soledad', '1967-05-30', '45678901G', 1, 'Novela', 10, 'https://www.planetadelibros.com.mx/usuaris/libros/fotos/155/m_libros/portada_cien-anos-de-soledad-td_gabriel-garcia-marquez_201501150207.jpg'),
 ('9781234567892', 'Harry Potter y la Piedra Filosofal', '1997-06-26', '56789012H', 2, 'Fantasía', 8, 'https://th.bing.com/th/id/R.805803cc0091320ff3392709185e8764?rik=ZVapd%2fHqWS%2bAjg&riu=http%3a%2f%2fcdn.coordiutil.com%2fimagen-harry_potter_y_la_piedra_filosofal_libro_1-1952728-0-0-0-75.jpg&ehk=tG4asswFSO%2bhBiDYqJazlnRx9ERwaqBOmwFZJ%2b85wv8%3d&risl=&pid=ImgRaw&r=0'),
 ('9781234567893', 'La Casa de los Espíritus', '1982-11-12', '34567890F', 3, 'Realismo Mágico', 5, 'https://phantom-expansion.unidadeditorial.es/8f63d59e95157a09f7ab4cc1cd6d4808/crop/0x31/1677x2548/resize/1200/f/jpg/assets/multimedia/imagenes/2022/07/21/16583909817374.jpg'),

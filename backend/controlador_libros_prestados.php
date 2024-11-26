@@ -8,7 +8,7 @@ class ControladorLibrosPrestados
     public static function obtenerLibrosPrestadosPorUsuario($dni)
     {
         $conexion = Conexion::conectar();
-        $sql = "SELECT lp.*, l.titulo, l.año, l.portada 
+        $sql = "SELECT lp.*, l.titulo, l.anio, l.portada 
             FROM Libros_Prestados lp
             JOIN Libro l ON lp.libro_isbn = l.isbn
             WHERE lp.usuario_dni = :usuario_dni AND lp.fecha_devolucion IS NULL";
@@ -22,7 +22,7 @@ class ControladorLibrosPrestados
     public static function obtenerHistorialDePrestamos($dni)
     {
         $conexion = Conexion::conectar();
-        $sql = "SELECT lp.*, l.titulo, l.año, l.portada 
+        $sql = "SELECT lp.*, l.titulo, l.anio, l.portada 
             FROM Libros_Prestados lp
             JOIN Libro l ON lp.libro_isbn = l.isbn
             WHERE lp.usuario_dni = :usuario_dni AND lp.fecha_devolucion IS NOT NULL";
