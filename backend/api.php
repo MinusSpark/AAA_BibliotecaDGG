@@ -152,7 +152,8 @@ switch ($method) {
         }
 
         /* REGISTRAR LIBROS DESDE EL ADMIN PANEL */ elseif ($request === 'registerBook') {
-            
+            $input = json_decode(file_get_contents("php://input"), true);
+            echo json_encode(ControladorLibro::registrarLibro($input));
         }
 
         /* RESERVA LIBROS DESDE INTERFAZ USUARIO */ elseif ($request === 'reserveBook') {
@@ -188,7 +189,7 @@ switch ($method) {
             }
         }
 
-      
+
         // Añadir evento
         elseif ($request === 'addEvent') {
             $fecha = $input['fecha'];
@@ -196,16 +197,16 @@ switch ($method) {
             $resultado = ControladorEventos::añadirEvento($fecha, $descripcion);
             echo json_encode($resultado ? ['status' => 'success'] : ['status' => 'error', 'message' => 'Error al añadir evento']);
         }
-        
+
         // Borrar evento
         elseif ($request === 'deleteEvent') {
             $id = $input['id'];
             $resultado = ControladorEventos::borrarEvento($id);
             echo json_encode($resultado ? ['status' => 'success'] : ['status' => 'error', 'message' => 'Error al borrar evento']);
         }
-        
-        
-        
+
+
+
         break;
 
     case 'DELETE':

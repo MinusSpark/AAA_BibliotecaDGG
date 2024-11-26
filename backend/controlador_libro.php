@@ -50,13 +50,27 @@ class ControladorLibro
     /* MÉTODO PARA REGISTRAR LIBROS EN LA BASE DE DATOS DESDE EL ADMIN PANEL */
     public static function registrarLibro($data)
     {
-        
+        try {
+            $conexion = Conexion::conectar();
+            $sql = "INSERT INTO Libro (isbn, titulo, anio, autor_dni, editorial_id, genero, stock, portada)
+                VALUES (:isbn, :titulo, :anio, :autor_dni, :editorial_id, :genero, :stock, :portada)";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':isbn', $data['isbn']);
+            $stmt->bindParam(':titulo', $data['titulo']);
+            $stmt->bindParam(':anio', $data['anio']);
+            $stmt->bindParam(':autor_dni', $data['autor_dni']);
+            $stmt->bindParam(':editorial_id', $data['editorial_id']);
+            $stmt->bindParam(':genero', $data['genero']);
+            $stmt->bindParam(':stock', $data['stock']);
+            $stmt->bindParam(':portada', $data['portada']);
+            $stmt->execute();
+            return ['status' => 'success'];
+        } catch (PDOException $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
     }
 
 
     /* MÉTODO PARA EDITAR/ACTUALIZAR DATOS DE LOS LIBROS DE LA BASE DE DATOS DESDE EL ADMINPANEL */
-    public static function actualizarLibro($data)
-    {
-        
-    }
+    public static function actualizarLibro($data) {}
 }
