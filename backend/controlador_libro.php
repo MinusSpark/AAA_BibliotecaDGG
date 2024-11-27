@@ -71,6 +71,37 @@ class ControladorLibro
     }
 
 
-    /* MÉTODO PARA EDITAR/ACTUALIZAR DATOS DE LOS LIBROS DE LA BASE DE DATOS DESDE EL ADMINPANEL */
-    public static function actualizarLibro($data) {}
+    /* MÉTODO PARA EDITAR/ACTUALIZAR DATOS DE LOS LIBROS DE LA BASE DE DATOS */
+    public static function actualizarLibro($data)
+    {
+        try {
+            $conexion = Conexion::conectar();
+            $sql = "UPDATE Libro SET 
+                        titulo = :titulo,
+                        anio = :anio,
+                        autor_dni = :autor_dni,
+                        editorial_id = :editorial_id,
+                        genero = :genero,
+                        stock = :stock,
+                        portada = :portada
+                    WHERE isbn = :isbn";
+            $stmt = $conexion->prepare($sql);
+
+            // Asignar valores a los parámetros
+            $stmt->bindParam(':isbn', $data['isbn'], PDO::PARAM_STR);
+            $stmt->bindParam(':titulo', $data['titulo'], PDO::PARAM_STR);
+            $stmt->bindParam(':anio', $data['anio'], PDO::PARAM_STR);
+            $stmt->bindParam(':autor_dni', $data['autor_dni'], PDO::PARAM_STR);
+            $stmt->bindParam(':editorial_id', $data['editorial_id'], PDO::PARAM_INT);
+            $stmt->bindParam(':genero', $data['genero'], PDO::PARAM_STR);
+            $stmt->bindParam(':stock', $data['stock'], PDO::PARAM_INT);
+            $stmt->bindParam(':portada', $data['portada'], PDO::PARAM_STR);
+
+            // Ejecutar la consulta
+            return $stmt->execute();
+        } catch (Exception $e) {
+            error_log("Error al actualizar el libro: " . $e->getMessage());
+            return false;
+        }
+    }
 }

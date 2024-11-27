@@ -240,9 +240,32 @@ switch ($method) {
             echo json_encode($resultado);
         }
 
-        /* ACTUALIZAR LIBROS DESDE EL ADMIN PANEL */ elseif ($request === 'updateBook') {
-        }
+        /* ACTUALIZAR LIBROS DESDE EL ADMIN PANEL */ else/* ACTUALIZAR LIBROS DESDE EL ADMIN PANEL */
+            if ($request === 'updateBook') {
+                // Obtener los datos enviados en el cuerpo de la solicitud
+                $data = json_decode(file_get_contents("php://input"), true);
 
+                // Validar que los datos necesarios estén presentes
+                if (
+                    !isset($data['isbn']) || !isset($data['titulo']) || !isset($data['anio']) ||
+                    !isset($data['autor_dni']) || !isset($data['editorial_id']) ||
+                    !isset($data['genero']) || !isset($data['stock']) || !isset($data['portada'])
+                ) {
+                    echo json_encode(['status' => 'error', 'message' => 'Faltan datos para actualizar el libro.']);
+                    exit;
+                }
+
+                // Llamar a la función del controlador para actualizar el libro
+                require_once 'controlador_libro.php';
+                $resultado = ControladorLibro::actualizarLibro($data);
+
+                if ($resultado) {
+                    echo json_encode(['status' => 'success', 'message' => 'Libro actualizado correctamente.']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar el libro.']);
+                }
+                exit;
+            }
         break;
 
     case 'OPTIONS':

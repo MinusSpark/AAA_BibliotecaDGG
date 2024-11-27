@@ -12,6 +12,7 @@ const BookTable = ({ books, setBooks }) => {
         stock: '',
         portada: ''
     });
+    const [editMode, setEditMode] = useState(false);
     const [authors, setAuthors] = useState([]);
     const [editorials, setEditorials] = useState([]);
     const [showAddForm, setShowAddForm] = useState(false);
@@ -25,16 +26,18 @@ const BookTable = ({ books, setBooks }) => {
                     axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=publishers')
                 ]);
                 console.log('Autores:', authorsResponse.data);
-                setAuthors(authorsResponse.data.data || []); // Asegura que sea un array
-                setEditorials(editorialsResponse.data.data || []); // Si aplica lo mismo para editoriales
+                console.log('Editoriales:', editorialsResponse.data);
+                setAuthors(authorsResponse.data.data || []); // Verifica que los datos sean un array
+                setEditorials(editorialsResponse.data.data || []);
             } catch (error) {
                 console.error('Error al obtener autores y editoriales:', error);
-                setAuthors([]); // Establece un valor por defecto en caso de error
+                setAuthors([]);
                 setEditorials([]);
             }
         };
         fetchData();
     }, []);
+
 
 
 
@@ -83,9 +86,50 @@ const BookTable = ({ books, setBooks }) => {
     };
 
     const handleEditBook = async () => {
-
+        try {
+            const response = await axios.put('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=updateBook', newBook);
+            if (response.data.status === 'success') {
+                // Actualizar la lista de libros con los datos editados
+                const updatedBooks = books.map(book =>
+                    book.isbn === newBook.isbn ? { ...newBook } : book
+                );
+                setBooks(updatedBooks);
+                resetForm();
+                alert('Libro actualizado exitosamente');
+            } else {
+                alert('Error: ' + response.data.message);
+            }
+        } catch (error) {
+            console.error('Error al actualizar libro:', error);
+            alert('Hubo un error al actualizar el libro.');
+        }
     };
 
+    const handleOpenEditForm = (book) => {
+        setNewBook({
+            ...book,
+            autor_dni: book.autor_dni, // Confirma que el DNI del autor está presente
+            editorial_id: book.editorial_id // Confirma que el ID de la editorial está presente
+        });
+        setEditMode(true);
+        setShowAddForm(true);
+    };
+
+
+    const resetForm = () => {
+        setNewBook({
+            isbn: '',
+            titulo: '',
+            anio: '',
+            autor_dni: '',
+            editorial_id: '',
+            genero: '',
+            stock: '',
+            portada: ''
+        });
+        setEditMode(false);
+        setShowAddForm(false);
+    };
 
     return (
         <div className="card mb-3 shadow-sm">
@@ -117,7 +161,11 @@ const BookTable = ({ books, setBooks }) => {
                                 <td>{book.genero}</td>
                                 <td className="text-center">{book.stock}</td>
                                 <td className="text-center">
-                                    <button className="btn btn-warning btn-sm me-1">Editar</button>
+                                    <button
+                                        onClick={() => handleOpenEditForm(book)}
+                                        className="btn btn-warning btn-sm me-1">
+                                        Editar
+                                    </button>
                                     <button
                                         onClick={() => handleDeleteBook(book.isbn)}
                                         className="btn btn-danger btn-sm">
@@ -137,8 +185,8 @@ const BookTable = ({ books, setBooks }) => {
 
             {showAddForm && (
                 <div className="card mt-3 p-2">
-                    <div className="card-header bg-success text-white p-1">
-                        <h3 className="h6 mb-0">Añadir Libro</h3>
+                    <div className={`card-header text-white p-1 ${editMode ? 'bg-warning' : 'bg-success'}`}>
+                        <h3 className="h6 mb-0">{editMode ? 'Editar Libro' : 'Añadir Libro'}</h3>
                     </div>
                     <div className="card-body p-2">
                         <input
@@ -146,6 +194,7 @@ const BookTable = ({ books, setBooks }) => {
                             className="form-control mb-2"
                             placeholder="ISBN"
                             value={newBook.isbn}
+                            disabled={editMode} // Deshabilitar en modo edición
                             onChange={(e) => setNewBook({ ...newBook, isbn: e.target.value })}
                         />
                         <input
@@ -164,7 +213,7 @@ const BookTable = ({ books, setBooks }) => {
                         />
                         <select
                             className="form-control mb-2"
-                            value={newBook.autor_dni}
+                            value={newBook.autor_dni} // Asegúrate de que el valor corresponda al autor actual
                             onChange={(e) => setNewBook({ ...newBook, autor_dni: e.target.value })}
                         >
                             <option value="">Seleccione un autor</option>
@@ -174,9 +223,11 @@ const BookTable = ({ books, setBooks }) => {
                                 </option>
                             ))}
                         </select>
+
+
                         <select
                             className="form-control mb-2"
-                            value={newBook.editorial_id}
+                            value={newBook.editorial_id} // Asegúrate de que el valor corresponda a la editorial actual
                             onChange={(e) => setNewBook({ ...newBook, editorial_id: e.target.value })}
                         >
                             <option value="">Seleccione una editorial</option>
@@ -186,6 +237,8 @@ const BookTable = ({ books, setBooks }) => {
                                 </option>
                             ))}
                         </select>
+
+
                         <input
                             type="text"
                             className="form-control mb-2"
@@ -207,8 +260,12 @@ const BookTable = ({ books, setBooks }) => {
                             value={newBook.portada}
                             onChange={(e) => setNewBook({ ...newBook, portada: e.target.value })}
                         />
-                        <button onClick={handleAddBook} className="btn btn-primary btn-sm me-2">Guardar</button>
-                        <button onClick={() => setShowAddForm(false)} className="btn btn-secondary btn-sm">Cancelar</button>
+                        <button
+                            onClick={editMode ? handleEditBook : handleAddBook}
+                            className="btn btn-primary btn-sm me-2">
+                            {editMode ? 'Actualizar' : 'Guardar'}
+                        </button>
+                        <button onClick={resetForm} className="btn btn-secondary btn-sm">Cancelar</button>
                     </div>
                 </div>
             )}
