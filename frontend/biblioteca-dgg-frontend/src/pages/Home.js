@@ -18,10 +18,10 @@ import TitleBanner from '../components/TitleBanner';
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [events, setEvents] = useState([]);
-  const [newEvent, setNewEvent] = useState({ fecha: '', descripcion: '' });
+  const [newEvent, setNewEvent] = useState({ fecha: '', descripcion: '', max_asistentes: 0 });
   const [counter, setCounter] = useState(0);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
-  const { user, getEvents, addEvent, deleteEvent } = useContext(AuthContext);
+  const { user, getEvents, addEvent, deleteEvent, inscribirUsuario, desinscribirUsuario } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -83,23 +83,79 @@ const Home = () => {
   };
 
   const handleAddEvent = async () => {
-    const response = await addEvent(newEvent.fecha, newEvent.descripcion);
-    if (response.status === 'success') {
-      const updatedEvents = await getEvents();
-      setEvents(updatedEvents);
-      setNewEvent({ fecha: '', descripcion: '' });
-    } else {
-      alert('Error al añadir evento: ' + response.message);
+    try {
+      const response = await addEvent(newEvent.fecha, newEvent.descripcion, newEvent.max_asistentes);
+      if (response.status === 'success') {
+        alert(response.message);
+        const updatedEvents = await getEvents();
+        setEvents(updatedEvents);
+        setNewEvent({ fecha: '', descripcion: '', max_asistentes: 0 });
+      } else {
+        alert('Error al añadir evento: ' + response.message);
+      }
+    } catch (error) {
+      console.error('Error al añadir evento:', error);
+      alert('Error al añadir evento.');
     }
   };
 
   const handleDeleteEvent = async (id) => {
-    const response = await deleteEvent(id);
-    if (response.status === 'success') {
-      const updatedEvents = await getEvents();
-      setEvents(updatedEvents || []);
+    try {
+      const response = await deleteEvent(id);
+      if (response.status === 'success') {
+        alert(response.message);
+        const updatedEvents = await getEvents();
+        setEvents(updatedEvents || []);
+      } else {
+        alert('Error al borrar evento: ' + response.message);
+      }
+    } catch (error) {
+      console.error('Error al borrar evento:', error);
+      alert('Error al borrar evento.');
+    }
+  };
+
+  const handleSignup = async (eventoId) => {
+    if (!user) {
+      navigate('/login');
     } else {
-      alert('Error al borrar evento: ' + response.message);
+      try {
+        const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=inscribirUsuario', {
+          evento_id: eventoId,
+          dni: user.dni,
+          correo: user.correo,
+        });
+        if (response.data.status === 'success') {
+          alert('Inscripción realizada con éxito.');
+          const updatedEvents = await getEvents();
+          setEvents(updatedEvents);
+        } else if (response.data.message === 'Ya estás inscrito a este evento') {
+          alert('Ya estás inscrito a este evento');
+        } else {
+          alert('Error al realizar la inscripción: ' + response.data.message);
+        }
+      } catch (error) {
+        console.error('Error realizando la inscripción:', error);
+        alert('Error al realizar la inscripción.');
+      }
+    }
+  };
+
+  const handleUnsubscribe = async (eventoId) => {
+    try {
+      const response = await desinscribirUsuario(eventoId);
+      if (response.status === 'success') {
+        alert(response.message);
+        const updatedEvents = await getEvents();
+        setEvents(updatedEvents);
+      } else if (response.message === 'No estás inscrito a este evento.') {
+        alert('No estás inscrito a este evento.');
+      } else {
+        alert('Error al realizar la desinscripción: ' + response.message);
+      }
+    } catch (error) {
+      console.error('Error realizando la desinscripción:', error);
+      alert('Error al realizar la desinscripción.');
     }
   };
 
@@ -126,6 +182,7 @@ const Home = () => {
                     <img src={book.portada} className="card-img-top" alt={`Portada de ${book.titulo}`} style={{ height: '300px', objectFit: 'cover' }} />
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{book.titulo}</h5>
+                      <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
                       <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
                       <p className="card-text">Año: {book.anio}</p>
                       <p className="card-text">Stock: {book.stock}</p>
@@ -185,22 +242,35 @@ const Home = () => {
                       value={newEvent.descripcion}
                       onChange={(e) => setNewEvent({ ...newEvent, descripcion: e.target.value })}
                     />
+                    <input
+                      type="number"
+                      placeholder="Máximo de asistentes"
+                      value={newEvent.max_asistentes}
+                      onChange={(e) => setNewEvent({ ...newEvent, max_asistentes: parseInt(e.target.value) })}
+                    />
                     <button onClick={handleAddEvent} className="mt-2 p-2">Añadir</button>
                   </div>
                 )}
-                {user && user.role === 'admin' && (
-                  <div>
-                    <h3 className="text text-white">Eliminar Evento</h3>
-                    <ul>
-                      {events.map(event => (
-                        <li key={event.id} className="text text-white">
-                          {event.fecha}: {event.descripcion}
-                          <button onClick={() => handleDeleteEvent(event.id)}>Eliminar</button>
-                        </li>
-                      ))}
-                    </ul>
+                {events.map(event => (
+                  <div key={event.id}>
+                    <p class="text-white mt-3">{event.fecha}: {event.descripcion} - Asistentes: {event.asistentes_actuales}/{event.max_asistentes}</p>
+                    {user && user.role !== 'admin' && (
+                      <>
+                        <button onClick={() => handleSignup(event.id)} disabled={event.asistentes_actuales >= event.max_asistentes}>
+                          Inscribirse
+                        </button>
+                        <button onClick={() => handleUnsubscribe(event.id)}>
+                          Desinscribirse
+                        </button>
+                      </>
+                    )}
+                    {user && user.role === 'admin' && (
+                      <button onClick={() => handleDeleteEvent(event.id)} className="btn btn-danger ">
+                        Eliminar Evento
+                      </button>
+                    )}
                   </div>
-                )}
+                ))}
               </div>
             </div>
           </div>

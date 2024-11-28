@@ -220,26 +220,42 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se pudo registrar la donación.']);
             }
+        }  
+        
+        elseif ($request === 'addEvent') {
+            $fecha = $input['fecha'];
+            $descripcion = $input['descripcion'];
+            $max_asistentes = $input['max_asistentes'];
+            $resultado = ControladorEventos::añadirEvento($fecha, $descripcion, $max_asistentes);
+            echo json_encode($resultado);
         }
 
 
         // Añadir evento
-        elseif ($request === 'addEvent') {
-            $fecha = $input['fecha'];
-            $descripcion = $input['descripcion'];
-            $resultado = ControladorEventos::añadirEvento($fecha, $descripcion);
-            echo json_encode($resultado ? ['status' => 'success'] : ['status' => 'error', 'message' => 'Error al añadir evento']);
+        elseif ($request === 'inscribirUsuario') {
+            $evento_id = $input['evento_id'];
+            $dni = $input['dni'];
+            $correo = $input['correo'];
+            $resultado = ControladorEventos::inscribirUsuario($evento_id, $dni, $correo);
+            echo json_encode($resultado ? ['status' => 'success'] : ['status' => 'error', 'message' => 'Error al inscribir usuario']);
         }
+    
+        // Desinscribir usuario de evento
+        elseif ($request === 'desinscribirUsuario') {
+            $evento_id = $input['evento_id'];
+            $dni = $input['dni'];
+            $correo = $input['correo'];
+            $resultado = ControladorEventos::desinscribirUsuario($evento_id, $dni, $correo);
+            echo json_encode($resultado);
+        }
+    
 
-        // Borrar evento
         elseif ($request === 'deleteEvent') {
             $id = $input['id'];
             $resultado = ControladorEventos::borrarEvento($id);
-            echo json_encode($resultado ? ['status' => 'success'] : ['status' => 'error', 'message' => 'Error al borrar evento']);
+            echo json_encode($resultado);
         }
-
-
-
+    
         break;
 
     case 'DELETE':

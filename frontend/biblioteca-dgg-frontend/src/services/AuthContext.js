@@ -36,49 +36,76 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user');
     };
 
-  
-        const getEvents = async () => {
-            try {
-                const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=getEvents');
-                return response.data.data;
-            } catch (error) {
-                console.error('Error al obtener eventos:', error);
-                return [];
-            }
-        };
-    
-        const addEvent = async (fecha, descripcion) => {
-            try {
-                const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=addEvent', { fecha, descripcion });
-                return response.data;
-            } catch (error) {
-                console.error('Error al añadir evento:', error);
-                return { status: 'error', message: error.message };
-            }
-        };
-    
-        const deleteEvent = async (id) => {
-            try {
-                const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteEvent', { id });
-                return response.data;
-            } catch (error) {
-                console.error('Error al borrar evento:', error);
-                return { status: 'error', message: error.message };
-            }
-        };
-    
-        return (
-            <AuthContext.Provider value={{ user, login, logout, getEvents, addEvent, deleteEvent }}>
-                {children}
-            </AuthContext.Provider>
-        );
+    const getEvents = async () => {
+        try {
+            const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=getEvents');
+            return response.data.data;
+        } catch (error) {
+            console.error('Error al obtener eventos:', error);
+            return [];
+        }
     };
-    
 
+    const addEvent = async (fecha, descripcion, max_asistentes) => {
+        try {
+            const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=addEvent', {
+                fecha,
+                descripcion,
+                max_asistentes
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al añadir evento:', error);
+            return { status: 'error', message: error.message };
+        }
+    };
 
+    const deleteEvent = async (id) => {
+        try {
+            const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteEvent', { id });
+            return response.data;
+        } catch (error) {
+            console.error('Error al borrar evento:', error);
+            return { status: 'error', message: error.message };
+        }
+    };
+
+    const inscribirUsuario = async (evento_id) => {
+        try {
+            const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=inscribirUsuario', {
+                evento_id,
+                dni: user.dni,
+                correo: user.correo,
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al inscribir usuario:', error);
+            return { status: 'error', message: error.message };
+        }
+    };
+
+    const desinscribirUsuario = async (evento_id) => {
+        try {
+            const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=desinscribirUsuario', {
+                evento_id,
+                dni: user.dni,
+                correo: user.correo,
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Error al desinscribir usuario:', error);
+            return { status: 'error', message: error.message };
+        }
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, login, logout, getEvents, addEvent, deleteEvent, inscribirUsuario, desinscribirUsuario }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};

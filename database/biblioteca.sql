@@ -98,6 +98,17 @@ CREATE TABLE eventos (
     descripcion VARCHAR(255) NOT NULL
 );
 
+ALTER TABLE eventos ADD COLUMN max_asistentes INT NOT NULL DEFAULT 0;
+ALTER TABLE eventos ADD COLUMN asistentes_actuales INT NOT NULL DEFAULT 0;
+
+CREATE TABLE inscripciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    evento_id INT NOT NULL,
+    usuario_dni VARCHAR(9) NOT NULL,
+    correo VARCHAR(50) NOT NULL,
+    FOREIGN KEY (evento_id) REFERENCES eventos(id),
+    FOREIGN KEY (usuario_dni) REFERENCES Usuario(dni)
+);
 
 -- Insertar usuarios
 INSERT INTO Usuario (dni, nombre, apellido, telefono, correo, contraseña) VALUES
@@ -176,3 +187,5 @@ INSERT INTO Libros_Prestados (libro_isbn, usuario_dni, fecha_prestamo, fecha_dev
 ('9781234567892', '66778899H', '2023-08-12', NULL), 
 ('9782345678903', '77889900I', '2023-09-14', '2023-10-14'),
 ('9782345678902', '22334455D', '2023-10-20', NULL);
+
+
