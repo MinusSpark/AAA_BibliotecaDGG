@@ -1,4 +1,3 @@
-// Login.js
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom'; // Importar Link
 import { AuthContext } from '../services/AuthContext';
@@ -8,12 +7,36 @@ import Footer from '../components/Footer';
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errors, setErrors] = useState({});
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!email) {
+            newErrors.email = 'El correo electrónico es requerido';
+        } else if (!/@/.test(email)) {
+            newErrors.email = 'El correo electrónico debe contener un @';
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            newErrors.email = 'El correo electrónico no es válido. Debe seguir el formato ejemplo@dominio.com';
+        }
+
+        if (!password) {
+            newErrors.password = 'La contraseña es requerida';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleLogin = async () => {
-        await login(email, password);
-        navigate('/'); // Redirige al inicio tras iniciar sesión
+        if (validateForm()) {
+            await login(email, password);
+            navigate('/'); // Redirige al inicio tras iniciar sesión
+        } else {
+            alert('Por favor, corrige los errores en el formulario');
+        }
     };
 
     return (
@@ -34,6 +57,7 @@ function Login() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
+                                {errors.email && <div className="text-danger">{errors.email}</div>}
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="password" className="form-label">Contraseña</label>
@@ -45,6 +69,7 @@ function Login() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
+                                {errors.password && <div className="text-danger">{errors.password}</div>}
                             </div>
                             <button
                                 className="btn btn-primary w-100"

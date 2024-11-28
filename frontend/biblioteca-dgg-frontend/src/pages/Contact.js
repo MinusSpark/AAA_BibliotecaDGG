@@ -11,6 +11,32 @@ function Contact() {
     const form = useRef();
     const recaptchaRef = useRef();
     const [captchaValue, setCaptchaValue] = useState(null);
+    const [errors, setErrors] = useState({});
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        if (!form.current.from_name.value) {
+            newErrors.from_name = 'El nombre es requerido';
+        } else if (!/^[a-zA-Z ]+$/.test(form.current.from_name.value)) {
+            newErrors.from_name = 'El nombre debe contener solo letras y espacios';
+        }
+
+        if (!form.current.user_email.value) {
+            newErrors.user_email = 'El correo electrónico es requerido';
+        } else if (!/\S+@\S+\.\S+/.test(form.current.user_email.value)) {
+            newErrors.user_email = 'El correo electrónico no es válido';
+        }
+
+        if (!form.current.message.value) {
+            newErrors.message = 'El mensaje es requerido';
+        } else if (form.current.message.value.length < 10) {
+            newErrors.message = 'El mensaje debe tener al menos 10 caracteres';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const sendEmail = (e) => {
         e.preventDefault();
@@ -20,16 +46,20 @@ function Contact() {
             return;
         }
 
-        emailjs.sendForm('service_ymdwg5n', 'template_8f8utqp', form.current, 'U5ZLx6-OA1gLEW6kq')
-            .then((result) => {
-                console.log(result.text);
-                alert('Mensaje enviado con éxito');
-                recaptchaRef.current.reset();
-                setCaptchaValue(null);
-            }, (error) => {
-                console.log(error.text);
-                alert('Error al enviar el mensaje');
-            });
+        if (validateForm()) {
+            emailjs.sendForm('service_ymdwg5n', 'template_8f8utqp', form.current, 'U5ZLx6-OA1gLEW6kq')
+                .then((result) => {
+                    console.log(result.text);
+                    alert('Mensaje enviado con éxito');
+                    recaptchaRef.current.reset();
+                    setCaptchaValue(null);
+                }, (error) => {
+                    console.log(error.text);
+                    alert('Error al enviar el mensaje');
+                });
+        } else {
+            alert('Por favor, corrige los errores en el formulario');
+        }
     };
 
     const onCaptchaChange = (value) => {
@@ -92,6 +122,7 @@ function Contact() {
                                 name="from_name"
                                 placeholder="Introduce tu nombre"
                             />
+                            {errors.from_name && <div className="text-danger">{errors.from_name}</div>}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="user_email" className="form-label">Correo electrónico</label>
@@ -102,6 +133,7 @@ function Contact() {
                                 name="user_email"
                                 placeholder="Introduce tu correo"
                             />
+                            {errors.user_email && <div className="text-danger">{errors.user_email}</div>}
                         </div>
                         <div className="mb-3">
                             <label htmlFor="message" className="form-label">Mensaje</label>
@@ -110,12 +142,13 @@ function Contact() {
                                 id="message"
                                 name="message"
                                 rows="4"
-                                placeholder="Escribe tu mensaje aquí"
+                                placeholder="Escribe brevemente lo que quieres saber"
                             ></textarea>
+                            {errors.message && <div className="text-danger">{errors.message}</div>}
                         </div>
                         <ReCAPTCHA
                             ref={recaptchaRef}
-                            sitekey="6LepAIwqAAAAALxhSsifF9QAWlWbiuz_8U71-0jh"
+                            sitekey="6LdchowqAAAAAMCvrkK_Q9J6f7gt-RVThvTMMkRC"
                             onChange={onCaptchaChange}
                         />
                         <button type="submit" className="btn btn-primary w-100" to="/">Enviar</button>
