@@ -14,6 +14,8 @@ const AuthorTable = ({ authors, setAuthors }) => {
                 setAuthors([...authors, newAuthor]);
                 setShowAddForm(false);
                 setNewAuthor({ dni: '', nombre: '', apellido: '', fecha_nacimiento: '' });
+            } else {
+                alert(response.data.message);
             }
         } catch (error) {
             console.error('Error adding author:', error);
@@ -26,6 +28,8 @@ const AuthorTable = ({ authors, setAuthors }) => {
                 const response = await axios.delete(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteAuthor&dni=${dni}`);
                 if (response.data.status === 'success') {
                     setAuthors(authors.filter(author => author.dni !== dni));
+                } else {
+                    alert(response.data.message);
                 }
             } catch (error) {
                 console.error('Error deleting author:', error);
@@ -40,6 +44,8 @@ const AuthorTable = ({ authors, setAuthors }) => {
                 setAuthors(authors.map(author => (author.dni === editAuthor.dni ? editAuthor : author)));
                 setShowEditForm(false);
                 setEditAuthor(null);
+            } else {
+                alert(response.data.message);
             }
         } catch (error) {
             console.error('Error updating author:', error);

@@ -11,7 +11,7 @@ const PublisherTable = ({ publishers, setPublishers }) => {
         try {
             const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=addPublisher', newPublisher);
             if (response.data.status === 'success') {
-                setPublishers([...publishers, newPublisher]);
+                setPublishers([...publishers, { ...newPublisher, id: response.data.id }]);
                 setShowAddForm(false);
                 setNewPublisher({ nombre: '', telefono: '', direccion: '', fecha_nacimiento: '' });
             }
@@ -64,8 +64,8 @@ const PublisherTable = ({ publishers, setPublishers }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {publishers.map(publisher => (
-                            <tr key={publisher.id}>
+                        {publishers.map((publisher, index) => (
+                            <tr key={`${publisher.id}-${index}`}>
                                 <td className="text-center">{publisher.id}</td>
                                 <td>{publisher.nombre}</td>
                                 <td>{publisher.telefono}</td>
@@ -86,6 +86,8 @@ const PublisherTable = ({ publishers, setPublishers }) => {
                             </tr>
                         ))}
                     </tbody>
+
+
                 </table>
                 <button
                     onClick={() => setShowAddForm(true)}

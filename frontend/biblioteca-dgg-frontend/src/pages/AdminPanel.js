@@ -64,8 +64,8 @@ const AdminPanel = () => {
                 <UserTable users={users} setUsers={setUsers} />
                 <BookTable books={books} setBooks={setBooks} authors={authors} publishers={publishers} />
                 <BorrowedBooksTable borrowedBooks={borrowedBooks} />
-                <AuthorTable authors={authors} />
-                <PublisherTable publishers={publishers} />
+                <AuthorTable authors={authors} setAuthors={setAuthors}/>
+                <PublisherTable publishers={publishers} setPublishers={setPublishers}/>
             </div>
             <Footer />
         </div>

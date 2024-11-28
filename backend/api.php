@@ -54,6 +54,13 @@ switch ($method) {
                     echo json_encode(['status' => 'error', 'message' => 'No se encontraron usuarios']);
                 }
             }
+        } elseif ($request === 'borrowedBooks') {
+            // Llamar al controlador para obtener los libros prestados
+            $borrowedBooks = ControladorLibrosPrestados::obtenerLibrosPrestados();
+            echo json_encode([
+                'status' => 'success',
+                'data' => $borrowedBooks
+            ]);
         } elseif ($request === 'authors') {
             $autores = ControladorAutor::obtenerAutores();
             if ($autores) {
@@ -151,9 +158,35 @@ switch ($method) {
             }
         }
 
-        /* REGISTRAR LIBROS DESDE EL ADMIN PANEL */ elseif ($request === 'registerBook') {
+        /* REGISTRAR LIBROS, AUTORES Y EDITORIALES DESDE EL ADMIN PANEL */ elseif ($request === 'registerBook') {
             $input = json_decode(file_get_contents("php://input"), true);
             echo json_encode(ControladorLibro::registrarLibro($input));
+        } elseif ($request === 'addAuthor') {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $resultado = ControladorAutor::agregarAutor($input);
+            if ($resultado) {
+                echo json_encode(['status' => 'success', 'message' => 'Autor añadido correctamente']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No se pudo añadir el autor']);
+            }
+        } elseif ($request === 'addPublisher') {
+            $resultado = ControladorEditorial::agregarEditorial($input);
+            if ($resultado) {
+                echo json_encode(['status' => 'success', 'message' => 'Editorial añadida correctamente']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Error al añadir la editorial']);
+            }
+        }
+
+        /* DEVOLUCIÓN DE LIBROS PRESTADOS DESDE EL ADMIN PANEL */ elseif ($request === 'returnBook') {
+            $borrowedBookId = $input['borrowedBookId'];
+
+            $resultado = ControladorLibrosPrestados::devolverLibro($borrowedBookId);
+            if ($resultado) {
+                echo json_encode(['status' => 'success', 'message' => 'Libro devuelto con éxito.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No se pudo devolver el libro.']);
+            }
         }
 
         /* RESERVA LIBROS DESDE INTERFAZ USUARIO */ elseif ($request === 'reserveBook') {
@@ -228,11 +261,27 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'ISBN no proporcionado']);
             }
+        } /* ELIMINAR AUTORES DESDE ADMIN PANEL */ elseif ($request === 'deleteAuthor') {
+            $dni = $_GET['dni'];
+            $resultado = ControladorAutor::eliminarAutor($dni);
+            if ($resultado) {
+                echo json_encode(['status' => 'success', 'message' => 'Autor eliminado correctamente']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No se pudo eliminar el autor']);
+            }
+        } /* ELIMINAR EDITORIALES DESDE ADMIN PANEL */ elseif ($request === 'deletePublisher' && isset($_GET['id'])) {
+            $id = $_GET['id'];
+            $resultado = ControladorEditorial::eliminarEditorial($id);
+            if ($resultado) {
+                echo json_encode(['status' => 'success', 'message' => 'Editorial eliminada correctamente']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Error al eliminar la editorial']);
+            }
         }
         break;
 
     case 'PUT':
-
+        $input = json_decode(file_get_contents("php://input"), true);
         /* ACTUALIZAR/EDITAR USUARIO DESDE INTERFAZ ADMINISTRADOR */
         if ($request === 'updateUser') {
             $input = json_decode(file_get_contents("php://input"), true);
@@ -240,32 +289,48 @@ switch ($method) {
             echo json_encode($resultado);
         }
 
-        /* ACTUALIZAR LIBROS DESDE EL ADMIN PANEL */ else/* ACTUALIZAR LIBROS DESDE EL ADMIN PANEL */
-            if ($request === 'updateBook') {
-                // Obtener los datos enviados en el cuerpo de la solicitud
-                $data = json_decode(file_get_contents("php://input"), true);
+        /* ACTUALIZAR LIBROS DESDE EL ADMIN PANEL */ elseif ($request === 'updateBook') {
+            // Obtener los datos enviados en el cuerpo de la solicitud
+            $data = json_decode(file_get_contents("php://input"), true);
 
-                // Validar que los datos necesarios estén presentes
-                if (
-                    !isset($data['isbn']) || !isset($data['titulo']) || !isset($data['anio']) ||
-                    !isset($data['autor_dni']) || !isset($data['editorial_id']) ||
-                    !isset($data['genero']) || !isset($data['stock']) || !isset($data['portada'])
-                ) {
-                    echo json_encode(['status' => 'error', 'message' => 'Faltan datos para actualizar el libro.']);
-                    exit;
-                }
-
-                // Llamar a la función del controlador para actualizar el libro
-                require_once 'controlador_libro.php';
-                $resultado = ControladorLibro::actualizarLibro($data);
-
-                if ($resultado) {
-                    echo json_encode(['status' => 'success', 'message' => 'Libro actualizado correctamente.']);
-                } else {
-                    echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar el libro.']);
-                }
+            // Validar que los datos necesarios estén presentes
+            if (
+                !isset($data['isbn']) || !isset($data['titulo']) || !isset($data['anio']) ||
+                !isset($data['autor_dni']) || !isset($data['editorial_id']) ||
+                !isset($data['genero']) || !isset($data['stock']) || !isset($data['portada'])
+            ) {
+                echo json_encode(['status' => 'error', 'message' => 'Faltan datos para actualizar el libro.']);
                 exit;
             }
+
+            // Llamar a la función del controlador para actualizar el libro
+            require_once 'controlador_libro.php';
+            $resultado = ControladorLibro::actualizarLibro($data);
+
+            if ($resultado) {
+                echo json_encode(['status' => 'success', 'message' => 'Libro actualizado correctamente.']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar el libro.']);
+            }
+            exit;
+        }
+
+        /* ACTUALIZAR AUTORES DESDE ADMIN PANEL */ elseif ($request === 'updateAuthor') {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $resultado = ControladorAutor::editarAutor($input);
+            if ($resultado) {
+                echo json_encode(['status' => 'success', 'message' => 'Autor actualizado correctamente']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar el autor']);
+            }
+        } /* ACTUALIZAR EDITORIALES DESDE ADMIN PANEL */ elseif ($request === 'updatePublisher') {
+            $resultado = ControladorEditorial::editarEditorial($input);
+            if ($resultado) {
+                echo json_encode(['status' => 'success', 'message' => 'Editorial actualizada correctamente']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Error al actualizar la editorial']);
+            }
+        }
         break;
 
     case 'OPTIONS':
