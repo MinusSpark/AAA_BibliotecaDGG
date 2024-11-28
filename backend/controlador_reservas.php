@@ -1,8 +1,9 @@
 <?php
 require_once 'conexion.php';
 
-class ControladorReservas {
-/* MÉTODO PARA IMPRIMIR LAS RESERVAS PENDIENTES DE ACEPTACIÓN DE ADMINISTRADOR EN EL ADMIN PANEL */
+class ControladorReservas
+{
+    /* MÉTODO PARA IMPRIMIR LAS RESERVAS PENDIENTES DE ACEPTACIÓN DE ADMINISTRADOR EN EL ADMIN PANEL */
     public static function obtenerReservasPendientes()
     {
         $conexion = Conexion::conectar();
@@ -18,22 +19,53 @@ class ControladorReservas {
     public static function obtenerReservasPendientesUsuario($dni)
     {
         $conexion = Conexion::conectar();
-        $sql = "SELECT reservas.id, Libro.titulo, reservas.fecha_reserva 
+        $sql = "SELECT 
+                reservas.id, 
+                Libro.titulo, 
+                reservas.fecha_reserva, 
+                TIMESTAMPDIFF(SECOND, reservas.fecha_reserva, NOW()) AS segundos_transcurridos
             FROM reservas 
             JOIN Libro ON reservas.libro_isbn = Libro.isbn 
             WHERE reservas.usuario_dni = :dni";
         $stmt = $conexion->prepare($sql);
         $stmt->bindParam(':dni', $dni);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $reservas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Calcular el tiempo restante en horas y minutos
+        foreach ($reservas as &$reserva) {
+            $segundosTranscurridos = $reserva['segundos_transcurridos'];
+            $segundosTotales = 24 * 60 * 60; // 24 horas en segundos
+            $segundosRestantes = $segundosTotales - $segundosTranscurridos;
+
+            if ($segundosRestantes <= 0) {
+                // Si el tiempo ha expirado, se puede eliminar la reserva automáticamente
+                $reserva['tiempo_restante'] = "Expirada";
+            } else {
+                $horas = floor($segundosRestantes / 3600);
+                $minutos = floor(($segundosRestantes % 3600) / 60);
+                $reserva['tiempo_restante'] = "{$horas}h {$minutos}m";
+            }
+        }
+        return $reservas;
     }
 
-    
     /* MÉTODO PARA RESERVAR LIBRO DESDE EL HOME */
     public static function reservarLibro($dni, $isbn)
     {
         try {
             $conexion = Conexion::conectar();
+
+            // Verificar el número de reservas existentes
+            $sqlCountReservations = "SELECT COUNT(*) AS total FROM reservas WHERE usuario_dni = :dni AND fecha_reserva > (NOW() - INTERVAL 1 DAY)";
+            $stmtCountReservations = $conexion->prepare($sqlCountReservations);
+            $stmtCountReservations->bindParam(':dni', $dni);
+            $stmtCountReservations->execute();
+            $totalReservas = $stmtCountReservations->fetchColumn();
+
+            if ($totalReservas >= 3) {
+                return false; // No se permite más de 3 reservas activas
+            }
 
             // Comprobar stock disponible
             $sqlCheckStock = "SELECT stock FROM Libro WHERE isbn = :isbn";
@@ -65,6 +97,7 @@ class ControladorReservas {
             return false;
         }
     }
+
 
     /* MÉTODO PARA ACEPTAR RESERVAS COMO ADMINISTRADOR Y TRANSFORMARLAS EN PRÉSTAMOS DESDE EL ADMIN PANEL */
     public function convertirReservaEnPrestamo($reservationId)

@@ -16,6 +16,10 @@ const UserPanel = () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=currentLoans&dni=${user.dni}`);
                 if (response.data.status === 'success') {
+                    const penalized = response.data.data.some((loan) => parseInt(loan.dias_restantes) < 0);
+                    if (penalized) {
+                        alert("Tienes préstamos vencidos. Por favor, devuelve los libros lo antes posible.");
+                    }
                     setCurrentLoans(response.data.data || []);
                 }
             } catch (error) {
@@ -60,13 +64,16 @@ const UserPanel = () => {
                 </div>
                 <div className="row">
                     <div className="col-md-6">
-                        <h3 className="text-primary">Libros Actuales Prestados</h3>
+                        <h3 className="text-primary">Libros Actuales Prestados ({currentLoans.length}/10)</h3>
                         {currentLoans.length > 0 ? (
                             <ul className="list-group">
                                 {currentLoans.map((loan, index) => (
                                     <li key={`${loan.isbn}-${index}`} className="list-group-item">
                                         <strong>{loan.titulo}</strong> <br />
-                                        <small className="text-muted">Fecha de Préstamo: {loan.fecha_prestamo}</small>
+                                        <small className="text-muted">
+                                            Fecha de Préstamo: {loan.fecha_prestamo} <br />
+                                            Tiempo Restante: {loan.dias_restantes}
+                                        </small>
                                     </li>
                                 ))}
                             </ul>
@@ -97,13 +104,19 @@ const UserPanel = () => {
                         )}
                     </div>
                     <div className="col-md-6">
-                        <h3 className="text-info">Reservas Pendientes</h3>
+                        <h3>Reservas Pendientes ({pendingReservations.length}/3)</h3>
                         {pendingReservations.length > 0 ? (
                             <ul className="list-group">
                                 {pendingReservations.map((reservation, index) => (
-                                    <li key={`${reservation.isbn}-${index}`} className="list-group-item">
+                                    <li key={index} className="list-group-item">
                                         <strong>{reservation.titulo}</strong> <br />
-                                        <small className="text-muted">Fecha de Reserva: {reservation.fecha_reserva}</small>
+                                        <small>
+                                            Tiempo Restante: {reservation.tiempo_restante === "Expirada" ? (
+                                                <span className="text-danger">Expirada</span>
+                                            ) : (
+                                                <span className="text-success">{reservation.tiempo_restante}</span>
+                                            )}
+                                        </small>
                                     </li>
                                 ))}
                             </ul>
@@ -113,6 +126,7 @@ const UserPanel = () => {
                             </div>
                         )}
                     </div>
+
                 </div>
             </div>
             <Footer />

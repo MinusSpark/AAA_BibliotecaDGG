@@ -82,6 +82,11 @@ switch ($method) {
                 $dni = $_GET['dni'];
                 $loans = ControladorLibrosPrestados::obtenerLibrosPrestadosPorUsuario($dni);
                 if ($loans) {
+                    foreach ($loans as &$loan) {
+                        $fechaPrestamo = new DateTime($loan['fecha_prestamo']);
+                        $fechaLimite = $fechaPrestamo->add(new DateInterval('P28D'));
+                        $loan['dias_restantes'] = (new DateTime())->diff($fechaLimite)->format('%R%a días');
+                    }
                     echo json_encode(['status' => 'success', 'data' => $loans]);
                 } else {
                     echo json_encode(['status' => 'error', 'message' => 'No se encontraron préstamos actuales']);
@@ -220,9 +225,7 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'No se pudo registrar la donación.']);
             }
-        }  
-        
-        elseif ($request === 'addEvent') {
+        } elseif ($request === 'addEvent') {
             $fecha = $input['fecha'];
             $descripcion = $input['descripcion'];
             $max_asistentes = $input['max_asistentes'];
@@ -239,7 +242,7 @@ switch ($method) {
             $resultado = ControladorEventos::inscribirUsuario($evento_id, $dni, $correo);
             echo json_encode($resultado ? ['status' => 'success'] : ['status' => 'error', 'message' => 'Error al inscribir usuario']);
         }
-    
+
         // Desinscribir usuario de evento
         elseif ($request === 'desinscribirUsuario') {
             $evento_id = $input['evento_id'];
@@ -247,15 +250,12 @@ switch ($method) {
             $correo = $input['correo'];
             $resultado = ControladorEventos::desinscribirUsuario($evento_id, $dni, $correo);
             echo json_encode($resultado);
-        }
-    
-
-        elseif ($request === 'deleteEvent') {
+        } elseif ($request === 'deleteEvent') {
             $id = $input['id'];
             $resultado = ControladorEventos::borrarEvento($id);
             echo json_encode($resultado);
         }
-    
+
         break;
 
     case 'DELETE':

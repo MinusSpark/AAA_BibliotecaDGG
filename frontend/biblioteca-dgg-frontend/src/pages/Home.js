@@ -183,7 +183,6 @@ const Home = () => {
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{book.titulo}</h5>
                       <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
-                      <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
                       <p className="card-text">Año: {book.anio}</p>
                       <p className="card-text">Stock: {book.stock}</p>
                       <div className="mt-auto">

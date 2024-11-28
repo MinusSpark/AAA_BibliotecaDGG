@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../services/AuthContext';
 
 const Search = () => {
     const [books, setBooks] = useState([]);
@@ -15,6 +17,8 @@ const Search = () => {
     const [authors, setAuthors] = useState([]);
     const [genres, setGenres] = useState([]);
     const [sortOrder, setSortOrder] = useState({ stock: 'asc', year: 'asc' });
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchBooks = async () => {
@@ -81,6 +85,28 @@ const Search = () => {
         });
         setFilteredBooks(sortedBooks);
     };
+
+    const handleReservation = async (isbn) => {
+        if (!user) {
+            navigate('/login');
+        } else {
+            try {
+                const response = await axios.post(
+                    'http://localhost/AAA_BibliotecaDGG/backend/api.php?request=reserveBook',
+                    { dni: user.dni, isbn }
+                );
+                if (response.data.status === 'success') {
+                    alert('Reserva realizada con éxito.');
+                } else {
+                    alert('Error al realizar la reserva: ' + response.data.message);
+                }
+            } catch (error) {
+                console.error('Error realizando la reserva:', error);
+                alert('Error al realizar la reserva.');
+            }
+        }
+    };
+
     return (
         <div className="d-flex flex-column min-vh-100">
             <Header />
@@ -113,7 +139,6 @@ const Search = () => {
                     </select>
                 </div>
 
-                {/*
                 <div className="mb-3">
                     <label>Editorial:</label>
                     <select onChange={(e) => setSelectedPublisher(e.target.value)} className="form-select">
@@ -122,8 +147,7 @@ const Search = () => {
                             <option key={index} value={publisher}>{publisher}</option>
                         ))}
                     </select>
-                </div>                
-                */}
+                </div>
 
                 <div className="mb-3">
                     <label>Autor:</label>
@@ -135,7 +159,6 @@ const Search = () => {
                     </select>
                 </div>
 
-                {/*
                 <div className="mb-3">
                     <label>Género:</label>
                     <select onChange={(e) => setSelectedGenre(e.target.value)} className="form-select">
@@ -145,37 +168,43 @@ const Search = () => {
                         ))}
                     </select>
                 </div>
-                */}
 
 
-            <div class="container d-flex flex-row justify-content-center mt-4">
-                <button
-                    onClick={() => handleSort('stock')}
-                    className="btn btn-primary me-2"
-                >
-                    Ordenar por Stock 
-                    {sortOrder.stock === 'asc' ? '↑' : '↓'}
-                </button>
+                <div class="container d-flex flex-row justify-content-center mt-4">
+                    <button
+                        onClick={() => handleSort('stock')}
+                        className="btn btn-primary me-2"
+                    >
+                        Ordenar por Stock
+                        {sortOrder.stock === 'asc' ? '↑' : '↓'}
+                    </button>
 
-                <button
-                    onClick={() => handleSort('year')}
-                    className="btn btn-primary"
-                >
-                    Ordenar por Año 
-                    {sortOrder.year === 'asc' ? '↑' : '↓'}
-                </button>
-            </div>
+                    <button
+                        onClick={() => handleSort('year')}
+                        className="btn btn-primary"
+                    >
+                        Ordenar por Año
+                        {sortOrder.year === 'asc' ? '↑' : '↓'}
+                    </button>
+                </div>
                 <div className="row mt-4">
                     {filteredBooks.map(book => (
-                        <div className="col-md-3 mb-3" key={book.isbn}>
-                            <div className="card">
-                                <img src={book.portada} className="card-img-top" alt={`Portada de ${book.titulo}`} />
-                                <div className="card-body">
+                        <div className="col-md-2 mb-3" key={book.isbn}>
+                            <div className="card" style={{ height: '575px' }}>
+                                <img src={book.portada} className="card-img-top" alt={`Portada de ${book.titulo}`} style={{ height: '300px', objectFit: 'cover' }} />
+                                <div className="card-body d-flex flex-column">
                                     <h5 className="card-title">{book.titulo}</h5>
                                     <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
                                     <p className="card-text">Año: {book.anio}</p>
                                     <p className="card-text">Stock: {book.stock}</p>
-                                    <button className="btn btn-primary">Reservar</button>
+                                    <div className="mt-auto">
+                                        <button
+                                            className="btn btn-primary me-2"
+                                            onClick={() => handleReservation(book.isbn)}
+                                        >
+                                            Reservar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
