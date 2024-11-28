@@ -1,68 +1,77 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import emailjs from 'emailjs-com';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import GoogleMap from '../components/GoogleMap'; // Asegúrate de importar correctamente
+import GoogleMap from '../components/GoogleMap';
 import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
 import Home from './Home.js';
+import ReCAPTCHA from 'react-google-recaptcha';
+
 function Contact() {
     const form = useRef();
+    const recaptchaRef = useRef();
+    const [captchaValue, setCaptchaValue] = useState(null);
 
     const sendEmail = (e) => {
         e.preventDefault();
+
+        if (!captchaValue) {
+            alert('Por favor, verifica el captcha');
+            return;
+        }
 
         emailjs.sendForm('service_ymdwg5n', 'template_8f8utqp', form.current, 'U5ZLx6-OA1gLEW6kq')
             .then((result) => {
                 console.log(result.text);
                 alert('Mensaje enviado con éxito');
+                recaptchaRef.current.reset();
+                setCaptchaValue(null);
             }, (error) => {
                 console.log(error.text);
                 alert('Error al enviar el mensaje');
             });
     };
 
+    const onCaptchaChange = (value) => {
+        setCaptchaValue(value);
+    };
+
     return (
         <div className="d-flex flex-column min-vh-100">
             <Header />
-
             <div
-  style={{
-    backgroundImage: `url(${fondoBiblioteca})`, // Imagen de fondo
-    backgroundSize: 'cover', // Ajustar la imagen para que cubra todo el contenedor
-    backgroundPosition: 'center', // Centrar la imagen
-    backgroundRepeat: 'no-repeat', // Evitar repeticiones
-    filter: 'blur(0px)', // Difuminado de la imagen de fondo
-    position: 'relative', // Para capas internas
-    color: 'white', // Texto en blanco
-    textAlign: 'center', // Centrar el texto horizontalmente
-    padding: '5rem 0', // Espaciado interno para altura del contenedor
-  }}
->
-  {/* Capa semitransparente para oscurecer el fondo */}
-  <div
-    style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Oscurecimiento semitransparente
-      zIndex: 1,
-    }}
-  ></div>
-
-  {/* Título del texto */}
-  <h1
-    style={{
-      position: 'relative', // Colocar encima de la capa de oscurecimiento
-      zIndex: 2, // Asegurar que esté por encima de todo lo demás
-    }}
-  >
-Contacto
-  </h1>
-
-
-</div>
+              style={{
+                backgroundImage: `url(${fondoBiblioteca})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                filter: 'blur(0px)',
+                position: 'relative',
+                color: 'white',
+                textAlign: 'center',
+                padding: '5rem 0',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  zIndex: 1,
+                }}
+              ></div>
+              <h1
+                style={{
+                  position: 'relative',
+                  zIndex: 2,
+                }}
+              >
+                Contacto
+              </h1>
+            </div>
             <div className="container my-auto">
                 <div className="card shadow-lg p-4 mb-4">
                     <h2 className="text-center mb-4">Nuestra Ubicación</h2>
@@ -104,6 +113,11 @@ Contacto
                                 placeholder="Escribe tu mensaje aquí"
                             ></textarea>
                         </div>
+                        <ReCAPTCHA
+                            ref={recaptchaRef}
+                            sitekey="6LepAIwqAAAAALxhSsifF9QAWlWbiuz_8U71-0jh"
+                            onChange={onCaptchaChange}
+                        />
                         <button type="submit" className="btn btn-primary w-100" to="/">Enviar</button>
                     </form>
                     <div className="mt-4 text-center">
