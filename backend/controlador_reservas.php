@@ -149,4 +149,49 @@ class ControladorReservas
             ];
         }
     }
+
+    public static function agregarALaListaDeEspera($dni, $isbn)
+    {
+        try {
+            $conexion = Conexion::conectar();
+            $sql = "INSERT INTO lista_espera (usuario_dni, libro_isbn) VALUES (:dni, :isbn)";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':dni', $dni);
+            $stmt->bindParam(':isbn', $isbn);
+            $stmt->execute();
+            return true;
+        } catch (Exception $e) {
+            error_log("Error en agregarALaListaDeEspera: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public static function procesarListaDeEspera($isbn)
+    {
+        try {
+            $conexion = Conexion::conectar();
+            // Obtener el primer usuario en la lista de espera
+            $sql = "SELECT * FROM lista_espera WHERE libro_isbn = :isbn ORDER BY fecha_registro ASC LIMIT 1";
+            $stmt = $conexion->prepare($sql);
+            $stmt->bindParam(':isbn', $isbn);
+            $stmt->execute();
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($usuario) {
+                // Reservar el libro automáticamente
+                $resultadoReserva = self::reservarLibro($usuario['usuario_dni'], $isbn);
+                if ($resultadoReserva) {
+                    // Eliminar de la lista de espera
+                    $sqlDelete = "DELETE FROM lista_espera WHERE id = :id";
+                    $stmtDelete = $conexion->prepare($sqlDelete);
+                    $stmtDelete->bindParam(':id', $usuario['id']);
+                    $stmtDelete->execute();
+                }
+            }
+            return true;
+        } catch (Exception $e) {
+            error_log("Error en procesarListaDeEspera: " . $e->getMessage());
+            return false;
+        }
+    }
 }

@@ -71,7 +71,7 @@ const Home = () => {
           { dni: user.dni, isbn }
         );
         if (response.data.status === 'success') {
-          alert('Reserva realizada con éxito.');
+          alert(response.data.message);
         } else {
           alert('Error al realizar la reserva: ' + response.data.message);
         }

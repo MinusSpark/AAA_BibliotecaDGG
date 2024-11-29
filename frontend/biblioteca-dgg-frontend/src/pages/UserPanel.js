@@ -9,6 +9,7 @@ const UserPanel = () => {
     const [currentLoans, setCurrentLoans] = useState([]);
     const [loanHistory, setLoanHistory] = useState([]);
     const [pendingReservations, setPendingReservations] = useState([]);
+    const [waitingList, setWaitingList] = useState([]);
 
     // Obtener préstamos actuales
     useEffect(() => {
@@ -48,9 +49,24 @@ const UserPanel = () => {
             }
         };
 
+        const fetchWaitingList = async () => {
+            try {
+                const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=waitingList&dni=${user.dni}`);
+                if (response.data.status === 'success') {
+                    setWaitingList(response.data.data || []);
+                } else {
+                    console.error('Error fetching waiting list:', response.data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching waiting list:', error);
+            }
+        };
+
+
         fetchPendingReservations();
         fetchLoans();
         fetchLoanHistory();
+        fetchWaitingList();
     }, [user.dni]);
 
     return (
@@ -123,6 +139,24 @@ const UserPanel = () => {
                         ) : (
                             <div className="alert alert-info" role="alert">
                                 No tienes reservas pendientes.
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="col-md-6">
+                        <h3>Lista de Espera</h3>
+                        {waitingList.length > 0 ? (
+                            <ul className="list-group">
+                                {waitingList.map((item, index) => (
+                                    <li key={index} className="list-group-item">
+                                        <strong>{item.titulo}</strong> <br />
+                                        <small>Fecha de Registro: {item.fecha_registro}</small>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <div className="alert alert-info" role="alert">
+                                No estás en ninguna lista de espera.
                             </div>
                         )}
                     </div>

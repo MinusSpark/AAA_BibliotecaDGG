@@ -110,6 +110,16 @@ CREATE TABLE inscripciones (
     FOREIGN KEY (usuario_dni) REFERENCES Usuario(dni)
 );
 
+CREATE TABLE lista_espera (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_dni VARCHAR(10) NOT NULL,
+    libro_isbn VARCHAR(13) NOT NULL,
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_dni) REFERENCES usuario(dni),
+    FOREIGN KEY (libro_isbn) REFERENCES libro(isbn)
+);
+
+
 -- Insertar usuarios
 INSERT INTO Usuario (dni, nombre, apellido, telefono, correo, contraseña) VALUES
 ('12345678A', 'Carlos', 'Martinez', 987654321, 'carlos@example.com', 'password1'),

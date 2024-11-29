@@ -1,5 +1,6 @@
 <?php
 require_once 'conexion.php';
+require_once 'controlador_reservas.php';
 
 class ControladorLibrosPrestados
 {
@@ -34,7 +35,6 @@ class ControladorLibrosPrestados
         }
     }
 
-    /* MÉTODO PARA DEVOLVER LIBRO DESDE ADMIN PANEL */
     public static function devolverLibro($borrowedBookId)
     {
         try {
@@ -65,12 +65,16 @@ class ControladorLibrosPrestados
             $stmt->bindParam(':isbn', $libroIsbn, PDO::PARAM_STR);
             $stmt->execute();
 
+            // Procesar la lista de espera
+            ControladorReservas::procesarListaDeEspera($libroIsbn);
+
             return true;
         } catch (Exception $e) {
             error_log("Error al devolver libro: " . $e->getMessage());
             return false;
         }
     }
+
 
 
     /* MÉTODO PARA IMPRIMIR LOS LIBROS PRESTADOS AL USUARIO EN EL USER PANEL */

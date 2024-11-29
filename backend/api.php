@@ -9,6 +9,8 @@ require_once 'controlador_libros_prestados.php';
 require_once 'controlador_reservas.php';
 require_once 'controlador_usuario.php';
 require_once 'controlador_eventos.php';
+require_once 'controlador_lista_espera.php';
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -119,7 +121,17 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'El DNI no ha sido proporcionado.']);
             }
-        } /* OBTENER TODAS LAS DONACIONES */ elseif ($request === 'donations') {
+        } elseif ($request === 'waitingList') {
+            $controlador = new ControladorListaEspera();
+            if (isset($_GET['dni'])) {
+                $dni = $_GET['dni'];
+                echo json_encode($controlador->obtenerListaEsperaUsuario($dni));
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'El parámetro DNI es obligatorio']);
+            }
+        }
+
+        /* OBTENER TODAS LAS DONACIONES */ elseif ($request === 'donations') {
             $donaciones = ControladorDonacion::obtenerDonaciones();
             if ($donaciones) {
                 echo json_encode(['status' => 'success', 'data' => $donaciones]);
@@ -194,6 +206,7 @@ switch ($method) {
             }
         }
 
+
         /* RESERVA LIBROS DESDE INTERFAZ USUARIO */ elseif ($request === 'reserveBook') {
             $dni = $input['dni'];
             $isbn = $input['isbn'];
@@ -201,7 +214,13 @@ switch ($method) {
             if ($resultado) {
                 echo json_encode(['status' => 'success', 'message' => 'Reserva realizada con éxito.']);
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'No se pudo realizar la reserva.']);
+                // Intentar agregar a la lista de espera
+                $agregadoListaEspera = ControladorReservas::agregarALaListaDeEspera($dni, $isbn);
+                if ($agregadoListaEspera) {
+                    echo json_encode(['status' => 'success', 'message' => 'El libro no está disponible. Has sido añadido a la lista de espera.']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se pudo realizar la reserva ni añadir a la lista de espera.']);
+                }
             }
         }
 

@@ -96,7 +96,7 @@ const Search = () => {
                     { dni: user.dni, isbn }
                 );
                 if (response.data.status === 'success') {
-                    alert('Reserva realizada con éxito.');
+                    alert(response.data.message);
                 } else {
                     alert('Error al realizar la reserva: ' + response.data.message);
                 }
@@ -106,6 +106,7 @@ const Search = () => {
             }
         }
     };
+
 
     return (
         <div className="d-flex flex-column min-vh-100">
@@ -170,7 +171,7 @@ const Search = () => {
                 </div>
 
 
-                <div class="container d-flex flex-row justify-content-center mt-4">
+                <div className="container d-flex flex-row justify-content-center mt-4">
                     <button
                         onClick={() => handleSort('stock')}
                         className="btn btn-primary me-2"
