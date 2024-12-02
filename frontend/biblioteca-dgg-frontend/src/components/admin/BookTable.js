@@ -133,45 +133,48 @@ const BookTable = ({ books, setBooks }) => {
                 <h2 className="h6 mb-0">Libros Disponibles</h2>
             </div>
             <div className="card-body p-2">
-                <table className="table table-bordered table-sm">
-                    <thead className="table-light">
-                        <tr>
-                            <th className="text-center">ISBN</th>
-                            <th className="text-center">Título</th>
-                            <th className="text-center">Año</th>
-                            <th className="text-center">Autor</th>
-                            <th className="text-center">Editorial</th>
-                            <th className="text-center">Género</th>
-                            <th className="text-center">Stock</th>
-                            <th className="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {books.map(book => (
-                            <tr key={book.isbn}>
-                                <td className="text-center">{book.isbn}</td>
-                                <td>{book.titulo}</td>
-                                <td className="text-center">{book.anio}</td>
-                                <td>{book.autor_nombre} {book.autor_apellido}</td>
-                                <td>{book.editorial_nombre}</td>
-                                <td>{book.genero}</td>
-                                <td className="text-center">{book.stock}</td>
-                                <td className="text-center">
-                                    <button
-                                        onClick={() => handleOpenEditForm(book)}
-                                        className="btn btn-warning btn-sm me-1">
-                                        Editar
-                                    </button>
-                                    <button
-                                        onClick={() => handleDeleteBook(book.isbn)}
-                                        className="btn btn-danger btn-sm">
-                                        Eliminar
-                                    </button>
-                                </td>
+                {/* Aquí agregamos la clase 'table-responsive' para que la tabla sea desplazable en pantallas pequeñas */}
+                <div className="table-responsive">
+                    <table className="table table-bordered table-sm">
+                        <thead className="table-light">
+                            <tr>
+                                <th className="text-center">ISBN</th>
+                                <th className="text-center">Título</th>
+                                <th className="text-center">Año</th>
+                                <th className="text-center">Autor</th>
+                                <th className="text-center">Editorial</th>
+                                <th className="text-center">Género</th>
+                                <th className="text-center">Stock</th>
+                                <th className="text-center">Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {books.map(book => (
+                                <tr key={book.isbn}>
+                                    <td className="text-center">{book.isbn}</td>
+                                    <td>{book.titulo}</td>
+                                    <td className="text-center">{book.anio}</td>
+                                    <td>{book.autor_nombre} {book.autor_apellido}</td>
+                                    <td>{book.editorial_nombre}</td>
+                                    <td>{book.genero}</td>
+                                    <td className="text-center">{book.stock}</td>
+                                    <td className="text-center">
+                                        <button
+                                            onClick={() => handleOpenEditForm(book)}
+                                            className="btn btn-warning btn-sm me-1">
+                                            Editar
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteBook(book.isbn)}
+                                            className="btn btn-danger btn-sm">
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
                 <button
                     onClick={() => setShowAddForm(true)}
                     className="btn btn-success btn-sm mt-2">
@@ -186,6 +189,7 @@ const BookTable = ({ books, setBooks }) => {
                         <h3 className="h6 mb-0">{editMode ? 'Editar Libro' : 'Añadir Libro'}</h3>
                     </div>
                     <div className="card-body p-2">
+                        {/* Inputs para añadir o editar libro */}
                         <input
                             type="text"
                             className="form-control mb-2"
@@ -221,7 +225,6 @@ const BookTable = ({ books, setBooks }) => {
                             ))}
                         </select>
 
-
                         <select
                             className="form-control mb-2"
                             value={newBook.editorial_id} // Asegúrate de que el valor corresponda a la editorial actual
@@ -234,7 +237,6 @@ const BookTable = ({ books, setBooks }) => {
                                 </option>
                             ))}
                         </select>
-
 
                         <input
                             type="text"
@@ -268,6 +270,7 @@ const BookTable = ({ books, setBooks }) => {
             )}
         </div>
     );
+
 };
 
 export default BookTable;

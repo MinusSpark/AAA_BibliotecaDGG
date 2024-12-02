@@ -74,40 +74,41 @@ const AuthorTable = ({ authors, setAuthors }) => {
                 <h2 className="h6 mb-0">Autores</h2>
             </div>
             <div className="card-body p-2">
-                <table className="table table-bordered table-striped table-sm">
-                    <thead className="table-light">
-                        <tr>
-                            <th className="small">DNI</th>
-                            <th className="small">Nombre</th>
-                            <th className="small">Apellido</th>
-                            <th className="small">Fecha de Nacimiento</th>
-                            <th className="small">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Iteramos sobre los autores y mostramos sus datos */}
-                        {authors.map(author => (
-                            <tr key={author.dni}>
-                                <td className="small">{author.dni}</td>
-                                <td className="small">{author.nombre}</td>
-                                <td className="small">{author.apellido}</td>
-                                <td className="small">{author.fecha_nacimiento}</td>
-                                <td>
-                                    <button
-                                        onClick={() => { setEditAuthor(author); setShowEditForm(true); }}
-                                        className="btn btn-warning btn-sm me-1">
-                                        Editar
-                                    </button>
-                                    <button
-                                        onClick={() => handleDeleteAuthor(author.dni)}
-                                        className="btn btn-danger btn-sm">
-                                        Eliminar
-                                    </button>
-                                </td>
+                <div className="table-responsive">
+                    <table className="table table-bordered table-striped table-sm">
+                        <thead className="table-light">
+                            <tr>
+                                <th className="small">DNI</th>
+                                <th className="small">Nombre</th>
+                                <th className="small">Apellido</th>
+                                <th className="small">Fecha de Nacimiento</th>
+                                <th className="small">Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {authors.map(author => (
+                                <tr key={author.dni}>
+                                    <td className="small">{author.dni}</td>
+                                    <td className="small">{author.nombre}</td>
+                                    <td className="small">{author.apellido}</td>
+                                    <td className="small">{author.fecha_nacimiento}</td>
+                                    <td>
+                                        <button
+                                            onClick={() => { setEditAuthor(author); setShowEditForm(true); }}
+                                            className="btn btn-warning btn-sm me-1">
+                                            Editar
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteAuthor(author.dni)}
+                                            className="btn btn-danger btn-sm">
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
                 <button
                     onClick={() => setShowAddForm(true)}
                     className="btn btn-success btn-sm">

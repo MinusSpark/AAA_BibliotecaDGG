@@ -60,52 +60,56 @@ const BorrowedBooksTable = () => {
                 <h2 className="h6 mb-0">Libros Prestados</h2>
             </div>
             <div className="card-body p-2">
-                <table className="table table-bordered table-sm">
-                    <thead className="table-light">
-                        <tr>
-                            {/* Encabezados de la tabla */}
-                            <th className="text-center">ID</th>
-                            <th className="text-center">ISBN</th>
-                            <th className="text-center">Título del Libro</th>
-                            <th className="text-center">DNI Usuario</th>
-                            <th className="text-center">Nombre del Usuario</th>
-                            <th className="text-center">Fecha Préstamo</th>
-                            <th className="text-center">Fecha Devolución</th>
-                            <th className="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Renderiza cada libro prestado en una fila de la tabla */}
-                        {borrowedBooks.map(borrowed => (
-                            <tr key={borrowed.id}>
-                                <td className="text-center">{borrowed.id}</td>
-                                <td className="text-center">{borrowed.isbn}</td>
-                                <td>{borrowed.libro_titulo}</td>
-                                <td className="text-center">{borrowed.dni_usuario}</td>
-                                <td>{borrowed.usuario_nombre} {borrowed.usuario_apellido}</td>
-                                <td className="text-center">{new Date(borrowed.fecha_prestamo).toLocaleString()}</td>
-                                {/* Si la fecha de devolución no existe, muestra 'No devuelto' */}
-                                <td className="text-center">
-                                    {borrowed.fecha_devolucion ? new Date(borrowed.fecha_devolucion).toLocaleString() : 'No devuelto'}
-                                </td>
-                                <td className="text-center">
-                                    {/* Muestra el botón de devolución solo si el libro no ha sido devuelto */}
-                                    {!borrowed.fecha_devolucion && (
-                                        <button
-                                            className="btn btn-sm btn-success"
-                                            onClick={() => handleReturnBook(borrowed.id)}  // Al hacer clic, se llama a la función para devolver el libro
-                                        >
-                                            Devolución
-                                        </button>
-                                    )}
-                                </td>
+                {/* Agregamos la clase 'table-responsive' para hacer que la tabla sea desplazable en pantallas pequeñas */}
+                <div className="table-responsive">
+                    <table className="table table-bordered table-sm">
+                        <thead className="table-light">
+                            <tr>
+                                {/* Encabezados de la tabla */}
+                                <th className="text-center">ID</th>
+                                <th className="text-center">ISBN</th>
+                                <th className="text-center">Título del Libro</th>
+                                <th className="text-center">DNI Usuario</th>
+                                <th className="text-center">Nombre del Usuario</th>
+                                <th className="text-center">Fecha Préstamo</th>
+                                <th className="text-center">Fecha Devolución</th>
+                                <th className="text-center">Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {/* Renderiza cada libro prestado en una fila de la tabla */}
+                            {borrowedBooks.map(borrowed => (
+                                <tr key={borrowed.id}>
+                                    <td className="text-center">{borrowed.id}</td>
+                                    <td className="text-center">{borrowed.isbn}</td>
+                                    <td>{borrowed.libro_titulo}</td>
+                                    <td className="text-center">{borrowed.dni_usuario}</td>
+                                    <td>{borrowed.usuario_nombre} {borrowed.usuario_apellido}</td>
+                                    <td className="text-center">{new Date(borrowed.fecha_prestamo).toLocaleString()}</td>
+                                    {/* Si la fecha de devolución no existe, muestra 'No devuelto' */}
+                                    <td className="text-center">
+                                        {borrowed.fecha_devolucion ? new Date(borrowed.fecha_devolucion).toLocaleString() : 'No devuelto'}
+                                    </td>
+                                    <td className="text-center">
+                                        {/* Muestra el botón de devolución solo si el libro no ha sido devuelto */}
+                                        {!borrowed.fecha_devolucion && (
+                                            <button
+                                                className="btn btn-sm btn-success"
+                                                onClick={() => handleReturnBook(borrowed.id)}  // Al hacer clic, se llama a la función para devolver el libro
+                                            >
+                                                Devolución
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
+
 };
 
 export default BorrowedBooksTable;

@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../services/AuthContext';
+import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
 
 const Search = () => {
     // Estados para almacenar los libros, filtros y datos de búsqueda
@@ -121,10 +122,43 @@ const Search = () => {
     // JSX para renderizar el formulario de búsqueda, filtros, y la lista de libros
     return (
         <div className="d-flex flex-column min-vh-100">
-            <Header />  
-
+            <Header />
+            {/* Sección de fondo con imagen y estilo */}
+            <div
+                style={{
+                    backgroundImage: `url(${fondoBiblioteca})`,  // Establece la imagen de fondo
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    filter: 'blur(0px)',  // Sin filtro de desenfoque
+                    position: 'relative',
+                    color: 'white',
+                    textAlign: 'center',
+                    padding: '5rem 0',  // Padding para darle espacio a la sección
+                }}
+            >
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Filtro oscuro para mejorar la legibilidad del texto
+                        zIndex: 1,
+                    }}
+                ></div>
+                <h1
+                    style={{
+                        position: 'relative',
+                        zIndex: 2,
+                    }}
+                >
+                    Buscar Libros
+                </h1>
+            </div>
             <div className="container my-5">
-                <h1 className="text-center">Buscar Libros</h1>
+
 
                 {/* Campo de búsqueda por título */}
                 <input
@@ -147,7 +181,7 @@ const Search = () => {
                     </select>
                 </div>
 
-                {/* Filtro por editorial */}
+                {/* Filtro por editorial 
                 <div className="mb-3">
                     <label>Editorial:</label>
                     <select onChange={(e) => setSelectedPublisher(e.target.value)} className="form-select">
@@ -156,7 +190,7 @@ const Search = () => {
                             <option key={index} value={publisher}>{publisher}</option>
                         ))}
                     </select>
-                </div>
+                </div>*/}
 
                 {/* Filtro por autor */}
                 <div className="mb-3">
@@ -202,9 +236,14 @@ const Search = () => {
                 {/* Muestra los libros filtrados */}
                 <div className="row mt-4">
                     {filteredBooks.map(book => (
-                        <div className="col-md-2 mb-3" key={book.isbn}>
-                            <div className="card" style={{ height: '575px' }}>
-                                <img src={book.portada} className="card-img-top" alt={`Portada de ${book.titulo}`} style={{ height: '300px', objectFit: 'cover' }} />
+                        <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-3" key={book.isbn}>
+                            <div className="card shadow border-light" style={{ height: '575px' }}>
+                                <img
+                                    src={book.portada}
+                                    className="card-img-top"
+                                    alt={`Portada de ${book.titulo}`}
+                                    style={{ height: '300px', objectFit: 'cover' }}
+                                />
                                 <div className="card-body d-flex flex-column">
                                     <h5 className="card-title">{book.titulo}</h5>
                                     <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
@@ -212,8 +251,8 @@ const Search = () => {
                                     <p className="card-text">Stock: {book.stock}</p>
                                     <div className="mt-auto">
                                         <button
-                                            className="btn btn-primary me-2"
-                                            onClick={() => handleReservation(book.isbn)}  // Llama a handleReservation cuando se hace clic
+                                            className="btn btn-primary w-100"
+                                            onClick={() => handleReservation(book.isbn)} // Llama a handleReservation cuando se hace clic
                                         >
                                             Reservar
                                         </button>
@@ -223,9 +262,10 @@ const Search = () => {
                         </div>
                     ))}
                 </div>
+
             </div>
 
-            <Footer /> 
+            <Footer />
         </div>
     );
 };

@@ -114,7 +114,7 @@ export const AuthProvider = ({ children }) => {
     // Proveedor del contexto que permitirá acceder a los valores de usuario y las funciones desde cualquier componente hijo
     return (
         <AuthContext.Provider value={{ user, login, logout, getEvents, addEvent, deleteEvent, inscribirUsuario, desinscribirUsuario }}>
-            {children}  // Renderiza los componentes hijos con el contexto disponible
+            {children} 
         </AuthContext.Provider>
     );
 };

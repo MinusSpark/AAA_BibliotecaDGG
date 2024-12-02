@@ -36,41 +36,45 @@ const ReservationsTable = ({ reservations, setReservations, setBorrowedBooks }) 
                 <h2 className="h6 mb-0">Reservas Pendientes</h2>
             </div>
             <div className="card-body p-2">
-                <table className="table table-bordered table-sm">
-                    <thead className='table-light'>
-                        <tr>
-                            {/* Encabezados de la tabla */}
-                            <th className='text-center'>ID</th>
-                            <th className='text-center'>Usuario DNI</th>
-                            <th className='text-center'>Libro ISBN</th>
-                            <th className='text-center'>Fecha Reserva</th>
-                            <th className='text-center'>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Mapea las reservas y muestra cada una en una fila */}
-                        {reservations.map(reservation => (
-                            <tr key={reservation.id}>
-                                <td>{reservation.id}</td>
-                                <td>{reservation.usuario_dni}</td>
-                                <td>{reservation.libro_isbn}</td>
-                                <td>{new Date(reservation.fecha_reserva).toLocaleString()}</td>
-                                <td className='text-center'>
-                                    {/* Botón para aprobar la reserva y convertirla en un préstamo */}
-                                    <button
-                                        className="btn btn-success"
-                                        onClick={() => approveReservation(reservation.id)}
-                                    >
-                                        Aprobar
-                                    </button>
-                                </td>
+                {/* Hacemos la tabla desplazable en pantallas pequeñas usando 'table-responsive' */}
+                <div className="table-responsive">
+                    <table className="table table-bordered table-sm">
+                        <thead className='table-light'>
+                            <tr>
+                                {/* Encabezados de la tabla */}
+                                <th className='text-center'>ID</th>
+                                <th className='text-center'>Usuario DNI</th>
+                                <th className='text-center'>Libro ISBN</th>
+                                <th className='text-center'>Fecha Reserva</th>
+                                <th className='text-center'>Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {/* Mapea las reservas y muestra cada una en una fila */}
+                            {reservations.map(reservation => (
+                                <tr key={reservation.id}>
+                                    <td>{reservation.id}</td>
+                                    <td>{reservation.usuario_dni}</td>
+                                    <td>{reservation.libro_isbn}</td>
+                                    <td>{new Date(reservation.fecha_reserva).toLocaleString()}</td>
+                                    <td className='text-center'>
+                                        {/* Botón para aprobar la reserva y convertirla en un préstamo */}
+                                        <button
+                                            className="btn btn-success btn-sm"
+                                            onClick={() => approveReservation(reservation.id)}
+                                        >
+                                            Aprobar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );
+
 };
 
 export default ReservationsTable;

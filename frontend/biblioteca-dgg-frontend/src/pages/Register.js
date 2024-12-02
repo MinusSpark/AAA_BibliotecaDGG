@@ -119,7 +119,7 @@ function Register() {
                             <div className="d-flex justify-content-center align-items-center">
                                 <h2 className="text-center mb-4">Registro</h2>
                                 <Button variant="link" size="sm" onClick={handleShow}>
-                                    <i className="bi bi-question-circle"></i> {/* Asegúrate de que la clase bi bi-question-circle esté presente */}
+                                    <i className="bi bi-question-circle"></i>
                                 </Button>
                             </div>
 
@@ -220,13 +220,15 @@ function Register() {
                     <p><strong>Apellido:</strong> Debe contener solo letras y espacios.</p>
                     <p><strong>Teléfono:</strong> Debe contener 9 dígitos.</p>
                     <p><strong>Correo Electrónico:</strong> Debe seguir el formato ejemplo@dominio.com</p>
-                    <p><strong>Contraseña:</strong>
+                    <p><strong>Contraseña:</strong></p>
+                    <div>
                         <ul>
                             <li>Debe tener al menos 8 caracteres y no más de 9.</li>
                             <li>La primera letra debe ser mayúscula.</li>
                             <li>Debe contener al menos un número.</li>
                         </ul>
-                    </p>
+                    </div>
+
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

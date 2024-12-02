@@ -187,9 +187,14 @@ const Home = () => {
           <div className="card-body">
             <div className="row">
               {books.map(book => (
-                <div className="col-md-2 mb-3" key={book.isbn}>
-                  <div className="card" style={{ height: '575px' }}>
-                    <img src={book.portada} className="card-img-top" alt={`Portada de ${book.titulo}`} style={{ height: '300px', objectFit: 'cover' }} />
+                <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-3" key={book.isbn}>
+                  <div className="card shadow border-light" style={{ height: '575px' }}>
+                    <img
+                      src={book.portada}
+                      className="card-img-top"
+                      alt={`Portada de ${book.titulo}`}
+                      style={{ height: '300px', objectFit: 'cover' }}
+                    />
                     <div className="card-body d-flex flex-column">
                       <h5 className="card-title">{book.titulo}</h5>
                       <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
@@ -197,7 +202,7 @@ const Home = () => {
                       <p className="card-text">Stock: {book.stock}</p>
                       <div className="mt-auto">
                         <button
-                          className="btn btn-primary me-2"
+                          className="btn btn-primary w-100"
                           onClick={() => handleReservation(book.isbn)}
                         >
                           Reservar
@@ -210,6 +215,7 @@ const Home = () => {
             </div>
           </div>
         </div>
+
 
         <div className="container-fluid">
           <div className="row d-flex flex-row">

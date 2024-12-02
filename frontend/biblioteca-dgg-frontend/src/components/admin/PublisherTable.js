@@ -62,45 +62,48 @@ const PublisherTable = ({ publishers, setPublishers }) => {
                 <h2 className="h6 mb-0">Editoriales</h2>
             </div>
             <div className="card-body p-2">
-                <table className="table table-bordered table-sm">
-                    <thead className="table-light">
-                        <tr>
-                            {/* Encabezados de la tabla */}
-                            <th className="text-center">ID</th>
-                            <th>Nombre</th>
-                            <th>Teléfono</th>
-                            <th>Dirección</th>
-                            <th>Fecha de Nacimiento</th>
-                            <th className="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Mapea los datos de las editoriales y muestra cada una en una fila */}
-                        {publishers.map((publisher, index) => (
-                            <tr key={`${publisher.id}-${index}`}>
-                                <td className="text-center">{publisher.id}</td>
-                                <td>{publisher.nombre}</td>
-                                <td>{publisher.telefono}</td>
-                                <td>{publisher.direccion}</td>
-                                <td>{publisher.fecha_nacimiento}</td>
-                                <td className="text-center">
-                                    {/* Botón para editar la editorial */}
-                                    <button
-                                        onClick={() => { setEditPublisher(publisher); setShowEditForm(true); }}
-                                        className="btn btn-warning btn-sm me-1">
-                                        Editar
-                                    </button>
-                                    {/* Botón para eliminar la editorial */}
-                                    <button
-                                        onClick={() => handleDeletePublisher(publisher.id)}
-                                        className="btn btn-danger btn-sm">
-                                        Eliminar
-                                    </button>
-                                </td>
+                {/* Agregamos la clase 'table-responsive' para hacer la tabla desplazable horizontalmente en pantallas pequeñas */}
+                <div className="table-responsive">
+                    <table className="table table-bordered table-sm">
+                        <thead className="table-light">
+                            <tr>
+                                {/* Encabezados de la tabla */}
+                                <th className="text-center">ID</th>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Fecha de Nacimiento</th>
+                                <th className="text-center">Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {/* Mapea los datos de las editoriales y muestra cada una en una fila */}
+                            {publishers.map((publisher, index) => (
+                                <tr key={`${publisher.id}-${index}`}>
+                                    <td className="text-center">{publisher.id}</td>
+                                    <td>{publisher.nombre}</td>
+                                    <td>{publisher.telefono}</td>
+                                    <td>{publisher.direccion}</td>
+                                    <td>{publisher.fecha_nacimiento}</td>
+                                    <td className="text-center">
+                                        {/* Botón para editar la editorial */}
+                                        <button
+                                            onClick={() => { setEditPublisher(publisher); setShowEditForm(true); }}
+                                            className="btn btn-warning btn-sm me-1">
+                                            Editar
+                                        </button>
+                                        {/* Botón para eliminar la editorial */}
+                                        <button
+                                            onClick={() => handleDeletePublisher(publisher.id)}
+                                            className="btn btn-danger btn-sm">
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
                 {/* Botón para mostrar el formulario de añadir una nueva editorial */}
                 <button
                     onClick={() => setShowAddForm(true)}
@@ -183,6 +186,7 @@ const PublisherTable = ({ publishers, setPublishers }) => {
             )}
         </div>
     );
+
 };
 
 export default PublisherTable;

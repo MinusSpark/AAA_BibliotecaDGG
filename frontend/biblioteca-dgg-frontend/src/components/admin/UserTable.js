@@ -1,10 +1,10 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import axios from 'axios';
 
 const UserTable = ({ users, setUsers }) => {
     // Estado para almacenar los datos de un nuevo usuario
     const [newUser, setNewUser] = useState({ dni: '', nombre: '', apellido: '', telefono: '', correo: '', password: '' });
-    
+
     // Estado para almacenar los datos del usuario que se va a editar
     const [editUser, setEditUser] = useState(null);
 
@@ -17,7 +17,7 @@ const UserTable = ({ users, setUsers }) => {
         try {
             // Se envía una solicitud POST para agregar el usuario
             const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=registerUser', newUser);
-            
+
             if (response.data.status === 'success') {
                 // Si la respuesta es exitosa, se actualiza el estado de los usuarios
                 setUsers([...users, newUser]);
@@ -37,7 +37,7 @@ const UserTable = ({ users, setUsers }) => {
             try {
                 // Se envía una solicitud DELETE para eliminar el usuario
                 const response = await axios.delete(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteUser&dni=${dni}`);
-                
+
                 if (response.data.status === 'success') {
                     // Si la respuesta es exitosa, se actualiza la lista de usuarios
                     setUsers(users.filter(user => user.dni !== dni));
@@ -57,7 +57,7 @@ const UserTable = ({ users, setUsers }) => {
         try {
             // Se envía una solicitud PUT para actualizar los datos del usuario
             const response = await axios.put('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=updateUser', editUser);
-            
+
             if (response.data.status === 'success') {
                 // Si la respuesta es exitosa, se actualiza el estado de los usuarios
                 setUsers(users.map(user => (user.dni === editUser.dni ? editUser : user)));
@@ -77,45 +77,48 @@ const UserTable = ({ users, setUsers }) => {
                 <h2 className="h6 mb-0">Usuarios Registrados</h2>
             </div>
             <div className="card-body p-2">
-                <table className="table table-bordered table-sm">
-                    <thead className="table-light">
-                        <tr>
-                            {/* Encabezados de la tabla */}
-                            <th className="text-center">DNI</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Teléfono</th>
-                            <th>Correo</th>
-                            <th className="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {/* Mapea los usuarios y muestra una fila por cada uno */}
-                        {users.map(user => (
-                            <tr key={user.dni}>
-                                <td className="text-center">{user.dni}</td>
-                                <td>{user.nombre}</td>
-                                <td>{user.apellido}</td>
-                                <td>{user.telefono}</td>
-                                <td>{user.correo}</td>
-                                <td className="text-center">
-                                    {/* Botón para editar usuario */}
-                                    <button
-                                        onClick={() => { setEditUser(user); setShowEditForm(true); }}
-                                        className="btn btn-warning btn-sm me-1">
-                                        Editar
-                                    </button>
-                                    {/* Botón para eliminar usuario */}
-                                    <button
-                                        onClick={() => handleDeleteUser(user.dni)}
-                                        className="btn btn-danger btn-sm">
-                                        Eliminar
-                                    </button>
-                                </td>
+                {/* Hacemos la tabla desplazable en pantallas pequeñas usando 'table-responsive' */}
+                <div className="table-responsive">
+                    <table className="table table-bordered table-sm">
+                        <thead className="table-light">
+                            <tr>
+                                {/* Encabezados de la tabla */}
+                                <th className="text-center">DNI</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Teléfono</th>
+                                <th>Correo</th>
+                                <th className="text-center">Acciones</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {/* Mapea los usuarios y muestra una fila por cada uno */}
+                            {users.map(user => (
+                                <tr key={user.dni}>
+                                    <td className="text-center">{user.dni}</td>
+                                    <td>{user.nombre}</td>
+                                    <td>{user.apellido}</td>
+                                    <td>{user.telefono}</td>
+                                    <td>{user.correo}</td>
+                                    <td className="text-center">
+                                        {/* Botón para editar usuario */}
+                                        <button
+                                            onClick={() => { setEditUser(user); setShowEditForm(true); }}
+                                            className="btn btn-warning btn-sm me-1">
+                                            Editar
+                                        </button>
+                                        {/* Botón para eliminar usuario */}
+                                        <button
+                                            onClick={() => handleDeleteUser(user.dni)}
+                                            className="btn btn-danger btn-sm">
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
                 {/* Botón para mostrar el formulario de agregar usuario */}
                 <button
                     onClick={() => setShowAddForm(true)}
@@ -214,6 +217,7 @@ const UserTable = ({ users, setUsers }) => {
             )}
         </div>
     );
+
 };
 
 export default UserTable;

@@ -25,9 +25,6 @@ function Footer() {
                                 <Link to="/search" className="text-white text-decoration-none">Libros</Link>
                             </li>
                             <li>
-                                <Link to="/donation" className="text-white text-decoration-none">Donar</Link>
-                            </li>
-                            <li>
                                 <Link to="/contact" className="text-white text-decoration-none">Contacto</Link>
                             </li>
                         </ul>

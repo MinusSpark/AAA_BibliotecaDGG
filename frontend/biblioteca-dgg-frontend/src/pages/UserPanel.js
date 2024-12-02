@@ -3,11 +3,12 @@ import { AuthContext } from '../services/AuthContext';
 import axios from 'axios';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
 
 const UserPanel = () => {
     const { user } = useContext(AuthContext);  // Obtiene el usuario actual desde el contexto
     // Estados para almacenar los datos de los préstamos actuales, historial de préstamos, reservas pendientes y lista de espera
-    const [currentLoans, setCurrentLoans] = useState([]);  
+    const [currentLoans, setCurrentLoans] = useState([]);
     const [loanHistory, setLoanHistory] = useState([]);
     const [pendingReservations, setPendingReservations] = useState([]);
     const [waitingList, setWaitingList] = useState([]);
@@ -78,16 +79,46 @@ const UserPanel = () => {
 
     return (
         <div className="d-flex flex-column min-vh-100">
-            <Header /> 
-            <div className="container flex-grow-1 my-5">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h2 className="text-center mb-4">Panel de Usuario</h2>
-                    </div>
-                </div>
+            <Header />
+
+            {/* Sección de fondo con imagen y estilo */}
+            <div
+                style={{
+                    backgroundImage: `url(${fondoBiblioteca})`,  // Establece la imagen de fondo
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    filter: 'blur(0px)',  // Sin filtro de desenfoque
+                    position: 'relative',
+                    color: 'white',
+                    textAlign: 'center',
+                    padding: '5rem 0',  // Padding para darle espacio a la sección
+                }}
+            >
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Filtro oscuro para mejorar la legibilidad del texto
+                        zIndex: 1,
+                    }}
+                ></div>
+                <h1
+                    style={{
+                        position: 'relative',
+                        zIndex: 2,
+                    }}
+                >
+                    Panel de Usuario
+                </h1>
+            </div>
+            <div className="container-fluid flex-grow-1 my-5">
                 <div className="row">
                     {/* Sección de préstamos actuales */}
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6 mb-4">
                         <h3 className="text-primary">Libros Actuales Prestados ({currentLoans.length}/10)</h3>
                         {currentLoans.length > 0 ? (
                             <ul className="list-group">
@@ -109,7 +140,7 @@ const UserPanel = () => {
                     </div>
 
                     {/* Sección de historial de préstamos */}
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6 mb-4">
                         <h3 className="text-secondary">Historial de Préstamos</h3>
                         {loanHistory.length > 0 ? (
                             <ul className="list-group">
@@ -131,7 +162,7 @@ const UserPanel = () => {
                     </div>
 
                     {/* Sección de reservas pendientes */}
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6 mb-4">
                         <h3>Reservas Pendientes ({pendingReservations.length}/3)</h3>
                         {pendingReservations.length > 0 ? (
                             <ul className="list-group">
@@ -156,7 +187,7 @@ const UserPanel = () => {
                     </div>
 
                     {/* Sección de lista de espera */}
-                    <div className="col-md-6">
+                    <div className="col-12 col-md-6 mb-4">
                         <h3>Lista de Espera</h3>
                         {waitingList.length > 0 ? (
                             <ul className="list-group">
@@ -175,9 +206,10 @@ const UserPanel = () => {
                     </div>
                 </div>
             </div>
-            <Footer /> 
+            <Footer />
         </div>
     );
+
 };
 
 export default UserPanel;

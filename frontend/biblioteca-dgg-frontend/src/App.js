@@ -12,6 +12,10 @@ import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Donacion from './pages/Donation';
 
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 const App = () => {
     return (
         <Router>
