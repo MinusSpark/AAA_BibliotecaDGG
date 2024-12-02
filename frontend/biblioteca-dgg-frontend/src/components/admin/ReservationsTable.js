@@ -2,23 +2,29 @@ import axios from 'axios';
 
 const ReservationsTable = ({ reservations, setReservations, setBorrowedBooks }) => {
 
+    // Función para aprobar una reserva y convertirla en un préstamo
     const approveReservation = async (reservationId) => {
         try {
+            // Enviar una solicitud POST para convertir la reserva en un préstamo
             const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=convertReservation', {
                 reservationId: reservationId
             });
 
+            // Si la solicitud fue exitosa, se muestra un mensaje y se actualizan los estados
             if (response.data.status === 'success') {
                 alert('Reserva aprobada y convertida en préstamo exitosamente.');
                 const newBorrowedBook = response.data.borrowedBook;
 
-                // Actualizar estado de las reservas y libros prestados
+                // Actualiza la lista de reservas eliminando la reserva aprobada
                 setReservations(prevReservations => prevReservations.filter(res => res.id !== reservationId));
+
+                // Agrega el libro prestado a la lista de libros prestados
                 setBorrowedBooks(prevBorrowedBooks => [...prevBorrowedBooks, newBorrowedBook]);
             } else {
                 alert(`Error al aprobar la reserva: ${response.data.message}`);
             }
         } catch (error) {
+            // Manejo de errores en caso de fallo en la solicitud
             console.error('Error al aprobar la reserva:', error);
             alert('Hubo un problema al procesar la solicitud.');
         }
@@ -33,6 +39,7 @@ const ReservationsTable = ({ reservations, setReservations, setBorrowedBooks }) 
                 <table className="table table-bordered table-sm">
                     <thead className='table-light'>
                         <tr>
+                            {/* Encabezados de la tabla */}
                             <th className='text-center'>ID</th>
                             <th className='text-center'>Usuario DNI</th>
                             <th className='text-center'>Libro ISBN</th>
@@ -41,6 +48,7 @@ const ReservationsTable = ({ reservations, setReservations, setBorrowedBooks }) 
                         </tr>
                     </thead>
                     <tbody>
+                        {/* Mapea las reservas y muestra cada una en una fila */}
                         {reservations.map(reservation => (
                             <tr key={reservation.id}>
                                 <td>{reservation.id}</td>
@@ -48,6 +56,7 @@ const ReservationsTable = ({ reservations, setReservations, setBorrowedBooks }) 
                                 <td>{reservation.libro_isbn}</td>
                                 <td>{new Date(reservation.fecha_reserva).toLocaleString()}</td>
                                 <td className='text-center'>
+                                    {/* Botón para aprobar la reserva y convertirla en un préstamo */}
                                     <button
                                         className="btn btn-success"
                                         onClick={() => approveReservation(reservation.id)}

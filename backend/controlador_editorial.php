@@ -14,6 +14,7 @@ class ControladorEditorial
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /* MÉTODO PARA AÑADIR EDITORIALES DESDE EL ADMIN PANEL */
     public static function agregarEditorial($datos)
     {
         $conexion = Conexion::conectar();
@@ -27,6 +28,7 @@ class ControladorEditorial
         return $stmt->execute();
     }
 
+    /* MÉTODO PARA EDITAR EDITORIALES DESDE EL ADMIN PANEL */
     public static function editarEditorial($datos)
     {
         $conexion = Conexion::conectar();
@@ -42,6 +44,7 @@ class ControladorEditorial
         return $stmt->execute();
     }
 
+    /* MÉTODO PARA ELIMINAR EDITORIALES DESDE EL ADMIN PANEL */
     public static function eliminarEditorial($id)
     {
         $conexion = Conexion::conectar();

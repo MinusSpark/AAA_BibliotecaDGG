@@ -7,34 +7,40 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { Modal, Button } from 'react-bootstrap'; // Importar componentes de Bootstrap
 
 const Donacion = () => {
+    // Estado para mostrar u ocultar el recibo tras una donación exitosa
     const [showReceipt, setShowReceipt] = useState(false);
+    // Estado para almacenar los datos del recibo (nombre, correo, monto, comprobante)
     const [receiptData, setReceiptData] = useState(null);
 
+    // Función para manejar la aprobación de la donación
     const handleApprove = (data, actions) => {
+        // Captura la orden de la donación una vez que el pago ha sido aprobado
         return actions.order.capture().then((details) => {
+            // Extrae la información del pagador (nombre, correo) y monto de la donación
             const { payer } = details;
-            const nombre = `${payer.name.given_name} ${payer.name.surname}`;
-            const correo = payer.email_address;
-            const monto = details.purchase_units[0].amount.value;
-            const mensaje = "Gracias por tu donación!";
-            const comprobante = details.id;
+            const nombre = `${payer.name.given_name} ${payer.name.surname}`; // Nombre completo del pagador
+            const correo = payer.email_address; // Correo del pagador
+            const monto = details.purchase_units[0].amount.value; // Monto de la donación
+            const mensaje = "Gracias por tu donación!"; // Mensaje de agradecimiento
+            const comprobante = details.id; // ID de la transacción como comprobante
 
-            // Enviar los datos al backend
+            // Enviar los datos de la donación al backend para su registro
             fetch("http://localhost/AAA_BibliotecaDGG/backend/api.php?request=createDonation", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nombre, correo, monto, mensaje, comprobante }),
+                method: "POST",  // Usamos el método POST para enviar los datos
+                headers: { "Content-Type": "application/json" }, // Especificamos que el cuerpo es un JSON
+                body: JSON.stringify({ nombre, correo, monto, mensaje, comprobante }), // Cuerpo de la solicitud con los datos de la donación
             })
-                .then((response) => response.json())
+                .then((response) => response.json())  // Parseamos la respuesta del backend como JSON
                 .then((data) => {
+                    // Si el backend responde con un estado de éxito, mostramos el recibo
                     if (data.status === "success") {
-                        setReceiptData({ nombre, correo, monto, comprobante });
-                        setShowReceipt(true);
+                        setReceiptData({ nombre, correo, monto, comprobante }); // Guardamos los datos del recibo
+                        setShowReceipt(true); // Cambiamos el estado para mostrar el recibo
                     } else {
-                        alert("Error al registrar la donación.");
+                        alert("Error al registrar la donación."); // Si ocurre un error en el backend, mostramos un alerta
                     }
                 })
-                .catch((error) => console.error("Error:", error));
+                .catch((error) => console.error("Error:", error)); // Si hay un error en la comunicación con el backend, lo mostramos en la consola
         });
     };
 

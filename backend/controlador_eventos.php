@@ -1,8 +1,12 @@
 <?php
 require_once 'conexion.php';
 
-class ControladorEventos {
-    public static function obtenerEventos() {
+class ControladorEventos
+{
+
+    /* MÉTODO PARA OBTENER EVENTOS DEL CALENDARIO */
+    public static function obtenerEventos()
+    {
         $conexion = Conexion::conectar();
         if ($conexion) {
             $query = "SELECT * FROM eventos";
@@ -13,7 +17,9 @@ class ControladorEventos {
         }
     }
 
-    public static function añadirEvento($fecha, $descripcion, $max_asistentes) {
+    /* MÉTODO PARA AÑADIR EVENTOS AL CALENDARIO (SIENDO ADMINISTRADOR) */
+    public static function añadirEvento($fecha, $descripcion, $max_asistentes)
+    {
         $conexion = Conexion::conectar();
         if ($conexion) {
             $query = "INSERT INTO eventos (fecha, descripcion, max_asistentes, asistentes_actuales) VALUES (:fecha, :descripcion, :max_asistentes, 0)";
@@ -28,8 +34,9 @@ class ControladorEventos {
         }
     }
 
-
-    public static function borrarEvento($id) {
+    /* MÉTODO PARA ELIMIAR EVENTOS AL CALENDARIO (SIENDO ADMINISTRADOR) */
+    public static function borrarEvento($id)
+    {
         $conexion = Conexion::conectar();
         if ($conexion) {
             try {
@@ -56,7 +63,9 @@ class ControladorEventos {
         }
     }
 
-    public static function inscribirUsuario($evento_id, $dni, $correo) {
+    /* MÉTODO PARA INSCRIBIR USUARIO A LOS EVENTOS DEL CALENDARIO DESDE INTERFAZ USUARIO */
+    public static function inscribirUsuario($evento_id, $dni, $correo)
+    {
         $conexion = Conexion::conectar();
         if ($conexion) {
             // Verificar si el usuario ya está inscrito
@@ -92,7 +101,10 @@ class ControladorEventos {
             return ['status' => 'error', 'message' => 'Error de conexión a la base de datos'];
         }
     }
-    public static function desinscribirUsuario($evento_id, $dni, $correo) {
+
+    /* MÉTODO PARA DESINSCRIBIR USUSARIO DE UN EVENTO DEL CALENDARIO DESDE INTERFAZ USUARIO */
+    public static function desinscribirUsuario($evento_id, $dni, $correo)
+    {
         $conexion = Conexion::conectar();
         if ($conexion) {
             try {
@@ -128,9 +140,4 @@ class ControladorEventos {
             return ['status' => 'error', 'message' => 'Error de conexión a la base de datos'];
         }
     }
-
-
-    }
-    
-
-?>
+}

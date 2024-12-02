@@ -3,9 +3,6 @@ require_once 'conexion.php';
 
 class ControladorAutor
 {
-
-
-
     /* MÉTODO PARA IMPRIMIR AUTORES EN EL ADMIN PANEL */
     public static function obtenerAutores()
     {
@@ -16,6 +13,7 @@ class ControladorAutor
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /* MÉTODO PARA AGREGAR AUTORES A LA BASE DE DATOS DESDE EL ADMINPANEL */
     public static function agregarAutor($datos)
     {
         try {
@@ -33,6 +31,7 @@ class ControladorAutor
         }
     }
 
+    /* MÉTODO PARA EDITAR AUTORES EN LA BASE DE DATOS DESDE EL ADMINPANEL */
     public static function editarAutor($datos)
     {
         try {
@@ -50,6 +49,7 @@ class ControladorAutor
         }
     }
 
+    /* MÉTODO PARA ELIMINAR AUTORES DE LA BASE DE DATOS DESDE EL ADMINPANEL */
     public static function eliminarAutor($dni)
     {
         try {

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
+//import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
 import { Book } from 'react-bootstrap-icons';
 import axios from 'axios';
 import CookieConsent from '../components/CookieConsent';
@@ -16,60 +16,64 @@ import FAQ from '../components/FAQ';
 import TitleBanner from '../components/TitleBanner';
 
 const Home = () => {
-  const [books, setBooks] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [newEvent, setNewEvent] = useState({ fecha: '', descripcion: '', max_asistentes: 0 });
-  const [counter, setCounter] = useState(0);
-  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
-  const { user, getEvents, addEvent, deleteEvent, inscribirUsuario, desinscribirUsuario } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const [books, setBooks] = useState([]);  // Estado para almacenar los libros obtenidos desde el backend
+  const [events, setEvents] = useState([]);  // Estado para almacenar los eventos disponibles
+  const [newEvent, setNewEvent] = useState({ fecha: '', descripcion: '', max_asistentes: 0 });  // Estado para gestionar los datos de un nuevo evento
+  const [counter, setCounter] = useState(0);  // Estado para gestionar un contador (posiblemente para animaciones o temporizadores)
+  const { user, getEvents, addEvent, deleteEvent, desinscribirUsuario } = useContext(AuthContext);  // Desestructuración de funciones y variables del contexto de autenticación
+  const navigate = useNavigate();  // Hook para navegar entre páginas
 
   useEffect(() => {
+    // Verifica si el mensaje de bienvenida ya fue mostrado y guarda esta información en localStorage
     const welcomeCookie = localStorage.getItem("welcomeMessageShown");
     if (!welcomeCookie) {
-      setShowWelcomeMessage(true);
       localStorage.setItem("welcomeMessageShown", "true");
     }
 
+    // Función para obtener los libros desde el backend
     const fetchBooks = async () => {
       try {
         const response = await axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=books');
-        setBooks(response.data.data);
+        setBooks(response.data.data);  // Almacena los libros en el estado
       } catch (error) {
-        console.error('Error fetching books:', error);
+        console.error('Error fetching books:', error);  // Manejo de errores en la obtención de libros
       }
     };
     fetchBooks();
 
+    // Función para obtener los eventos desde el contexto
     const fetchEvents = async () => {
-      const eventsData = await getEvents();
-      setEvents(eventsData || []);
+      const eventsData = await getEvents();  // Llama a la función de obtener eventos
+      setEvents(eventsData || []);  // Almacena los eventos en el estado
     };
     fetchEvents();
 
+    // Temporizador que incrementa el contador hasta 4
     const interval = setInterval(() => {
       setCounter((prevCounter) => {
         if (prevCounter < 4) {
-          return prevCounter + 1;
+          return prevCounter + 1;  // Incrementa el contador
         } else {
-          clearInterval(interval);
+          clearInterval(interval);  // Detiene el intervalo cuando el contador llega a 4
           return prevCounter;
         }
       });
     }, 500);
 
-    return () => clearInterval(interval);
-  }, [getEvents]);
+    return () => clearInterval(interval);  // Limpia el intervalo al desmontar el componente
+  }, [getEvents]);  // Se ejecuta cuando `getEvents` cambia
 
+  // Función para manejar la reserva de un libro
   const handleReservation = async (isbn) => {
     if (!user) {
-      navigate('/login');
+      navigate('/login');  // Redirige al login si no hay usuario autenticado
     } else {
       try {
         const response = await axios.post(
           'http://localhost/AAA_BibliotecaDGG/backend/api.php?request=reserveBook',
           { dni: user.dni, isbn }
         );
+        // Muestra mensaje dependiendo del resultado de la reserva
         if (response.data.status === 'success') {
           alert(response.data.message);
         } else {
@@ -82,14 +86,15 @@ const Home = () => {
     }
   };
 
+  // Función para agregar un nuevo evento
   const handleAddEvent = async () => {
     try {
       const response = await addEvent(newEvent.fecha, newEvent.descripcion, newEvent.max_asistentes);
       if (response.status === 'success') {
         alert(response.message);
-        const updatedEvents = await getEvents();
+        const updatedEvents = await getEvents();  // Vuelve a obtener los eventos después de añadir uno
         setEvents(updatedEvents);
-        setNewEvent({ fecha: '', descripcion: '', max_asistentes: 0 });
+        setNewEvent({ fecha: '', descripcion: '', max_asistentes: 0 });  // Resetea el formulario de nuevo evento
       } else {
         alert('Error al añadir evento: ' + response.message);
       }
@@ -99,12 +104,13 @@ const Home = () => {
     }
   };
 
+  // Función para eliminar un evento
   const handleDeleteEvent = async (id) => {
     try {
-      const response = await deleteEvent(id);
+      const response = await deleteEvent(id);  // Elimina el evento
       if (response.status === 'success') {
         alert(response.message);
-        const updatedEvents = await getEvents();
+        const updatedEvents = await getEvents();  // Vuelve a obtener los eventos después de eliminar uno
         setEvents(updatedEvents || []);
       } else {
         alert('Error al borrar evento: ' + response.message);
@@ -115,9 +121,10 @@ const Home = () => {
     }
   };
 
+  // Función para inscribir a un usuario en un evento
   const handleSignup = async (eventoId) => {
     if (!user) {
-      navigate('/login');
+      navigate('/login');  // Redirige al login si no hay usuario autenticado
     } else {
       try {
         const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=inscribirUsuario', {
@@ -125,9 +132,10 @@ const Home = () => {
           dni: user.dni,
           correo: user.correo,
         });
+        // Muestra mensaje dependiendo del resultado de la inscripción
         if (response.data.status === 'success') {
           alert('Inscripción realizada con éxito.');
-          const updatedEvents = await getEvents();
+          const updatedEvents = await getEvents();  // Actualiza la lista de eventos después de la inscripción
           setEvents(updatedEvents);
         } else if (response.data.message === 'Ya estás inscrito a este evento') {
           alert('Ya estás inscrito a este evento');
@@ -141,12 +149,13 @@ const Home = () => {
     }
   };
 
+  // Función para desinscribir a un usuario de un evento
   const handleUnsubscribe = async (eventoId) => {
     try {
-      const response = await desinscribirUsuario(eventoId);
+      const response = await desinscribirUsuario(eventoId);  // Desinscribe al usuario del evento
       if (response.status === 'success') {
         alert(response.message);
-        const updatedEvents = await getEvents();
+        const updatedEvents = await getEvents();  // Actualiza la lista de eventos después de la desinscripción
         setEvents(updatedEvents);
       } else if (response.message === 'No estás inscrito a este evento.') {
         alert('No estás inscrito a este evento.');
@@ -158,6 +167,7 @@ const Home = () => {
       alert('Error al realizar la desinscripción.');
     }
   };
+
 
   return (
     <div className="d-flex flex-column min-vh-100">

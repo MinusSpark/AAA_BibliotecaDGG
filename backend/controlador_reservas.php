@@ -15,6 +15,7 @@ class ControladorReservas
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     /* MÉTODO PARA IMPRIMIR LAS RESERVAS PENDIENTES DE UN USUARIO EN EL USER PANEL */
     public static function obtenerReservasPendientesUsuario($dni)
     {
@@ -98,7 +99,6 @@ class ControladorReservas
         }
     }
 
-
     /* MÉTODO PARA ACEPTAR RESERVAS COMO ADMINISTRADOR Y TRANSFORMARLAS EN PRÉSTAMOS DESDE EL ADMIN PANEL */
     public function convertirReservaEnPrestamo($reservationId)
     {
@@ -150,6 +150,7 @@ class ControladorReservas
         }
     }
 
+    /* MÉTODO PARA AGREGAR A LA LISTA DE ESPERA A UN USUARIO QUE QUIERE RESERVAR UN LIBRO QUE NO QUEDA STOCK */
     public static function agregarALaListaDeEspera($dni, $isbn)
     {
         try {
@@ -166,6 +167,7 @@ class ControladorReservas
         }
     }
 
+    /* MÉTODO PARA PROCESAR LA LISTA DE ESPERA CUANDO VUELVE A HABER STOCK DE UN LIBRO CON USUARIOS EN ESPERA */
     public static function procesarListaDeEspera($isbn)
     {
         try {

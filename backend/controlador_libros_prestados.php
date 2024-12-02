@@ -6,7 +6,6 @@ class ControladorLibrosPrestados
 {
 
     /* MÉTODO PARA IMPRIMIR LOS LIBROS PRESTAODOS EN EL ADMIN PANEL */
-
     public static function obtenerLibrosPrestados()
     {
         try {
@@ -35,6 +34,7 @@ class ControladorLibrosPrestados
         }
     }
 
+    /* MÉTODO PARA GESTIONAR LA DEVOLUCIÓN DE UN LIBRO PRESTADO DESDE EL ADMIN PANEL */
     public static function devolverLibro($borrowedBookId)
     {
         try {
@@ -74,8 +74,6 @@ class ControladorLibrosPrestados
             return false;
         }
     }
-
-
 
     /* MÉTODO PARA IMPRIMIR LOS LIBROS PRESTADOS AL USUARIO EN EL USER PANEL */
     public static function obtenerLibrosPrestadosPorUsuario($dni)

@@ -22,13 +22,13 @@ function Footer() {
                                 <Link to="/" className="text-white text-decoration-none">Inicio</Link>
                             </li>
                             <li>
-                                <Link to="/libros" className="text-white text-decoration-none">Libros</Link>
+                                <Link to="/search" className="text-white text-decoration-none">Libros</Link>
                             </li>
                             <li>
-                                <Link to="/servicios" className="text-white text-decoration-none">Servicios</Link>
+                                <Link to="/donation" className="text-white text-decoration-none">Donar</Link>
                             </li>
                             <li>
-                                <Link to="/contacto" className="text-white text-decoration-none">Contacto</Link>
+                                <Link to="/contact" className="text-white text-decoration-none">Contacto</Link>
                             </li>
                         </ul>
                     </div>

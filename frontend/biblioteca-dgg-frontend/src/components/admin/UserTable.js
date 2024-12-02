@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; 
 import axios from 'axios';
 
 const UserTable = ({ users, setUsers }) => {
+    // Estado para almacenar los datos de un nuevo usuario
     const [newUser, setNewUser] = useState({ dni: '', nombre: '', apellido: '', telefono: '', correo: '', password: '' });
+    
+    // Estado para almacenar los datos del usuario que se va a editar
     const [editUser, setEditUser] = useState(null);
+
+    // Estados para mostrar u ocultar los formularios de agregar o editar
     const [showAddForm, setShowAddForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
 
+    // Función para agregar un nuevo usuario
     const handleAddUser = async () => {
         try {
+            // Se envía una solicitud POST para agregar el usuario
             const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=registerUser', newUser);
+            
             if (response.data.status === 'success') {
+                // Si la respuesta es exitosa, se actualiza el estado de los usuarios
                 setUsers([...users, newUser]);
+
+                // Se oculta el formulario de agregar usuario y se restablecen los campos
                 setShowAddForm(false);
                 setNewUser({ dni: '', nombre: '', apellido: '', telefono: '', correo: '', password: '' });
             }
@@ -20,11 +31,15 @@ const UserTable = ({ users, setUsers }) => {
         }
     };
 
+    // Función para eliminar un usuario por su DNI
     const handleDeleteUser = async (dni) => {
         if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
             try {
+                // Se envía una solicitud DELETE para eliminar el usuario
                 const response = await axios.delete(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteUser&dni=${dni}`);
+                
                 if (response.data.status === 'success') {
+                    // Si la respuesta es exitosa, se actualiza la lista de usuarios
                     setUsers(users.filter(user => user.dni !== dni));
                     alert('Usuario eliminado exitosamente');
                 } else {
@@ -37,12 +52,17 @@ const UserTable = ({ users, setUsers }) => {
         }
     };
 
-
+    // Función para editar los datos de un usuario
     const handleEditUser = async () => {
         try {
+            // Se envía una solicitud PUT para actualizar los datos del usuario
             const response = await axios.put('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=updateUser', editUser);
+            
             if (response.data.status === 'success') {
+                // Si la respuesta es exitosa, se actualiza el estado de los usuarios
                 setUsers(users.map(user => (user.dni === editUser.dni ? editUser : user)));
+
+                // Se oculta el formulario de edición y se restablece el usuario a editar
                 setShowEditForm(false);
                 setEditUser(null);
             }
@@ -60,6 +80,7 @@ const UserTable = ({ users, setUsers }) => {
                 <table className="table table-bordered table-sm">
                     <thead className="table-light">
                         <tr>
+                            {/* Encabezados de la tabla */}
                             <th className="text-center">DNI</th>
                             <th>Nombre</th>
                             <th>Apellido</th>
@@ -69,6 +90,7 @@ const UserTable = ({ users, setUsers }) => {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* Mapea los usuarios y muestra una fila por cada uno */}
                         {users.map(user => (
                             <tr key={user.dni}>
                                 <td className="text-center">{user.dni}</td>
@@ -77,11 +99,13 @@ const UserTable = ({ users, setUsers }) => {
                                 <td>{user.telefono}</td>
                                 <td>{user.correo}</td>
                                 <td className="text-center">
+                                    {/* Botón para editar usuario */}
                                     <button
                                         onClick={() => { setEditUser(user); setShowEditForm(true); }}
                                         className="btn btn-warning btn-sm me-1">
                                         Editar
                                     </button>
+                                    {/* Botón para eliminar usuario */}
                                     <button
                                         onClick={() => handleDeleteUser(user.dni)}
                                         className="btn btn-danger btn-sm">
@@ -92,6 +116,7 @@ const UserTable = ({ users, setUsers }) => {
                         ))}
                     </tbody>
                 </table>
+                {/* Botón para mostrar el formulario de agregar usuario */}
                 <button
                     onClick={() => setShowAddForm(true)}
                     className="btn btn-success btn-sm mt-2">
@@ -106,6 +131,7 @@ const UserTable = ({ users, setUsers }) => {
                         <h3 className="h6 mb-0">Añadir Usuario</h3>
                     </div>
                     <div className="card-body p-2">
+                        {/* Campos del formulario para agregar un usuario */}
                         <input
                             type="text"
                             className="form-control mb-2"
@@ -155,6 +181,7 @@ const UserTable = ({ users, setUsers }) => {
                         <h3 className="h6 mb-0">Editar Usuario</h3>
                     </div>
                     <div className="card-body p-2">
+                        {/* Campos del formulario para editar usuario */}
                         <input
                             type="text"
                             className="form-control mb-2"

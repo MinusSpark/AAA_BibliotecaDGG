@@ -1,6 +1,6 @@
 # Biblioteca DGG
 
-Este proyecto es una aplicación de gestión de biblioteca que utiliza PHP, MySQL, React y Node.js. A continuación, se detallan los pasos necesarios para configurar y ejecutar el proyecto.
+Este proyecto es una aplicación de gestión de biblioteca que utiliza PHP, MySQL y React. A continuación, se detallan los pasos necesarios para configurar y ejecutar el proyecto.
 
 ## Tabla de Contenidos
 1. Requisitos
@@ -9,56 +9,35 @@ Este proyecto es una aplicación de gestión de biblioteca que utiliza PHP, MySQ
 4. Configuración de la Base de Datos
 5. Configuración del Backend en PHP
 6. Configuración del Frontend en React
-7. Configuración de la API RESTful con Node.js (Opcional)
-8. Control de Versiones con Git
-9. Despliegue en la Nube
 
 ## Requisitos
 Asegurarse de tener instalados los siguientes programas:
 - XAMPP (para el servidor Apache y MySQL)
 - Visual Studio Code (editor de código)
-- Node.js (incluye npm)
-- Git (para control de versiones)
 
 ## Configuración del Entorno de Desarrollo
 1. **Instala XAMPP** y configurado en el puerto 3306 (o el puerto predeterminado para MySQL).
 2. **Instala Visual Studio Code**
-3. **Instala Node.js** y npm para manejar las dependencias de JavaScript.
-4. **Instala Git** para gestionar el control de versiones.
 
 ## Configuración de la Base de Datos
 1. Iniciar XAMPP y activa Apache y MySQL.
 2. Abrir phpMyAdmin en http://localhost/phpmyadmin.
 3. Crear la base de datos importando `biblioteca.sql` desde la carpeta `database`. Esto generará las tablas necesarias (Usuarios, Administradores, Libros, etc.) y algunos datos de prueba.
 
+## Clonar proyecto o ir al dominio 
+1. Clonar el proyecto desde github en la carpeta 'xampp\htdocs'
+2. Ir en un navegador al dominio 'https://aaa-biblioteca-dgg-zrj3-six.vercel.app/' 
+
 ## Configuración del Backend en PHP
 1. Asegurarse de que `conexion.php` esté configurado correctamente para conectarse a la base de datos.
 
-## Instala Axios para consumir las APIs en PHP:
+## Instala todas las dependencias del proyecto:
+cd C:\xampp\htdocs\AAA_BibliotecaDGG\frontend
+cd biblioteca-dgg-frontend
+npm install 
 npm install axios
 
-## Configuración de la API RESTful con Node.js (Opcional)
-1. En la raíz del proyecto hay una carpeta node-backend.
-Inicializa un proyecto de Node.js:
-npm init -y
-
-2. Instala las dependencias necesarias:
-npm install express mysql nodemailer dotenv
-
-3. Configura server.js para definir las rutas y conectar con la base de datos MySQL.
-
-## Control de Versiones con Git
-Inicializa Git en tu proyecto:
-git init
-
-## Despliegue en la Nube
-Preparar tu aplicación React para producción:
-npm run build
-
-
-
-## Para ejecutar el proyecto
-
-1. Desde la terminal, ir a la carpeta biblioteca-dgg-frontnend
-2. Instalar las dependencias con 'npm install'
-3. Ejecutar el proyecto con 'npm start'
+## Ejecutar el proyecto
+cd C:\xampp\htdocs\AAA_BibliotecaDGG\frontend
+cd biblioteca-dgg-frontend
+npm start

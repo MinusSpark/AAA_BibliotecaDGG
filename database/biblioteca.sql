@@ -91,7 +91,7 @@ CREATE TABLE donaciones (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Crear tabla de eventos
+-- Tabla de eventos
 CREATE TABLE eventos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE NOT NULL,
@@ -101,6 +101,7 @@ CREATE TABLE eventos (
 ALTER TABLE eventos ADD COLUMN max_asistentes INT NOT NULL DEFAULT 0;
 ALTER TABLE eventos ADD COLUMN asistentes_actuales INT NOT NULL DEFAULT 0;
 
+-- Tabla de inscripciones
 CREATE TABLE inscripciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     evento_id INT NOT NULL,
@@ -110,6 +111,7 @@ CREATE TABLE inscripciones (
     FOREIGN KEY (usuario_dni) REFERENCES Usuario(dni)
 );
 
+-- Tabla lista de espera
 CREATE TABLE lista_espera (
     id INT AUTO_INCREMENT PRIMARY KEY,
     usuario_dni VARCHAR(10) NOT NULL,

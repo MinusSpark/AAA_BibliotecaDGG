@@ -9,43 +9,52 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Modal, Button } from 'react-bootstrap';
 
 function Register() {
+    // Estados locales para almacenar los datos del formulario, errores y el estado de visibilidad
     const [userData, setUserData] = useState({
         dni: '', nombre: '', apellido: '', telefono: '', correo: '', password: ''
-    });
-    const [errors, setErrors] = useState({});
-    const [show, setShow] = useState(false);
-    const navigate = useNavigate();
+    });  // Estado para almacenar la información del usuario que se va a registrar
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const [errors, setErrors] = useState({});  // Estado para almacenar los errores de validación
+    const [show, setShow] = useState(false);  // Estado para controlar la visibilidad de algún componente (por ejemplo, un modal)
+    const navigate = useNavigate();  // Hook de navegación para redirigir al usuario después del registro
 
+    // Funciones para controlar la visibilidad de un componente, como un modal
+    const handleClose = () => setShow(false);  // Cierra el modal
+    const handleShow = () => setShow(true);    // Abre el modal
+
+    // Función para validar el formulario antes de enviarlo al backend
     const validateForm = () => {
-        const newErrors = {};
+        const newErrors = {};  // Objeto para almacenar los errores de validación
 
+        // Validación del DNI (debe tener 8 números seguidos de una letra mayúscula)
         if (!userData.dni) {
             newErrors.dni = 'El DNI es requerido';
         } else if (!/^\d{8}[A-Z]$/.test(userData.dni)) {
             newErrors.dni = 'El DNI debe tener 8 números y una letra mayúscula';
         }
 
+        // Validación del nombre (debe ser solo letras y espacios)
         if (!userData.nombre) {
             newErrors.nombre = 'El nombre es requerido';
         } else if (!/^[a-zA-Z ]+$/.test(userData.nombre)) {
             newErrors.nombre = 'El nombre debe contener solo letras y espacios';
         }
 
+        // Validación del apellido (debe ser solo letras y espacios)
         if (!userData.apellido) {
             newErrors.apellido = 'El apellido es requerido';
         } else if (!/^[a-zA-Z ]+$/.test(userData.apellido)) {
             newErrors.apellido = 'El apellido debe contener solo letras y espacios';
         }
 
+        // Validación del teléfono (debe tener exactamente 9 dígitos)
         if (!userData.telefono) {
             newErrors.telefono = 'El teléfono es requerido';
         } else if (!/^\d{9}$/.test(userData.telefono)) {
             newErrors.telefono = 'El teléfono debe contener 9 dígitos';
         }
 
+        // Validación del correo electrónico (debe seguir el formato correcto)
         if (!userData.correo) {
             newErrors.correo = 'El correo electrónico es requerido';
         } else if (!/@/.test(userData.correo)) {
@@ -54,6 +63,7 @@ function Register() {
             newErrors.correo = 'El correo electrónico no es válido. Debe seguir el formato ejemplo@dominio.com';
         }
 
+        // Validación de la contraseña (mínimo 8 caracteres, máximo 9, con al menos un número y la primera letra mayúscula)
         if (!userData.password) {
             newErrors.password = 'La contraseña es requerida';
         } else if (userData.password.length < 8) {
@@ -66,32 +76,38 @@ function Register() {
             newErrors.password = 'La contraseña debe contener al menos un número';
         }
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        setErrors(newErrors);  // Actualiza el estado de los errores con las validaciones
+        return Object.keys(newErrors).length === 0;  // Si no hay errores, devuelve true
     };
 
+    // Función para manejar el registro del usuario
     const handleRegister = async () => {
-        if (validateForm()) {
+        if (validateForm()) {  // Solo si el formulario es válido
             try {
+                // Realiza una solicitud POST para registrar al usuario en el backend
                 const response = await axios.post(
                     'http://localhost/AAA_BibliotecaDGG/backend/api.php?request=registerUser',
-                    userData
+                    userData  // Envía los datos del usuario al backend
                 );
                 console.log('Respuesta del servidor:', response.data);
+
+                // Si la respuesta del servidor indica éxito, muestra un mensaje y redirige al inicio
                 if (response.data.status === 'success') {
                     alert('Registro exitoso');
-                    navigate('/');
+                    navigate('/');  // Redirige al usuario a la página principal después del registro
                 } else {
-                    alert(`Error: ${response.data.message}`);
+                    alert(`Error: ${response.data.message}`);  // Muestra un mensaje de error si no fue exitoso
                 }
             } catch (error) {
+                // Si hay un error en la solicitud, lo captura y muestra un mensaje de error
                 console.error('Error al registrar usuario:', error);
                 alert('Error en la conexión o en el servidor');
             }
         } else {
-            alert('Por favor, corrige los errores en el formulario');
+            alert('Por favor, corrige los errores en el formulario');  // Muestra un mensaje si el formulario tiene errores
         }
     };
+
 
     return (
         <div className="d-flex flex-column min-vh-100">
@@ -204,7 +220,7 @@ function Register() {
                     <p><strong>Apellido:</strong> Debe contener solo letras y espacios.</p>
                     <p><strong>Teléfono:</strong> Debe contener 9 dígitos.</p>
                     <p><strong>Correo Electrónico:</strong> Debe seguir el formato ejemplo@dominio.com</p>
-                    <p><strong>Contraseña:</strong> 
+                    <p><strong>Contraseña:</strong>
                         <ul>
                             <li>Debe tener al menos 8 caracteres y no más de 9.</li>
                             <li>La primera letra debe ser mayúscula.</li>

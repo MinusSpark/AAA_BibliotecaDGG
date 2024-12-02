@@ -2,53 +2,69 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const AuthorTable = ({ authors, setAuthors }) => {
+    // Definimos el estado local para almacenar los datos de los autores y formularios.
     const [newAuthor, setNewAuthor] = useState({ dni: '', nombre: '', apellido: '', fecha_nacimiento: '' });
     const [editAuthor, setEditAuthor] = useState(null);
     const [showAddForm, setShowAddForm] = useState(false);
     const [showEditForm, setShowEditForm] = useState(false);
 
+    // Función para añadir un nuevo autor a través de una solicitud POST a la API
     const handleAddAuthor = async () => {
         try {
+            // Enviamos la solicitud POST para agregar el nuevo autor
             const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=addAuthor', newAuthor);
+
             if (response.data.status === 'success') {
+                // Si la respuesta es exitosa, actualizamos la lista de autores
                 setAuthors([...authors, newAuthor]);
-                setShowAddForm(false);
-                setNewAuthor({ dni: '', nombre: '', apellido: '', fecha_nacimiento: '' });
+                setShowAddForm(false);  // Cerramos el formulario de agregar autor
+                setNewAuthor({ dni: '', nombre: '', apellido: '', fecha_nacimiento: '' });  // Reiniciamos el formulario
             } else {
+                // Si la respuesta no es exitosa, mostramos el mensaje de error
                 alert(response.data.message);
             }
         } catch (error) {
-            console.error('Error adding author:', error);
+            console.error('Error adding author:', error);  // Mostramos errores en consola si ocurren
         }
     };
 
+    // Función para eliminar un autor mediante una solicitud DELETE
     const handleDeleteAuthor = async (dni) => {
         if (window.confirm('¿Estás seguro de que deseas eliminar este autor?')) {
             try {
+                // Realizamos la solicitud DELETE al servidor
                 const response = await axios.delete(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteAuthor&dni=${dni}`);
+
                 if (response.data.status === 'success') {
+                    // Si la eliminación es exitosa, eliminamos el autor de la lista local
                     setAuthors(authors.filter(author => author.dni !== dni));
                 } else {
+                    // Si la respuesta no es exitosa, mostramos el mensaje de error
                     alert(response.data.message);
                 }
             } catch (error) {
-                console.error('Error deleting author:', error);
+                console.error('Error deleting author:', error);  // Mostramos errores en consola si ocurren
             }
         }
     };
 
+    // Función para editar un autor mediante una solicitud PUT
     const handleEditAuthor = async () => {
         try {
+            // Enviamos la solicitud PUT con los nuevos datos del autor
             const response = await axios.put('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=updateAuthor', editAuthor);
+
             if (response.data.status === 'success') {
+                // Si la respuesta es exitosa, actualizamos el autor en la lista
                 setAuthors(authors.map(author => (author.dni === editAuthor.dni ? editAuthor : author)));
-                setShowEditForm(false);
-                setEditAuthor(null);
+                setShowEditForm(false);  // Cerramos el formulario de editar
+                setEditAuthor(null);  // Reiniciamos el autor en edición
             } else {
+                // Si la respuesta no es exitosa, mostramos el mensaje de error
                 alert(response.data.message);
             }
         } catch (error) {
-            console.error('Error updating author:', error);
+            console.error('Error updating author:', error);  // Mostramos errores en consola si ocurren
         }
     };
 
@@ -69,6 +85,7 @@ const AuthorTable = ({ authors, setAuthors }) => {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* Iteramos sobre los autores y mostramos sus datos */}
                         {authors.map(author => (
                             <tr key={author.dni}>
                                 <td className="small">{author.dni}</td>

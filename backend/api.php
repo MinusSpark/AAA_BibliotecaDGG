@@ -1,5 +1,6 @@
 <?php
 
+// Incluimos los controladores necesarios para gestionar las diferentes entidades del sistema.
 require_once 'controlador_admin.php';
 require_once 'controlador_autor.php';
 require_once 'controlador_donacion.php';
@@ -11,16 +12,33 @@ require_once 'controlador_usuario.php';
 require_once 'controlador_eventos.php';
 require_once 'controlador_lista_espera.php';
 
+// Configuraciones básicas para permitir solicitudes desde cualquier origen (CORS),
+// soportar múltiples métodos HTTP y trabajar con JSON.
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json; charset=UTF-8");
 
+// Detectamos el método HTTP usado en la solicitud.
 $method = $_SERVER['REQUEST_METHOD'];
+// Capturamos el parámetro 'request' de la URL para identificar la acción requerida.
 $request = isset($_GET['request']) ? $_GET['request'] : '';
 
+/*
+ * Manejamos las solicitudes en función del método HTTP:
+ * - GET: Para obtener datos.
+ * - POST: Para crear nuevos registros.
+ * - PUT: Para actualizar registros existentes.
+ * - DELETE: Para eliminar registros.
+ * - OPTIONS: Respuesta para solicitudes de verificación de CORS.
+ */
 switch ($method) {
     case 'GET':
+        /*
+         * Procesamos las solicitudes GET según el valor de 'request'.
+         * Esto incluye operaciones como obtener listas de libros, usuarios, autores,
+         * editoriales, préstamos, reservas, entre otros.
+         */
 
         /* IMPRIMIR LIBROS (HOME, SEARCH Y ADMIN PANEL) */
         if ($request === 'books') {
@@ -79,7 +97,7 @@ switch ($method) {
             }
         }
 
-        /* IMPRIMIR DATOS DE USER PANEL (prestamos, hitorial de prestamos y reservas pendientes) */ elseif ($request === 'currentLoans') {
+        /* IMPRIMIR DATOS DE USER PANEL (prestamos, hitorial de prestamos, reservas pendientes y lista de espera) */ elseif ($request === 'currentLoans') {
             if (isset($_GET['dni'])) {
                 $dni = $_GET['dni'];
                 $loans = ControladorLibrosPrestados::obtenerLibrosPrestadosPorUsuario($dni);
@@ -153,6 +171,10 @@ switch ($method) {
         break;
 
     case 'POST':
+        /*
+        * Procesamos las solicitudes POST para crear nuevos registros, como
+        * registrar usuarios, libros, autores, editoriales, reservas, donaciones, eventos, etc.
+        */
         $input = json_decode(file_get_contents("php://input"), true);
 
         /* REGISTRO Y LOGIN PARA INTERFAZ DE USUARIO Y TAMBIÉN DESDE ADMINPANEL */
@@ -206,7 +228,6 @@ switch ($method) {
             }
         }
 
-
         /* RESERVA LIBROS DESDE INTERFAZ USUARIO */ elseif ($request === 'reserveBook') {
             $dni = $input['dni'];
             $isbn = $input['isbn'];
@@ -214,7 +235,6 @@ switch ($method) {
             if ($resultado) {
                 echo json_encode(['status' => 'success', 'message' => 'Reserva realizada con éxito.']);
             } else {
-                // Intentar agregar a la lista de espera
                 $agregadoListaEspera = ControladorReservas::agregarALaListaDeEspera($dni, $isbn);
                 if ($agregadoListaEspera) {
                     echo json_encode(['status' => 'success', 'message' => 'El libro no está disponible. Has sido añadido a la lista de espera.']);
@@ -224,7 +244,6 @@ switch ($method) {
             }
         }
 
-
         /* CONVERTIR RESERVAS A PRESTAMOS DESDE INTERFAZ ADMNISTRADOR */ elseif ($request === 'convertReservation') {
             $reservationId = $input['reservationId'];
 
@@ -233,7 +252,9 @@ switch ($method) {
             $result = $controladorLibro->convertirReservaEnPrestamo($reservationId);
 
             echo json_encode($result);
-        }/* REGISTRAR UNA NUEVA DONACIÓN */ elseif ($request === 'createDonation') {
+        }
+
+        /* REGISTRAR UNA NUEVA DONACIÓN */ elseif ($request === 'createDonation') {
             $resultado = ControladorDonacion::crearDonacion(
                 $input['nombre'],
                 $input['monto'],
@@ -278,6 +299,10 @@ switch ($method) {
         break;
 
     case 'DELETE':
+        /*
+         * Procesamos las solicitudes DELETE para eliminar registros,
+         * como usuarios, libros, autores o editoriales.
+         */
 
         /* ELIMINAR USUARIO DESDE INTERFAZ ADMINISTRADOR */
         if ($request === 'deleteUser') {
@@ -316,7 +341,13 @@ switch ($method) {
         break;
 
     case 'PUT':
+        /*
+         * Procesamos las solicitudes PUT para actualizar registros existentes,
+         * como usuarios, libros, autores y editoriales.
+         */
+
         $input = json_decode(file_get_contents("php://input"), true);
+
         /* ACTUALIZAR/EDITAR USUARIO DESDE INTERFAZ ADMINISTRADOR */
         if ($request === 'updateUser') {
             $input = json_decode(file_get_contents("php://input"), true);
@@ -325,7 +356,6 @@ switch ($method) {
         }
 
         /* ACTUALIZAR LIBROS DESDE EL ADMIN PANEL */ elseif ($request === 'updateBook') {
-            // Obtener los datos enviados en el cuerpo de la solicitud
             $data = json_decode(file_get_contents("php://input"), true);
 
             // Validar que los datos necesarios estén presentes
@@ -337,7 +367,6 @@ switch ($method) {
                 echo json_encode(['status' => 'error', 'message' => 'Faltan datos para actualizar el libro.']);
                 exit;
             }
-
             // Llamar a la función del controlador para actualizar el libro
             require_once 'controlador_libro.php';
             $resultado = ControladorLibro::actualizarLibro($data);
@@ -369,12 +398,17 @@ switch ($method) {
         break;
 
     case 'OPTIONS':
-        // reespuesta para solicitudes de verificación de CORS
+        /*
+         * Respuesta para solicitudes de verificación de CORS.
+         * Esto asegura que las solicitudes previas de los navegadores sean respondidas adecuadamente.
+         */
         http_response_code(200);
         exit(0);
 
     default:
-        //respuesta para métodos HTTP no soportados
+        /*
+         * Respuesta genérica para métodos HTTP no soportados.
+         */
         echo json_encode(["message" => "Método no soportado"]);
         break;
 }

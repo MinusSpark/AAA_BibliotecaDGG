@@ -55,7 +55,7 @@ class ControladorUsuario
         }
     }
 
-    /* MÉTODOS OBTENER USUARIOS PARA IMPRIMIR EN ADMIN PANEL */
+    /* MÉTODOS PARA IMPRIMIR USUARIOS EN ADMIN PANEL */
     public static function obtenerUsuarioPorDni($dni)
     {
         $conexion = Conexion::conectar();

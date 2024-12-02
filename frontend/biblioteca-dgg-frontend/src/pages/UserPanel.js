@@ -5,73 +5,80 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const UserPanel = () => {
-    const { user } = useContext(AuthContext);
-    const [currentLoans, setCurrentLoans] = useState([]);
+    const { user } = useContext(AuthContext);  // Obtiene el usuario actual desde el contexto
+    // Estados para almacenar los datos de los préstamos actuales, historial de préstamos, reservas pendientes y lista de espera
+    const [currentLoans, setCurrentLoans] = useState([]);  
     const [loanHistory, setLoanHistory] = useState([]);
     const [pendingReservations, setPendingReservations] = useState([]);
     const [waitingList, setWaitingList] = useState([]);
 
-    // Obtener préstamos actuales
+    // useEffect para obtener los datos cuando el componente se monta o cuando el DNI del usuario cambia
     useEffect(() => {
+        // Función para obtener los préstamos actuales del usuario
         const fetchLoans = async () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=currentLoans&dni=${user.dni}`);
                 if (response.data.status === 'success') {
+                    // Verifica si el usuario tiene préstamos vencidos
                     const penalized = response.data.data.some((loan) => parseInt(loan.dias_restantes) < 0);
                     if (penalized) {
                         alert("Tienes préstamos vencidos. Por favor, devuelve los libros lo antes posible.");
                     }
-                    setCurrentLoans(response.data.data || []);
+                    setCurrentLoans(response.data.data || []);  // Establece los préstamos actuales
                 }
             } catch (error) {
-                console.error('Error fetching current loans:', error);
+                console.error('Error fetching current loans:', error);  // Muestra un error si no se puede obtener la información
             }
         };
 
+        // Función para obtener el historial de préstamos del usuario
         const fetchLoanHistory = async () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=loanHistory&dni=${user.dni}`);
                 if (response.data.status === 'success') {
-                    setLoanHistory(response.data.data || []);
+                    setLoanHistory(response.data.data || []);  // Establece el historial de préstamos
                 }
             } catch (error) {
-                console.error('Error fetching loan history:', error);
+                console.error('Error fetching loan history:', error);  // Muestra un error si no se puede obtener la información
             }
         };
+
+        // Función para obtener las reservas pendientes del usuario
         const fetchPendingReservations = async () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=pendingReservationsUsuario&dni=${user.dni}`);
                 if (response.data.status === 'success') {
-                    setPendingReservations(response.data.data || []);
+                    setPendingReservations(response.data.data || []);  // Establece las reservas pendientes
                 }
             } catch (error) {
-                console.error('Error fetching pending reservations:', error);
+                console.error('Error fetching pending reservations:', error);  // Muestra un error si no se puede obtener la información
             }
         };
 
+        // Función para obtener la lista de espera del usuario
         const fetchWaitingList = async () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=waitingList&dni=${user.dni}`);
                 if (response.data.status === 'success') {
-                    setWaitingList(response.data.data || []);
+                    setWaitingList(response.data.data || []);  // Establece la lista de espera
                 } else {
-                    console.error('Error fetching waiting list:', response.data.message);
+                    console.error('Error fetching waiting list:', response.data.message);  // Muestra un mensaje si hay un error
                 }
             } catch (error) {
-                console.error('Error fetching waiting list:', error);
+                console.error('Error fetching waiting list:', error);  // Muestra un error si no se puede obtener la información
             }
         };
 
-
+        // Llama a las funciones para obtener los datos
         fetchPendingReservations();
         fetchLoans();
         fetchLoanHistory();
         fetchWaitingList();
-    }, [user.dni]);
+    }, [user.dni]);  // Se ejecuta cada vez que el DNI del usuario cambia
 
     return (
         <div className="d-flex flex-column min-vh-100">
-            <Header />
+            <Header /> 
             <div className="container flex-grow-1 my-5">
                 <div className="row">
                     <div className="col-md-12">
@@ -79,6 +86,7 @@ const UserPanel = () => {
                     </div>
                 </div>
                 <div className="row">
+                    {/* Sección de préstamos actuales */}
                     <div className="col-md-6">
                         <h3 className="text-primary">Libros Actuales Prestados ({currentLoans.length}/10)</h3>
                         {currentLoans.length > 0 ? (
@@ -99,6 +107,8 @@ const UserPanel = () => {
                             </div>
                         )}
                     </div>
+
+                    {/* Sección de historial de préstamos */}
                     <div className="col-md-6">
                         <h3 className="text-secondary">Historial de Préstamos</h3>
                         {loanHistory.length > 0 ? (
@@ -119,6 +129,8 @@ const UserPanel = () => {
                             </div>
                         )}
                     </div>
+
+                    {/* Sección de reservas pendientes */}
                     <div className="col-md-6">
                         <h3>Reservas Pendientes ({pendingReservations.length}/3)</h3>
                         {pendingReservations.length > 0 ? (
@@ -143,6 +155,7 @@ const UserPanel = () => {
                         )}
                     </div>
 
+                    {/* Sección de lista de espera */}
                     <div className="col-md-6">
                         <h3>Lista de Espera</h3>
                         {waitingList.length > 0 ? (
@@ -160,10 +173,9 @@ const UserPanel = () => {
                             </div>
                         )}
                     </div>
-
                 </div>
             </div>
-            <Footer />
+            <Footer /> 
         </div>
     );
 };

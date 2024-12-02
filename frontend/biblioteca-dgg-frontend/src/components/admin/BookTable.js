@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const BookTable = ({ books, setBooks }) => {
+    // Estado para gestionar los valores del libro y el formulario
     const [newBook, setNewBook] = useState({
         isbn: '',
         titulo: '',
@@ -12,12 +13,18 @@ const BookTable = ({ books, setBooks }) => {
         stock: '',
         portada: ''
     });
+
+    // Estado para saber si estamos en modo edición
     const [editMode, setEditMode] = useState(false);
+
+    // Estados para los datos de autores y editoriales (listas desplegables)
     const [authors, setAuthors] = useState([]);
     const [editorials, setEditorials] = useState([]);
+
+    // Estado para mostrar/ocultar el formulario de añadir libro
     const [showAddForm, setShowAddForm] = useState(false);
 
-    // Obtener autores y editoriales al cargar el componente
+    // Cargar autores y editoriales cuando el componente se monta
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -25,38 +32,25 @@ const BookTable = ({ books, setBooks }) => {
                     axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=authors'),
                     axios.get('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=publishers')
                 ]);
-                console.log('Autores:', authorsResponse.data);
-                console.log('Editoriales:', editorialsResponse.data);
-                setAuthors(authorsResponse.data.data || []); // Verifica que los datos sean un array
+                setAuthors(authorsResponse.data.data || []);  // Si hay datos, se cargan en el estado
                 setEditorials(editorialsResponse.data.data || []);
             } catch (error) {
                 console.error('Error al obtener autores y editoriales:', error);
-                setAuthors([]);
+                setAuthors([]);  // En caso de error, se asegura de que los datos sean vacíos
                 setEditorials([]);
             }
         };
-        fetchData();
-    }, []);
+        fetchData(); // Llamada a la API para obtener los datos
+    }, []);  // Solo se ejecuta al montar el componente
 
-
-
-
+    // Función para añadir un nuevo libro
     const handleAddBook = async () => {
         try {
             const response = await axios.post('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=registerBook', newBook);
             if (response.data.status === 'success') {
-                setBooks([...books, newBook]);
-                setShowAddForm(false);
-                setNewBook({
-                    isbn: '',
-                    titulo: '',
-                    anio: '',
-                    autor_dni: '',
-                    editorial_id: '',
-                    genero: '',
-                    stock: '',
-                    portada: ''
-                });
+                setBooks([...books, newBook]);  // Actualiza la lista de libros con el nuevo libro
+                setShowAddForm(false);  // Oculta el formulario
+                resetForm();  // Resetea el formulario
                 alert('Libro añadido exitosamente');
             } else {
                 alert('Error: ' + response.data.message);
@@ -67,13 +61,13 @@ const BookTable = ({ books, setBooks }) => {
         }
     };
 
-
+    // Función para eliminar un libro
     const handleDeleteBook = async (isbn) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+        if (window.confirm('¿Estás seguro de que deseas eliminar este libro?')) {
             try {
                 const response = await axios.delete(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteBook&isbn=${isbn}`);
                 if (response.data.status === 'success') {
-                    setBooks(books.filter(book => book.isbn !== isbn));
+                    setBooks(books.filter(book => book.isbn !== isbn));  // Filtra el libro eliminado
                     alert('Libro eliminado exitosamente');
                 } else {
                     alert('Error:' + response.data.message);
@@ -85,11 +79,12 @@ const BookTable = ({ books, setBooks }) => {
         }
     };
 
+    // Función para editar un libro existente
     const handleEditBook = async () => {
         try {
             const response = await axios.put('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=updateBook', newBook);
             if (response.data.status === 'success') {
-                // Actualizar la lista de libros con los datos editados
+                // Actualiza la lista de libros con los datos editados
                 const updatedBooks = books.map(book =>
                     book.isbn === newBook.isbn ? { ...newBook } : book
                 );
@@ -105,17 +100,18 @@ const BookTable = ({ books, setBooks }) => {
         }
     };
 
+    // Función para abrir el formulario de edición de un libro
     const handleOpenEditForm = (book) => {
         setNewBook({
-            ...book,
-            autor_dni: book.autor_dni, // Confirma que el DNI del autor está presente
-            editorial_id: book.editorial_id // Confirma que el ID de la editorial está presente
+            ...book,  // Prellena el formulario con los datos del libro
+            autor_dni: book.autor_dni,  // DNI del autor
+            editorial_id: book.editorial_id  // ID de la editorial
         });
-        setEditMode(true);
-        setShowAddForm(true);
+        setEditMode(true);  // Habilita el modo edición
+        setShowAddForm(true);  // Muestra el formulario
     };
 
-
+    // Resetea el formulario
     const resetForm = () => {
         setNewBook({
             isbn: '',
@@ -127,8 +123,8 @@ const BookTable = ({ books, setBooks }) => {
             stock: '',
             portada: ''
         });
-        setEditMode(false);
-        setShowAddForm(false);
+        setEditMode(false);  // Desactiva el modo edición
+        setShowAddForm(false);  // Oculta el formulario
     };
 
     return (
@@ -183,6 +179,7 @@ const BookTable = ({ books, setBooks }) => {
                 </button>
             </div>
 
+            {/* Formulario para añadir o editar un libro */}
             {showAddForm && (
                 <div className="card mt-3 p-2">
                     <div className={`card-header text-white p-1 ${editMode ? 'bg-warning' : 'bg-success'}`}>

@@ -8,6 +8,7 @@ class ControladorListaEspera {
         $this->conexion = Conexion::conectar();
     }
 
+    /* MÉTODO PARA IMPRIMIR LA LISTAS DE ESPERA PARA RESERVAR DE UN USUARIO EN EL USERPANEL */
     public function obtenerListaEsperaUsuario($dni) {
         try {
             $query = $this->conexion->prepare("
