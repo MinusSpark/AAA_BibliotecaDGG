@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../services/AuthContext'; // para autenticación
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css'; // Importar iconos de Bootstrap
 import '../App.css';
 
 function Header() {
@@ -34,16 +35,24 @@ function Header() {
                         <ul className="navbar-nav ms-auto">
                             {/* Enlaces del menú */}
                             <li className="nav-item">
-                                <Link className="nav-link text-white" to="/">Home</Link>
+                                <Link className="nav-link text-white" to="/">
+                                    <i className="bi bi-house me-2"></i>Home
+                                </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link text-white" to="/search">Buscar</Link>
+                                <Link className="nav-link text-white" to="/search">
+                                    <i className="bi bi-search me-2"></i>Buscar
+                                </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link text-white" to="/contact">Contacto</Link>
+                                <Link className="nav-link text-white" to="/contact">
+                                    <i className="bi bi-envelope me-2"></i>Contacto
+                                </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link text-white" to="/donacion">Donaciones</Link>
+                                <Link className="nav-link text-white" to="/donacion">
+                                    <i className="bi bi-gift me-2"></i>Donaciones
+                                </Link>
                             </li>
                             {/* Condicional: si el usuario está autenticado */}
                             {user ? (
@@ -51,27 +60,37 @@ function Header() {
                                     {/* Si el usuario es un administrador, mostramos el enlace al panel de administración */}
                                     {user.role === 'admin' ? (
                                         <li className="nav-item">
-                                            <Link className="nav-link text-white" to="/admin-panel">Panel de Administrador</Link>
+                                            <Link className="nav-link text-white" to="/admin-panel">
+                                                <i className="bi bi-shield-lock me-2"></i>Panel de Administrador
+                                            </Link>
                                         </li>
                                     ) : (
                                         // Si el usuario es un usuario regular, mostramos su correo y un enlace a su panel
                                         <li className="nav-item">
-                                            <Link to="/user-panel" className="nav-link text-white">Bienvenido/a, {user.correo}</Link>
+                                            <Link to="/user-panel" className="nav-link text-white">
+                                                <i className="bi bi-person-circle me-2"></i>Bienvenido/a, {user.correo}
+                                            </Link>
                                         </li>
                                     )}
                                     {/* Botón para cerrar sesión */}
                                     <li className="nav-item">
-                                        <button className="btn btn-outline-light" onClick={handleLogout}>Cerrar sesión</button>
+                                        <button className="btn btn-outline-light" onClick={handleLogout}>
+                                            <i className="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                                        </button>
                                     </li>
                                 </>
                             ) : (
                                 // Si el usuario no está autenticado, mostramos los enlaces para login y registro
                                 <>
                                     <li className="nav-item">
-                                        <Link className="nav-link text-white" to="/login">Login</Link>
+                                        <Link className="nav-link text-white" to="/login">
+                                            <i className="bi bi-box-arrow-in-right me-2"></i>Login
+                                        </Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link text-white" to="/register">Registrarse</Link>
+                                        <Link className="nav-link text-white" to="/register">
+                                            <i className="bi bi-person-plus me-2"></i>Registrarse
+                                        </Link>
                                     </li>
                                 </>
                             )}

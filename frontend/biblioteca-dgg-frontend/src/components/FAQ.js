@@ -2,7 +2,7 @@ import React from 'react';
 
 const FAQ = () => {
   return (
-    <div className="container d-flex flex-column" style={{ background: '#F5F5F5', padding: 50, paddingBottom: 80 }}>
+    <div className="container d-flex flex-column" style={{ background: '#d5d5d5', padding: 50, paddingBottom: 80 }}>
       <h2 className="text-center mb-4">Preguntas Frecuentes</h2>
       <div className="accordion accordion-flush" id="accordionFlushExample">
         <div className="accordion-item">

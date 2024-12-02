@@ -78,137 +78,151 @@ const UserPanel = () => {
     }, [user.dni]);  // Se ejecuta cada vez que el DNI del usuario cambia
 
     return (
-        <div className="d-flex flex-column min-vh-100">
+        <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0' }}>
             <Header />
 
             {/* Sección de fondo con imagen y estilo */}
             <div
+                className="position-relative text-center text-white py-5"
                 style={{
-                    backgroundImage: `url(${fondoBiblioteca})`,  // Establece la imagen de fondo
+                    backgroundImage: `url(${fondoBiblioteca})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
-                    filter: 'blur(0px)',  // Sin filtro de desenfoque
-                    position: 'relative',
-                    color: 'white',
-                    textAlign: 'center',
-                    padding: '5rem 0',  // Padding para darle espacio a la sección
                 }}
             >
                 <div
+                    className="position-absolute top-0 start-0 w-100 h-100"
                     style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Filtro oscuro para mejorar la legibilidad del texto
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
                         zIndex: 1,
                     }}
                 ></div>
-                <h1
-                    style={{
-                        position: 'relative',
-                        zIndex: 2,
-                    }}
-                >
-                    Panel de Usuario
-                </h1>
+                <h1 className="position-relative z-2 display-4">Panel de Usuario</h1>
             </div>
-            <div className="container-fluid flex-grow-1 my-5">
-                <div className="row">
+
+            <div className="container flex-grow-1 my-5">
+                <div className="row g-4">
                     {/* Sección de préstamos actuales */}
-                    <div className="col-12 col-md-6 mb-4">
-                        <h3 className="text-primary">Libros Actuales Prestados ({currentLoans.length}/10)</h3>
-                        {currentLoans.length > 0 ? (
-                            <ul className="list-group">
-                                {currentLoans.map((loan, index) => (
-                                    <li key={`${loan.isbn}-${index}`} className="list-group-item">
-                                        <strong>{loan.titulo}</strong> <br />
-                                        <small className="text-muted">
-                                            Fecha de Préstamo: {loan.fecha_prestamo} <br />
-                                            Tiempo Restante: {loan.dias_restantes}
-                                        </small>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <div className="alert alert-info" role="alert">
-                                No tienes libros prestados actualmente.
+                    <div className="col-12 col-md-6">
+                        <div className="card shadow-sm h-100">
+                            <div className="card-body">
+                                <h3 className="text-primary">Libros Actuales Prestados ({currentLoans.length}/10)</h3>
+                                {currentLoans.length > 0 ? (
+                                    <ul className="list-group mt-3">
+                                        {currentLoans.map((loan, index) => (
+                                            <li key={`${loan.isbn}-${index}`} className="list-group-item">
+                                                <strong>{loan.titulo}</strong>
+                                                <br />
+                                                <small className="text-muted">
+                                                    Fecha de Préstamo: {loan.fecha_prestamo}
+                                                    <br />
+                                                    Tiempo Restante: {loan.dias_restantes}
+                                                </small>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <div className="alert alert-info mt-3" role="alert">
+                                        No tienes libros prestados actualmente.
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     {/* Sección de historial de préstamos */}
-                    <div className="col-12 col-md-6 mb-4">
-                        <h3 className="text-secondary">Historial de Préstamos</h3>
-                        {loanHistory.length > 0 ? (
-                            <ul className="list-group">
-                                {loanHistory.map((loan, index) => (
-                                    <li key={`${loan.isbn}-${loan.fecha_prestamo}-${index}`} className="list-group-item">
-                                        <strong>{loan.titulo}</strong> <br />
-                                        <small className="text-muted">
-                                            Fecha de Préstamo: {loan.fecha_prestamo} <br />
-                                            Fecha de Devolución: {loan.fecha_devolucion}
-                                        </small>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <div className="alert alert-info" role="alert">
-                                No tienes historial de préstamos.
+                    <div className="col-12 col-md-6">
+                        <div className="card shadow-sm h-100">
+                            <div className="card-body">
+                                <h3 className="text-secondary">Historial de Préstamos</h3>
+                                {loanHistory.length > 0 ? (
+                                    <ul className="list-group mt-3">
+                                        {loanHistory.map((loan, index) => (
+                                            <li
+                                                key={`${loan.isbn}-${loan.fecha_prestamo}-${index}`}
+                                                className="list-group-item"
+                                            >
+                                                <strong>{loan.titulo}</strong>
+                                                <br />
+                                                <small className="text-muted">
+                                                    Fecha de Préstamo: {loan.fecha_prestamo}
+                                                    <br />
+                                                    Fecha de Devolución: {loan.fecha_devolucion}
+                                                </small>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <div className="alert alert-info mt-3" role="alert">
+                                        No tienes historial de préstamos.
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     {/* Sección de reservas pendientes */}
-                    <div className="col-12 col-md-6 mb-4">
-                        <h3>Reservas Pendientes ({pendingReservations.length}/3)</h3>
-                        {pendingReservations.length > 0 ? (
-                            <ul className="list-group">
-                                {pendingReservations.map((reservation, index) => (
-                                    <li key={index} className="list-group-item">
-                                        <strong>{reservation.titulo}</strong> <br />
-                                        <small>
-                                            Tiempo Restante: {reservation.tiempo_restante === "Expirada" ? (
-                                                <span className="text-danger">Expirada</span>
-                                            ) : (
-                                                <span className="text-success">{reservation.tiempo_restante}</span>
-                                            )}
-                                        </small>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <div className="alert alert-info" role="alert">
-                                No tienes reservas pendientes.
+                    <div className="col-12 col-md-6">
+                        <div className="card shadow-sm h-100">
+                            <div className="card-body">
+                                <h3>Reservas Pendientes ({pendingReservations.length}/3)</h3>
+                                {pendingReservations.length > 0 ? (
+                                    <ul className="list-group mt-3">
+                                        {pendingReservations.map((reservation, index) => (
+                                            <li key={index} className="list-group-item">
+                                                <strong>{reservation.titulo}</strong>
+                                                <br />
+                                                <small>
+                                                    Tiempo Restante:{' '}
+                                                    {reservation.tiempo_restante === 'Expirada' ? (
+                                                        <span className="text-danger">Expirada</span>
+                                                    ) : (
+                                                        <span className="text-success">{reservation.tiempo_restante}</span>
+                                                    )}
+                                                </small>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <div className="alert alert-info mt-3" role="alert">
+                                        No tienes reservas pendientes.
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     {/* Sección de lista de espera */}
-                    <div className="col-12 col-md-6 mb-4">
-                        <h3>Lista de Espera</h3>
-                        {waitingList.length > 0 ? (
-                            <ul className="list-group">
-                                {waitingList.map((item, index) => (
-                                    <li key={index} className="list-group-item">
-                                        <strong>{item.titulo}</strong> <br />
-                                        <small>Fecha de Registro: {item.fecha_registro}</small>
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <div className="alert alert-info" role="alert">
-                                No estás en ninguna lista de espera.
+                    <div className="col-12 col-md-6">
+                        <div className="card shadow-sm h-100">
+                            <div className="card-body">
+                                <h3>Lista de Espera</h3>
+                                {waitingList.length > 0 ? (
+                                    <ul className="list-group mt-3">
+                                        {waitingList.map((item, index) => (
+                                            <li key={index} className="list-group-item">
+                                                <strong>{item.titulo}</strong>
+                                                <br />
+                                                <small>Fecha de Registro: {item.fecha_registro}</small>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <div className="alert alert-info mt-3" role="alert">
+                                        No estás en ninguna lista de espera.
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
                 </div>
             </div>
+
             <Footer />
         </div>
     );
+
 
 };
 

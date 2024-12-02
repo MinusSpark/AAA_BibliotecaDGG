@@ -121,7 +121,7 @@ const Search = () => {
 
     // JSX para renderizar el formulario de búsqueda, filtros, y la lista de libros
     return (
-        <div className="d-flex flex-column min-vh-100">
+        <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0'}}>
             <Header />
             {/* Sección de fondo con imagen y estilo */}
             <div
@@ -157,111 +157,129 @@ const Search = () => {
                     Buscar Libros
                 </h1>
             </div>
+
             <div className="container my-5">
 
+                <div className="card mb-4 shadow-sm" style={{ background: '#d5d5d5' }}>
+                    <div className="card-header text-white" style={{ background: '#002B5B' }}>
+                        <h2 className="h5 mb-0">Libros Disponibles</h2>
+                    </div>
+                    <div className="p-3">
+                        {/* Barra de búsqueda por título */}
+                        <div className="row mb-3">
+                            <div className="col-12">
+                                <input
+                                    type="text"
+                                    placeholder="Buscar por título..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)} // Actualiza el término de búsqueda
+                                    className="form-control"
+                                />
+                            </div>
+                        </div>
 
-                {/* Campo de búsqueda por título */}
-                <input
-                    type="text"
-                    placeholder="Buscar por título..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}  // Actualiza el término de búsqueda
-                    className="form-control mb-3"
-                />
+                        {/* Filtros: Año, Autor y Género */}
+                        <div className="row mb-3">
+                            {/* Filtro por año (década) */}
+                            <div className="col-12 col-md-4 mb-3 mb-md-0">
+                                <label>Año:</label>
+                                <select onChange={(e) => setSelectedYear(e.target.value)} className="form-select">
+                                    <option value="">Seleccionar década</option>
+                                    {['1920', '1930', '1940', '1950', '1960', '1970', '1980', '1990', '2000', '2010'].map((year) => (
+                                        <option key={year} value={year}>{year}s</option>
+                                    ))}
+                                </select>
+                            </div>
 
-                {/* Filtro por año (década) */}
-                <div className="mb-3">
-                    <label>Año:</label>
-                    <select onChange={(e) => setSelectedYear(e.target.value)} className="form-select">
-                        <option value="">Seleccionar década</option>
-                        {/* Opciones de décadas */}
-                        {['1920', '1930', '1940', '1950', '1960', '1970', '1980', '1990', '2000', '2010'].map((year) => (
-                            <option key={year} value={year}>{year}s</option>
-                        ))}
-                    </select>
+                            {/* Filtro por autor */}
+                            <div className="col-12 col-md-4 mb-3 mb-md-0">
+                                <label>Autor:</label>
+                                <select onChange={(e) => setSelectedAuthor(e.target.value)} className="form-select">
+                                    <option value="">Seleccionar autor</option>
+                                    {authors.map((author, index) => (
+                                        <option key={index} value={author}>{author}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Filtro por género */}
+                            <div className="col-12 col-md-4">
+                                <label>Género:</label>
+                                <select onChange={(e) => setSelectedGenre(e.target.value)} className="form-select">
+                                    <option value="">Seleccionar género</option>
+                                    {genres.map((genre, index) => (
+                                        <option key={index} value={genre}>{genre}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Botones para ordenar */}
+                        <div className="row mt-4">
+                            <div className="col-12 d-flex flex-column flex-sm-row justify-content-center gap-2">
+                                <button
+                                    onClick={() => handleSort('stock')}
+                                    className="btn btn-primary"
+                                >
+                                    Ordenar por Stock {sortOrder.stock === 'asc' ? '↑' : '↓'}
+                                </button>
+
+                                <button
+                                    onClick={() => handleSort('year')}
+                                    className="btn btn-primary"
+                                >
+                                    Ordenar por Año {sortOrder.year === 'asc' ? '↑' : '↓'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Filtro por editorial 
-                <div className="mb-3">
-                    <label>Editorial:</label>
-                    <select onChange={(e) => setSelectedPublisher(e.target.value)} className="form-select">
-                        <option value="">Seleccionar editorial</option>
-                        {publishers.map((publisher, index) => (
-                            <option key={index} value={publisher}>{publisher}</option>
-                        ))}
-                    </select>
-                </div>*/}
 
-                {/* Filtro por autor */}
-                <div className="mb-3">
-                    <label>Autor:</label>
-                    <select onChange={(e) => setSelectedAuthor(e.target.value)} className="form-select">
-                        <option value="">Seleccionar autor</option>
-                        {authors.map((author, index) => (
-                            <option key={index} value={author}>{author}</option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* Filtro por género */}
-                <div className="mb-3">
-                    <label>Género:</label>
-                    <select onChange={(e) => setSelectedGenre(e.target.value)} className="form-select">
-                        <option value="">Seleccionar género</option>
-                        {genres.map((genre, index) => (
-                            <option key={index} value={genre}>{genre}</option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* Botones para ordenar los libros */}
-                <div className="container d-flex flex-row justify-content-center mt-4">
-                    <button
-                        onClick={() => handleSort('stock')}
-                        className="btn btn-primary me-2"
-                    >
-                        Ordenar por Stock
-                        {sortOrder.stock === 'asc' ? '↑' : '↓'}
-                    </button>
-
-                    <button
-                        onClick={() => handleSort('year')}
-                        className="btn btn-primary"
-                    >
-                        Ordenar por Año
-                        {sortOrder.year === 'asc' ? '↑' : '↓'}
-                    </button>
-                </div>
 
                 {/* Muestra los libros filtrados */}
                 <div className="row mt-4">
                     {filteredBooks.map(book => (
-                        <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-3" key={book.isbn}>
-                            <div className="card shadow border-light" style={{ height: '575px' }}>
-                                <img
-                                    src={book.portada}
-                                    className="card-img-top"
-                                    alt={`Portada de ${book.titulo}`}
-                                    style={{ height: '300px', objectFit: 'cover' }}
-                                />
-                                <div className="card-body d-flex flex-column">
-                                    <h5 className="card-title">{book.titulo}</h5>
-                                    <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
-                                    <p className="card-text">Año: {book.anio}</p>
-                                    <p className="card-text">Stock: {book.stock}</p>
-                                    <div className="mt-auto">
-                                        <button
-                                            className="btn btn-primary w-100"
-                                            onClick={() => handleReservation(book.isbn)} // Llama a handleReservation cuando se hace clic
-                                        >
-                                            Reservar
-                                        </button>
+                        <div className="col-6 col-sm-6 col-md-4 col-lg-3 mb-3" key={book.isbn}>
+                            <div className="card shadow border-light d-flex flex-column h-100">
+                                {/* Título */}
+                                <div className="p-2">
+                                    <h5 className="card-title text-truncate">{book.titulo}</h5>
+                                </div>
+
+                                {/* Contenido: Imagen y resto de información */}
+                                <div className="d-flex flex-column flex-sm-row" style={{ flex: '1 1 auto' }}>
+                                    <div className="d-flex justify-content-center align-items-center p-2" style={{ flex: '1 0 auto' }}>
+                                        <img
+                                            src={book.portada}
+                                            className="img-fluid"
+                                            alt={`Portada de ${book.titulo}`}
+                                            style={{
+                                                maxWidth: '100px',
+                                                maxHeight: '150px',
+                                                objectFit: 'contain',
+                                            }}
+                                        />
                                     </div>
+                                    <div className="card-body d-flex flex-column overflow-hidden p-2">
+                                        <p className="card-text text-truncate">Autor: {book.autor_nombre} {book.autor_apellido}</p>
+                                        <p className="card-text">Año: {book.anio}</p>
+                                        <p className="card-text">Stock: {book.stock}</p>
+                                    </div>
+                                </div>
+                                <div className="mt-auto p-2">
+                                    <button
+                                        className="btn btn-primary w-100"
+                                        onClick={() => handleReservation(book.isbn)}
+                                    >
+                                        Reservar
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
+
 
             </div>
 

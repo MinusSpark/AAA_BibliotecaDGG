@@ -11,6 +11,7 @@ import BorrowedBooksTable from '../components/admin/BorrowedBooksTable';
 import AuthorTable from '../components/admin/AuthorTable';
 import PublisherTable from '../components/admin/PublisherTable';
 import ReservationsTable from '../components/admin/ReservationsTable';
+import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
 
 const AdminPanel = () => {
     const { user } = useContext(AuthContext);
@@ -54,18 +55,50 @@ const AdminPanel = () => {
     }, [user, navigate]);
 
     return (
-        <div>
-            <Header />
+        <div style={{ background: '#f0f0f0'}}>
+            <Header />{/* Sección de fondo con imagen y estilo */}
+            <div
+                style={{
+                    backgroundImage: `url(${fondoBiblioteca})`,  // Establece la imagen de fondo
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    filter: 'blur(0px)',  // Sin filtro de desenfoque
+                    position: 'relative',
+                    color: 'white',
+                    textAlign: 'center',
+                    padding: '5rem 0',  // Padding para darle espacio a la sección
+                }}
+            >
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Filtro oscuro para mejorar la legibilidad del texto
+                        zIndex: 1,
+                    }}
+                ></div>
+                <h1
+                    style={{
+                        position: 'relative',
+                        zIndex: 2,
+                    }}
+                >
+                    Panel de Administrador
+                </h1>
+            </div>
             <div className="container mt-5">
-                <h1 className="text-center mb-4">Panel de Administrador</h1>
-                <p className="text-center mb-5">Gestiona usuarios, inventario de libros y más desde aquí.</p>
+
 
                 <ReservationsTable reservations={reservations} setReservations={setReservations} setBorrowedBooks={setBorrowedBooks} />
                 <UserTable users={users} setUsers={setUsers} />
                 <BookTable books={books} setBooks={setBooks} authors={authors} publishers={publishers} />
                 <BorrowedBooksTable borrowedBooks={borrowedBooks} />
-                <AuthorTable authors={authors} setAuthors={setAuthors}/>
-                <PublisherTable publishers={publishers} setPublishers={setPublishers}/>
+                <AuthorTable authors={authors} setAuthors={setAuthors} />
+                <PublisherTable publishers={publishers} setPublishers={setPublishers} />
             </div>
             <Footer />
         </div>

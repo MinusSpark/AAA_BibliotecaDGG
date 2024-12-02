@@ -61,7 +61,7 @@ function AdminLogin() {
     };
 
     return (
-        <div className="d-flex flex-column min-vh-100">
+        <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0'}}>
             {/* Componente Header que contiene la barra de navegación */}
             <Header />
             <div className="container my-5">

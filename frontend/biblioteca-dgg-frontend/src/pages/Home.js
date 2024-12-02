@@ -10,7 +10,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../services/AuthContext';
-import HomeCarousel from '../components/Carousel';
+//import HomeCarousel from '../components/Carousel';
 import Cards from '../components/Cards';
 import FAQ from '../components/FAQ';
 import TitleBanner from '../components/TitleBanner';
@@ -170,49 +170,60 @@ const Home = () => {
 
 
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0' }}>
       <Header />
 
       <TitleBanner />
 
-      <HomeCarousel />
+      {/*<HomeCarousel />*/}
 
-      <div className="container text-center my-5">
-        <p className="lead">Explora nuestra colección de libros y gestiona tus préstamos.</p>
+      <div className="container text-center my-4">
 
-        <div className="card mb-4 shadow-sm">
-          <div className="card-header bg-success text-white">
+        <div className="card mb-4 shadow-sm"  style={{ background: '#d5d5d5'}} >
+          <div className="card-header text-white" style={{ background: '#002B5B' }}>
             <h2 className="h5 mb-0">Libros Disponibles</h2>
           </div>
           <div className="card-body">
             <div className="row">
               {books.map(book => (
-                <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-3" key={book.isbn}>
-                  <div className="card shadow border-light" style={{ height: '575px' }}>
-                    <img
-                      src={book.portada}
-                      className="card-img-top"
-                      alt={`Portada de ${book.titulo}`}
-                      style={{ height: '300px', objectFit: 'cover' }}
-                    />
-                    <div className="card-body d-flex flex-column">
-                      <h5 className="card-title">{book.titulo}</h5>
-                      <p className="card-text">Autor: {book.autor_nombre} {book.autor_apellido}</p>
-                      <p className="card-text">Año: {book.anio}</p>
-                      <p className="card-text">Stock: {book.stock}</p>
-                      <div className="mt-auto">
-                        <button
-                          className="btn btn-primary w-100"
-                          onClick={() => handleReservation(book.isbn)}
-                        >
-                          Reservar
-                        </button>
+                <div className="col-6 col-sm-6 col-md-4 col-lg-3 mb-3" key={book.isbn} >
+                  <div className="card shadow border-light d-flex flex-column h-100">
+                    <div className="mt-auto p-2">
+                      <h5 className="card-title text-truncate">{book.titulo}</h5>
+                    </div>
+                    <div className="d-flex flex-column flex-md-row" style={{ flex: '1 1 auto' }}>
+                      <div style={{ width: '100%', height: '150px', position: 'relative' }}>
+                        <img
+                          src={book.portada}
+                          className="card-img-top"
+                          alt={`Portada de ${book.titulo}`}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain',
+                          }}
+                        />
                       </div>
+                      <div className="card-body d-flex flex-column overflow-hidden">
+                        <p className="card-text text-truncate">{book.autor_nombre} {book.autor_apellido}</p>
+                        <p className="card-text">{book.anio}</p>
+                        <p className="card-text">Stock: {book.stock}</p>
+                      </div>
+                    </div>
+                    <div className="mt-auto p-2">
+                      <button
+                        className="btn btn-primary w-100"
+                        onClick={() => handleReservation(book.isbn)}
+                      >
+                        Reservar
+                      </button>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
+
+
           </div>
         </div>
 

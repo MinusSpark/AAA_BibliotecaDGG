@@ -78,115 +78,106 @@ function Contact() {
     };
 
     return (
-        <div className="d-flex flex-column min-vh-100">
-            {/* Componente Header que contiene la barra de navegación */}
+        <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0' }}>
             <Header />
 
-            {/* Sección de fondo con imagen y estilo */}
             <div
+                className="position-relative text-center text-white py-5"
                 style={{
-                    backgroundImage: `url(${fondoBiblioteca})`,  // Establece la imagen de fondo
+                    backgroundImage: `url(${fondoBiblioteca})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
-                    filter: 'blur(0px)',  // Sin filtro de desenfoque
-                    position: 'relative',
-                    color: 'white',
-                    textAlign: 'center',
-                    padding: '5rem 0',  // Padding para darle espacio a la sección
                 }}
             >
                 <div
+                    className="position-absolute top-0 start-0 w-100 h-100"
                     style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Filtro oscuro para mejorar la legibilidad del texto
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
                         zIndex: 1,
                     }}
                 ></div>
-                <h1
-                    style={{
-                        position: 'relative',
-                        zIndex: 2,
-                    }}
-                >
-                    Contacto
-                </h1>
+                <h1 className="position-relative z-2 display-4">Contacto</h1>
             </div>
 
-            <div className="container my-auto">
-                {/* Card para mostrar la ubicación en el mapa de Google */}
-                <div className="card shadow-lg p-4 mb-4">
-                    <h2 className="text-center mb-4">Nuestra Ubicación</h2>
-                    <div style={{ height: '550px', width: '100%' }}>
-                        {/* Muestra el componente GoogleMap con las coordenadas de la ubicación */}
-                        <GoogleMap apiKey="AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik" location={{ lat: 40.5829314, lng: -4.0141457 }} />
+            <div className="container my-5">
+                <div className="row g-4">
+                    {/* Columna para el mapa */}
+                    <div className="col-12 col-lg-6">
+                        <div className="card shadow-lg h-100">
+                            <div className="card-body">
+                                <h2 className="text-center mb-4">Nuestra Ubicación</h2>
+                                <div style={{ height: '600px' }}>
+                                    {/* Muestra el componente GoogleMap con las coordenadas de la ubicación */}
+                                    <GoogleMap
+                                        apiKey="AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik"
+                                        location={{ lat: 40.5829314, lng: -4.0141457 }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                {/* Card para mostrar el formulario de contacto */}
-                <div className="card shadow-lg p-4 mb-4">
-                    <h2 className="text-center mb-4">Contáctanos</h2>
-                    <p className="text-center">Si tienes alguna pregunta o comentario, no dudes en ponerte en contacto con nosotros.</p>
-                    {/* Formulario de contacto */}
-                    <form ref={form} onSubmit={sendEmail}>
-                        <div className="mb-3">
-                            <label htmlFor="from_name" className="form-label">Nombre</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="from_name"
-                                name="from_name"
-                                placeholder="Introduce tu nombre"
-                            />
-                            {/* Muestra los errores de validación del nombre */}
-                            {errors.from_name && <div className="text-danger">{errors.from_name}</div>}
+                    {/* Columna para el formulario */}
+                    <div className="col-12 col-lg-6">
+                        <div className="card shadow-lg h-100">
+                            <div className="card-body">
+                                <h2 className="text-center mb-4">Contáctanos</h2>
+                                <p className="text-center">
+                                    Si tienes alguna pregunta o comentario, no dudes en ponerte en contacto con nosotros.
+                                </p>
+                                <form ref={form} onSubmit={sendEmail}>
+                                    <div className="mb-3">
+                                        <label htmlFor="from_name" className="form-label">Nombre</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="from_name"
+                                            name="from_name"
+                                            placeholder="Introduce tu nombre"
+                                        />
+                                        {errors.from_name && <div className="text-danger">{errors.from_name}</div>}
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label htmlFor="user_email" className="form-label">Correo electrónico</label>
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            id="user_email"
+                                            name="user_email"
+                                            placeholder="Introduce tu correo"
+                                        />
+                                        {errors.user_email && <div className="text-danger">{errors.user_email}</div>}
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label htmlFor="message" className="form-label">Mensaje</label>
+                                        <textarea
+                                            className="form-control"
+                                            id="message"
+                                            name="message"
+                                            rows="4"
+                                            placeholder="Escribe brevemente lo que quieres saber"
+                                        ></textarea>
+                                        {errors.message && <div className="text-danger">{errors.message}</div>}
+                                    </div>
+
+                                    <ReCAPTCHA
+                                        ref={recaptchaRef}
+                                        sitekey="6LdchowqAAAAAMCvrkK_Q9J6f7gt-RVThvTMMkRC"
+                                        onChange={onCaptchaChange}
+                                    />
+
+                                    <button type="submit" className="btn btn-primary w-100 mt-3">Enviar</button>
+                                </form>
+
+                                <div className="mt-4 text-center">
+                                    <p>Email: <a href="mailto:bibliotecadgg@outlook.com">contacto@bibliotecaDGG.com</a></p>
+                                    <p>Teléfono: +34 912 345 678</p>
+                                </div>
+                            </div>
                         </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="user_email" className="form-label">Correo electrónico</label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                id="user_email"
-                                name="user_email"
-                                placeholder="Introduce tu correo"
-                            />
-                            {/* Muestra los errores de validación del correo */}
-                            {errors.user_email && <div className="text-danger">{errors.user_email}</div>}
-                        </div>
-
-                        <div className="mb-3">
-                            <label htmlFor="message" className="form-label">Mensaje</label>
-                            <textarea
-                                className="form-control"
-                                id="message"
-                                name="message"
-                                rows="4"
-                                placeholder="Escribe brevemente lo que quieres saber"
-                            ></textarea>
-                            {/* Muestra los errores de validación del mensaje */}
-                            {errors.message && <div className="text-danger">{errors.message}</div>}
-                        </div>
-
-                        {/* Componente reCAPTCHA para verificar que el usuario no es un robot */}
-                        <ReCAPTCHA
-                            ref={recaptchaRef}
-                            sitekey="6LdchowqAAAAAMCvrkK_Q9J6f7gt-RVThvTMMkRC"  // Clave del sitio para reCAPTCHA
-                            onChange={onCaptchaChange}  // Actualiza el valor del captcha
-                        />
-
-                        {/* Botón de envío del formulario */}
-                        <button type="submit" className="btn btn-primary w-100" to="/">Enviar</button>
-                    </form>
-
-                    {/* Información adicional de contacto */}
-                    <div className="mt-4 text-center">
-                        <p>Email: <a href="mailto:bibliotecadgg@outlook.com">contacto@bibliotecaDGG.com</a></p>
-                        <p>Teléfono: +34 912 345 678</p>
                     </div>
                 </div>
             </div>
@@ -195,6 +186,7 @@ function Contact() {
             <Footer />
         </div>
     );
+
 }
 
 export default Contact;

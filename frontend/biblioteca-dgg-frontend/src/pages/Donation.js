@@ -45,7 +45,7 @@ const Donacion = () => {
     };
 
     return (
-        <div className="d-flex flex-column min-vh-100">
+        <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0' }}>
             <Header />
             <div
                 style={{

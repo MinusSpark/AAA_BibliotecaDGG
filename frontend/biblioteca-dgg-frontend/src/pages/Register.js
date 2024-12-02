@@ -110,7 +110,7 @@ function Register() {
 
 
     return (
-        <div className="d-flex flex-column min-vh-100">
+        <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0'}}>
             <Header />
             <div className="container my-5">
                 <div className="row justify-content-center">

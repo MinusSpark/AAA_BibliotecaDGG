@@ -5,8 +5,7 @@ import personaLeyendo from '../images/personaLeyendo.jpg';
 
 const Cards = () => {
   return (
-    <div className="container my-5">
-      <h2 className="text-center" style={{ color: '#000000' }}>Servicios de la Biblioteca</h2>
+    <div className="container my-4">
       <div className="row">
         <div className="col-md-4 mb-3 mt-4">
           <div className="card h-100">
