@@ -11,10 +11,10 @@ import AdminLogin from './pages/AdminLogin';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Donacion from './pages/Donation';
+import NotFound from './pages/Error404'; // Importa el componente NotFound
 
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 
 const App = () => {
     return (
@@ -31,10 +31,10 @@ const App = () => {
                 <Route path="/privacy" element={<Privacy />} />
                 <Route path="/terms" element={<Terms />} />
                 <Route path="/donacion" element={<Donacion />} />
-
+                <Route path="*" element={<NotFound />} /> {/* Ruta para la página 404 */}
             </Routes>
         </Router>
     );
 };
 
-export default App; 
+export default App;
