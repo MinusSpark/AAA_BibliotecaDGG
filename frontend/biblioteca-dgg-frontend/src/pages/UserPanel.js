@@ -6,76 +6,82 @@ import Footer from '../components/Footer';
 import fondoBiblioteca from '../images/fondoBiblioteca.jpg';
 
 const UserPanel = () => {
-    const { user } = useContext(AuthContext);  // Obtiene el usuario actual desde el contexto
-    // Estados para almacenar los datos de los préstamos actuales, historial de préstamos, reservas pendientes y lista de espera
+    const { user } = useContext(AuthContext);
     const [currentLoans, setCurrentLoans] = useState([]);
     const [loanHistory, setLoanHistory] = useState([]);
     const [pendingReservations, setPendingReservations] = useState([]);
     const [waitingList, setWaitingList] = useState([]);
+    const [notifications, setNotifications] = useState([]);
 
-    // useEffect para obtener los datos cuando el componente se monta o cuando el DNI del usuario cambia
     useEffect(() => {
-        // Función para obtener los préstamos actuales del usuario
         const fetchLoans = async () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=currentLoans&dni=${user.dni}`);
                 if (response.data.status === 'success') {
-                    // Verifica si el usuario tiene préstamos vencidos
                     const penalized = response.data.data.some((loan) => parseInt(loan.dias_restantes) < 0);
                     if (penalized) {
                         alert("Tienes préstamos vencidos. Por favor, devuelve los libros lo antes posible.");
                     }
-                    setCurrentLoans(response.data.data || []);  // Establece los préstamos actuales
+                    setCurrentLoans(response.data.data || []);
                 }
             } catch (error) {
-                console.error('Error fetching current loans:', error);  // Muestra un error si no se puede obtener la información
+                console.error('Error fetching current loans:', error);
             }
         };
 
-        // Función para obtener el historial de préstamos del usuario
         const fetchLoanHistory = async () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=loanHistory&dni=${user.dni}`);
                 if (response.data.status === 'success') {
-                    setLoanHistory(response.data.data || []);  // Establece el historial de préstamos
+                    setLoanHistory(response.data.data || []);
                 }
             } catch (error) {
-                console.error('Error fetching loan history:', error);  // Muestra un error si no se puede obtener la información
+                console.error('Error fetching loan history:', error);
             }
         };
 
-        // Función para obtener las reservas pendientes del usuario
         const fetchPendingReservations = async () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=pendingReservationsUsuario&dni=${user.dni}`);
                 if (response.data.status === 'success') {
-                    setPendingReservations(response.data.data || []);  // Establece las reservas pendientes
+                    setPendingReservations(response.data.data || []);
                 }
             } catch (error) {
-                console.error('Error fetching pending reservations:', error);  // Muestra un error si no se puede obtener la información
+                console.error('Error fetching pending reservations:', error);
             }
         };
 
-        // Función para obtener la lista de espera del usuario
         const fetchWaitingList = async () => {
             try {
                 const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=waitingList&dni=${user.dni}`);
                 if (response.data.status === 'success') {
-                    setWaitingList(response.data.data || []);  // Establece la lista de espera
+                    setWaitingList(response.data.data || []);
                 } else {
-                    console.error('Error fetching waiting list:', response.data.message);  // Muestra un mensaje si hay un error
+                    console.error('Error fetching waiting list:', response.data.message);
                 }
             } catch (error) {
-                console.error('Error fetching waiting list:', error);  // Muestra un error si no se puede obtener la información
+                console.error('Error fetching waiting list:', error);
             }
         };
 
-        // Llama a las funciones para obtener los datos
+        const fetchNotifications = async () => {
+            try {
+                const response = await axios.get(`http://localhost/AAA_BibliotecaDGG/backend/api.php?request=notifications&dni=${user.dni}`);
+                console.log('Response:', response.data);  // Verificar la respuesta
+                if (response.data.status === 'success') {
+                    setNotifications(response.data.data || []);
+                }
+            } catch (error) {
+                console.error('Error fetching notifications:', error);
+            }
+        };
+
         fetchPendingReservations();
         fetchLoans();
         fetchLoanHistory();
         fetchWaitingList();
-    }, [user.dni]);  // Se ejecuta cada vez que el DNI del usuario cambia
+        fetchNotifications();
+    }, [user.dni]);
 
     const cancelReservation = async (id) => {
         try {
@@ -85,7 +91,6 @@ const UserPanel = () => {
 
             if (response.data.status === 'success') {
                 alert('Reserva cancelada con éxito.');
-                // Actualizar el estado para eliminar la reserva cancelada
                 setPendingReservations((prev) =>
                     prev.filter((reservation) => reservation.id !== id)
                 );
@@ -98,33 +103,34 @@ const UserPanel = () => {
         }
     };
 
-
     return (
         <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0' }}>
             <Header />
 
-            {/* Sección de fondo con imagen y estilo */}
-            <div
-                className="position-relative text-center text-white py-5"
-                style={{
-                    backgroundImage: `url(${fondoBiblioteca})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                }}
-            >
-                <div
-                    className="position-absolute top-0 start-0 w-100 h-100"
-                    style={{
-                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                        zIndex: 1,
-                    }}
-                ></div>
+            <div className="position-relative text-center text-white py-5" style={{ backgroundImage: `url(${fondoBiblioteca})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
+                <div className="position-absolute top-0 start-0 w-100 h-100" style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)', zIndex: 1 }}></div>
                 <h1 className="position-relative z-2 display-4">Panel de Usuario</h1>
             </div>
 
             <div className="container flex-grow-1 my-5">
                 <div className="row g-4">
+                    <div className="col-12 mb-4">
+                        <h3 className="text-danger">Notificaciones</h3>
+                        {notifications.length > 0 ? (
+                            <ul className="list-group">
+                                {notifications.map((notification, index) => (
+                                    <li key={index} className="list-group-item">
+                                        {notification.mensaje}
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <div className="alert alert-info" role="alert">
+                                No tienes notificaciones.
+                            </div>
+                        )}
+                    </div>
+
                     {/* Sección de préstamos actuales */}
                     <div className="col-12 col-md-6">
                         <div className="card shadow-sm h-100">
@@ -161,14 +167,11 @@ const UserPanel = () => {
                                 {loanHistory.length > 0 ? (
                                     <ul className="list-group mt-3">
                                         {loanHistory.map((loan, index) => (
-                                            <li
-                                                key={`${loan.isbn}-${loan.fecha_prestamo}-${index}`}
-                                                className="list-group-item"
-                                            >
+                                            <li key={`${loan.isbn}-${loan.fecha_prestamo}-${index}`} className="list-group-item">
                                                 <strong>{loan.titulo}</strong>
                                                 <br />
                                                 <small className="text-muted">
-                                                    Fecha de Préstamo: {loan.fecha_prestamo}
+                                                Fecha de Préstamo: {loan.fecha_prestamo}
                                                     <br />
                                                     Fecha de Devolución: {loan.fecha_devolucion}
                                                 </small>
@@ -213,7 +216,6 @@ const UserPanel = () => {
                                                 </button>
                                             </li>
                                         ))}
-
                                     </ul>
                                 ) : (
                                     <div className="alert alert-info mt-3" role="alert">
@@ -253,8 +255,6 @@ const UserPanel = () => {
             <Footer />
         </div>
     );
-
-
 };
 
 export default UserPanel;

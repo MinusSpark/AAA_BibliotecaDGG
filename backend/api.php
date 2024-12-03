@@ -11,6 +11,7 @@ require_once 'controlador_reservas.php';
 require_once 'controlador_usuario.php';
 require_once 'controlador_eventos.php';
 require_once 'controlador_lista_espera.php';
+require_once 'conexion.php';
 
 // Configuraciones básicas para permitir solicitudes desde cualquier origen (CORS),
 // soportar múltiples métodos HTTP y trabajar con JSON.
@@ -50,7 +51,7 @@ switch ($method) {
             }
         }
 
-        /* IMRPRIMIR TABLAS EN EL ADMIN PANEL (reservas, usuarios, autores, publishers, administrators) */ elseif ($request === 'pendingReservations') {
+        /* IMPRIMIR TABLAS EN EL ADMIN PANEL (reservas, usuarios, autores, publishers, administrators) */ elseif ($request === 'pendingReservations') {
             $reservas = ControladorReservas::obtenerReservasPendientes(); // Cambia aquí
             if ($reservas) {
                 echo json_encode(['status' => 'success', 'data' => $reservas]);
@@ -97,7 +98,7 @@ switch ($method) {
             }
         }
 
-        /* IMPRIMIR DATOS DE USER PANEL (prestamos, hitorial de prestamos, reservas pendientes y lista de espera) */ elseif ($request === 'currentLoans') {
+        /* IMPRIMIR DATOS DE USER PANEL (prestamos, historial de prestamos, reservas pendientes y lista de espera) */ elseif ($request === 'currentLoans') {
             if (isset($_GET['dni'])) {
                 $dni = $_GET['dni'];
                 $loans = ControladorLibrosPrestados::obtenerLibrosPrestadosPorUsuario($dni);
@@ -167,6 +168,28 @@ switch ($method) {
                 echo json_encode(['status' => 'error', 'message' => 'Error al obtener eventos']);
             }
         }
+
+        // Obtener notificaciones
+        if ($request === 'notifications') {
+            if (isset($_GET['dni'])) {
+                $dni = $_GET['dni'];
+                $conexion = Conexion::conectar();
+                $query = "SELECT * FROM notificaciones WHERE usuario_dni = :dni ORDER BY fecha DESC LIMIT 1";
+                $stmt = $conexion->prepare($query);
+                $stmt->execute([':dni' => $dni]);
+                $notificaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+                if ($notificaciones) {
+                    echo json_encode(['status' => 'success', 'data' => $notificaciones]);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se encontraron notificaciones']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
+            }
+        }
+        
+        
 
         break;
 
@@ -244,7 +267,7 @@ switch ($method) {
             }
         }
 
-        /* CONVERTIR RESERVAS A PRESTAMOS DESDE INTERFAZ ADMNISTRADOR */ elseif ($request === 'convertReservation') {
+        /* CONVERTIR RESERVAS A PRÉSTAMOS DESDE INTERFAZ ADMINISTRADOR */ elseif ($request === 'convertReservation') {
             $reservationId = $input['reservationId'];
 
             $controladorLibro = new ControladorReservas();
@@ -272,7 +295,6 @@ switch ($method) {
             $resultado = ControladorEventos::añadirEvento($fecha, $descripcion, $max_asistentes);
             echo json_encode($resultado);
         }
-
 
         // Añadir evento
         elseif ($request === 'inscribirUsuario') {
@@ -338,9 +360,9 @@ switch ($method) {
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Error al eliminar la editorial']);
             }
-        } /* CANCELAR RESERVAS DESDE USERPANEL */elseif ($request === 'cancelReservation') {
+        } /* CANCELAR RESERVAS DESDE USERPANEL */ elseif ($request === 'cancelReservation') {
             $id = isset($input['id']) ? $input['id'] : null;
-    
+
             if ($id) {
                 $resultado = ControladorReservas::cancelarReserva($id);
                 if ($resultado) {

@@ -121,6 +121,14 @@ CREATE TABLE lista_espera (
     FOREIGN KEY (libro_isbn) REFERENCES libro(isbn)
 );
 
+CREATE TABLE notificaciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_dni VARCHAR(9) NOT NULL,
+    mensaje VARCHAR(255) NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_dni) REFERENCES Usuario(dni)
+);
+
 -- Insertar usuarios
 INSERT INTO Usuario (dni, nombre, apellido, telefono, correo, contraseña) VALUES
 ('12345678A', 'Carlos', 'Martinez', 987654321, 'carlos@example.com', 'password1'),
