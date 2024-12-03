@@ -26,7 +26,7 @@ Asegurarse de tener instalados los siguientes programas:
 
 ## Clonar proyecto o ir al dominio 
 1. Clonar el proyecto desde github en la carpeta 'xampp\htdocs'
-2. Ir en un navegador al dominio 'https://aaa-biblioteca-dgg-zrj3-six.vercel.app/' 
+2. Ir en un navegador al dominio 'https://biblioteca-dgg-frontend.vercel.app/' 
 
 ## Configuración del Backend en PHP
 1. Asegurarse de que `conexion.php` esté configurado correctamente para conectarse a la base de datos.

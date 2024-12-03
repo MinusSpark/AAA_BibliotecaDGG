@@ -121,7 +121,6 @@ CREATE TABLE lista_espera (
     FOREIGN KEY (libro_isbn) REFERENCES libro(isbn)
 );
 
-
 -- Insertar usuarios
 INSERT INTO Usuario (dni, nombre, apellido, telefono, correo, contraseña) VALUES
 ('12345678A', 'Carlos', 'Martinez', 987654321, 'carlos@example.com', 'password1'),
@@ -141,63 +140,80 @@ INSERT INTO Administrador (dni, nombre, apellido, telefono, correo, contraseña)
 
 -- Insertar autores
 INSERT INTO Autor (dni, nombre, apellido, fecha_nacimiento) VALUES
-('34567890F', 'Isabel', 'Allende', '1942-08-02'),
-('45678901G', 'Gabriel', 'García Márquez', '1927-03-06'),
-('56789012H', 'J.K.', 'Rowling', '1965-07-31'),
-('67890123I', 'Mario', 'Vargas Llosa', '1936-03-28'),
-('78901234J', 'Carlos', 'Fuentes', '1928-11-11'),
-('89012345K', 'Octavio', 'Paz', '1914-03-31'),
-('90123456L', 'Pablo', 'Neruda', '1904-07-12'),
-('12345678M', 'Virginia', 'Woolf', '1882-01-25'),
-('23456789N', 'Albert', 'Camus', '1913-11-07');
+('44332211A', 'Gabriel', 'García Márquez', '1927-03-06'),
+('55443322B', 'Isabel', 'Allende', '1942-08-02'),
+('66554433C', 'Julio', 'Cortázar', '1914-08-26'),
+('77665544D', 'Mario', 'Vargas Llosa', '1936-03-28'),
+('88776655E', 'J.K.', 'Rowling', '1965-07-31'),
+('99887766F', 'George', 'Orwell', '1903-06-25'),
+('10998877G', 'Jane', 'Austen', '1775-12-16'),
+('21009988H', 'Mark', 'Twain', '1835-11-30'),
+('32111099I', 'Fyodor', 'Dostoevsky', '1821-11-11'),
+('43222110J', 'Ernest', 'Hemingway', '1899-07-21'),
+('54321012A', 'Hermann', 'Hesse', '1877-07-02'),
+('65432103B', 'Virginia', 'Woolf', '1882-01-25'),
+('76543214C', 'Franz', 'Kafka', '1883-07-03'),
+('87654325D', 'Albert', 'Camus', '1913-11-07'),
+('98765436E', 'Leo', 'Tolstoy', '1828-09-09'),
+('19876547F', 'Charles', 'Dickens', '1812-02-07'),
+('29765458G', 'William', 'Faulkner', '1897-09-25'),
+('39654369H', 'Homer', '', '-0800-01-01'),
+('49543270I', 'Dante', 'Alighieri', '1265-05-01'),
+('59432181J', 'Miguel', 'de Cervantes', '1547-09-29');
 
 -- Insertar editoriales
 INSERT INTO Editorial (nombre, telefono, direccion, fecha_nacimiento) VALUES
-('Editorial Planeta', 912345671, 'Calle Gran Vía, Madrid', '1945-05-01'),
-('Editorial Anagrama', 912345672, 'Calle Balmes, Barcelona', '1969-06-15'),
-('Editorial Alfaguara', 912345673, 'Calle Orense, Madrid', '1964-04-05'),
-('Editorial Random House', 912345674, 'Calle Paseo de la Castellana, Madrid', '1980-04-10'),
-('Editorial HarperCollins', 912345675, 'Calle de Vallehermoso, Madrid', '1990-05-20'),
-('Editorial Penguin', 912345676, 'Calle de Gran Vía, Barcelona', '1948-09-01'),
-('Editorial McGraw-Hill', 912345677, 'Calle Princesa, Madrid', '1917-02-22'),
-('Editorial Taurus', 912345678, 'Calle de Serrano, Madrid', '1974-06-14'),
-('Editorial RBA', 912345679, 'Calle de Paseo de Gracia, Barcelona', '1959-10-09'),
-('Cantaro', 912345680, 'C. de la Flor Baja, 8, Centro, 28013 Madrid', '2001-01-01'),
-('Diana', 912345681, NULL, '1946-01-01'),
-('Salamandra', 912345682, NULL, '1989-01-01'),
-('Debolsillo', 912345683, NULL, '2001-01-01'),
-('Colección Popular', 912345684, 'C. de Leo, 7, local 2, Retiro, 28007 Madrid', '1944-01-01'),
-('Losada S.A.', 912345685, NULL, '1938-01-01'),
-('Anagrama', 912345686, 'Carrrer de, Carrer de Pau Claris, 172, principal, 2º, 08037 Barcelona', '1969-04-23'),
-('Anaya', 912345687, 'Carrer de Bac de Roda, 64, Edifici D, planta baixa, local 2B, Sant Martí, 08019 Barcelona', '1959-01-01');
+('Penguin Random House', 123456789, 'Calle Falsa 123, Ciudad Ficticia', '1935-07-01'),
+('HarperCollins', 987654321, 'Avenida Real 456, Ciudad Imaginaria', '1817-01-01'),
+('Simon & Schuster', 112233445, 'Boulevard Literario 789, Ciudad de los Libros', '1924-01-02'),
+('Hachette Livre', 998877665, 'Plaza de la Cultura 101, Ciudad del Saber', '1826-01-04'),
+('Macmillan Publishers', 556677889, 'Pasaje de los Escritores 202, Ciudad Literaria', '1843-11-10'),
+('Oxford University Press', 223344556, 'Oxford, Reino Unido', '1586-01-01'),
+('Scholastic Corporation', 334455667, '557 Broadway, Nueva York, NY', '1920-10-22'),
+('Random House', 445566778, 'New York, USA', '1927-01-01'),
+('Pan Macmillan', 556677889, '20 New Wharf Road, Londres, UK', '1843-11-10'),
+('Bloomsbury Publishing', 667788990, '50 Bedford Square, Londres, UK', '1986-01-01'),
+('Vintage Books', 998877665, '1745 Broadway, New York, NY', '1954-01-01'),
+('Faber & Faber', 887766554, 'Bloomsbury House, Londres, UK', '1929-01-01'),
+('Little, Brown and Company', 776655443, '1290 Avenue of the Americas, New York, NY', '1837-01-01'),
+('Círculo de Lectores', 665544332, 'Calle de la Paz 123, Barcelona, España', '1962-01-01'),
+('Editorial Planeta', 554433221, 'Avenida Diagonal 662, Barcelona, España', '1949-01-01'),
+('Editorial Alfaguara', 443322110, 'Calle de los Artistas 45, Madrid, España', '1964-01-01'),
+('Editorial Anagrama', 332211009, 'Calle dels Àngels, Barcelona, España', '1969-01-01'),
+('Editorial Eterna Cadencia', 221100998, 'Honduras 5574, Buenos Aires, Argentina', '2005-01-01'),
+('Editorial Acantilado', 110099887, 'Calle Mallorca 219, Barcelona, España', '1999-01-01'),
+('Taschen', 101122334, 'Hohenzollernring 53, Colonia, Alemania', '1980-01-01');
 
 -- Insertar libros
 INSERT INTO Libro (isbn, titulo, anio, autor_dni, editorial_id, genero, stock, portada) VALUES
-('9781234567891', 'Cien Años de Soledad', '1967-05-30', '45678901G', 1, 'Novela', 10, 'https://www.planetadelibros.com.mx/usuaris/libros/fotos/155/m_libros/portada_cien-anos-de-soledad-td_gabriel-garcia-marquez_201501150207.jpg'),
-('9781234567892', 'Harry Potter y la Piedra Filosofal', '1997-06-26', '56789012H', 2, 'Fantasía', 8, 'https://th.bing.com/th/id/R.805803cc0091320ff3392709185e8764?rik=ZVapd%2fHqWS%2bAjg&riu=http%3a%2f%2fcdn.coordiutil.com%2fimagen-harry_potter_y_la_piedra_filosofal_libro_1-1952728-0-0-0-75.jpg&ehk=tG4asswFSO%2bhBiDYqJazlnRx9ERwaqBOmwFZJ%2b85wv8%3d&risl=&pid=ImgRaw&r=0'),
-('9781234567893', 'La Casa de los Espíritus', '1982-11-12', '34567890F', 3, 'Realismo Mágico', 5, 'https://phantom-expansion.unidadeditorial.es/8f63d59e95157a09f7ab4cc1cd6d4808/crop/0x31/1677x2548/resize/1200/f/jpg/assets/multimedia/imagenes/2022/07/21/16583909817374.jpg'),
-('9782345678901', 'La Muerte de Artemio Cruz', '1962-02-20', '78901234J', 5, 'Realismo', 9, 'https://th.bing.com/th/id/OIP.UGGYVHaXq-EIM7mICVCFswHaLs?rs=1&pid=ImgDetMain'),
-('9782345678902', 'El Laberinto de la Soledad', '1950-03-15', '89012345K', 15, 'Ensayo', 6, 'https://pictures.abebooks.com/LIBRERIA7SOLES/30468897193.jpg'),
-('9782345678903', 'Veinte Poemas de Amor y Una Canción Desesperada', '1924-01-01', '90123456L', 7, 'Poesía', 7, 'https://www.marcialpons.es/media/img/portadas/2023/6/12/9788411483414.jpg'),
-('9783456789010', 'El Aleph', '1949-05-01', '67890123I', 16, 'Ficción', 5, 'https://i.thenile.io/r1000/9780307950949.jpg?r=5ea98546707f3'), 
-('9784567890120', 'Fahrenheit 451', '1953-10-19', '23456789N', 4, 'Ciencia Ficción', 12, 'https://www.tiposinfames.com/media/img/portadas/9788445006771.jpg'),
-('9785678901230', 'Cuentos Completos', '1952-03-10', '12345678M', 17, 'Cuentos', 10, 'https://www.anagrama-ed.es/uploads/media/portadas/0001/20/3fdf861cea0165306ffcbfe3ff3c4ca58ec80123.jpeg'),
-('9786789012340', 'La Casa de Bernarda Alba', '1936-03-02', '78901234J', 17, 'Teatro', 8, 'https://blog.12min.com/wp-content/uploads/2018/04/06c-La-Casa-de-Bernarda-Alba.jpg'),
-('9787890123450', 'Los Detectives Salvajes', '1998-07-01', '34567890F', 17, 'Novela', 5, 'https://th.bing.com/th/id/OIP.Rw9QGAp_ohu95w_RliJasAHaLU?rs=1&pid=ImgDetMain'),
-('9788901234560', 'En El Camino', '1957-11-18', '56789012H', 17, 'Literatura Americana', 4, 'https://th.bing.com/th/id/R.ea62465843f70004aa89a45e4ea96663?rik=7F5ZClEM840aUQ&riu=http%3a%2f%2fwww.anagrama-ed.es%2fimg%2fportadas%2fCM10_G.jpg&ehk=cWLYdX%2bQIuGI36NVBglVbmISPvC1he0EZcrK%2fNECMOw%3d&risl=&pid=ImgRaw&r=0'),
-('9789012345670', 'La Fiesta Ajena', '1979-03-05', '67890123I', 10, 'Novela', 7, 'https://i.pinimg.com/736x/ce/7c/bd/ce7cbd6edba13910a6a1dba123290b70--liliana.jpg');
+('9780141182533', 'Cien años de soledad', '1967-06-05', '44332211A', 1, 'Realismo mágico', 10, 'https://m.media-amazon.com/images/I/91TvVQS7loL.jpg'),
+('9780060883287', 'La casa de los espíritus', '1982-10-30', '55443322B', 2, 'Realismo mágico', 8, 'https://m.media-amazon.com/images/I/816xOSfb2XL._UF1000,1000_QL80_.jpg'),
+('9780307475466', 'Rayuela', '1963-06-28', '66554433C', 3, 'Novela', 5, 'https://m.media-amazon.com/images/I/913qsYmTdmL._AC_UF894,1000_QL80_.jpg'),
+('9780241968581', 'La fiesta del chivo', '2000-05-05', '77665544D', 1, 'Histórica', 7, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwwN_gR7eX1oUk-VSftJTkHwgHbr6i6dRbkA&s'),
+('9781408855652', 'Harry Potter y la piedra filosofal', '1997-06-26', '88776655E', 5, 'Fantasía', 15, 'https://images.cdn1.buscalibre.com/fit-in/360x360/fe/58/fe581c3ec5f295989816825413d462a4.jpg'),
+('9780451524935', '1984', '1949-06-08', '99887766F', 1, 'Distopía', 12, 'https://m.media-amazon.com/images/I/71sOSrd+JxL._AC_UF894,1000_QL80_.jpg'),
+('9780141439518', 'Orgullo y prejuicio', '1813-01-28', '10998877G', 6, 'Romance', 9, 'https://m.media-amazon.com/images/I/61wAZk6G8mL._AC_UF894,1000_QL80_.jpg'),
+('9780199536559', 'Las aventuras de Huckleberry Finn', '1884-12-10', '21009988H', 6, 'Aventura', 6, 'https://www.editorialjuventud.es/wp-content/uploads/4105-2.jpg'),
+('9780140449136', 'Crimen y castigo', '1866-01-01', '32111099I', 7, 'Clásico', 4, 'https://m.media-amazon.com/images/I/713hTReVysL._AC_UF894,1000_QL80_.jpg'),
+('9780684801223', 'El viejo y el mar', '1952-09-01', '43222110J', 8, 'Aventura', 11, 'https://m.media-amazon.com/images/I/71TDhHidulL._AC_UF894,1000_QL80_.jpg'),
+('9780140449266', 'Siddhartha', '1922-01-01', '54321012A', 11, 'Filosófica', 8, 'https://m.media-amazon.com/images/I/91Bi7C1ML0L.jpg'),
+('9780156907392', 'La señora Dalloway', '1925-05-14', '65432103B', 12, 'Clásico', 5, 'https://www.akal.com/media/akal/images/cover-35047.jpg'),
+('9780805209990', 'La metamorfosis', '1915-10-25', '76543214C', 13, 'Filosófica', 10, 'https://www.udllibros.com/imagenes/9788496/978849681502.JPG'),
+('9780679731187', 'El extranjero', '1942-01-01', '87654325D', 14, 'Existencialismo', 6, 'https://m.media-amazon.com/images/I/61RLAWzw+rL._AC_UF894,1000_QL80_.jpg'),
+('9780140449198', 'Anna Karenina', '1877-01-01', '98765436E', 15, 'Romance', 7, 'https://m.media-amazon.com/images/I/71wLs1YK8yL._AC_UF894,1000_QL80_.jpg'),
+('9780141439563', 'Grandes esperanzas', '1861-01-01', '19876547F', 16, 'Clásico', 9, 'https://www.planetadelibros.com/usuaris/libros/thumbs/5f30697a-269b-43f8-9289-350e65aa4809/d_1200_1200/portada_grandes-esperanzas_charles-dickens_201505260951.webp'),
+('9780679732177', 'El sonido y la furia', '1929-01-01', '29765458G', 17, 'Modernismo', 4, 'https://m.media-amazon.com/images/I/71wxHir7RSL._UF1000,1000_QL80_.jpg'),
+('9780140449280', 'La Ilíada', '0800-01-01', '39654369H', 18, 'Épica', 10, 'https://editorialverbum.es/wp-content/uploads/2020/07/La-Iliada.jpg'),
+('9780199535644', 'La Divina Comedia', '1320-01-01', '49543270I', 19, 'Épica', 6, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwDN80KLHRWVEd5ljcgV9T8zGtXV43ER4f2w&s'),
+('9780060934347', 'Don Quijote de la Mancha', '1605-01-16', '59432181J', 20, 'Aventura', 8, 'https://m.media-amazon.com/images/I/91CIwR3QU1L._UF1000,1000_QL80_.jpg');
 
--- Insertar libros prestados
-INSERT INTO Libros_Prestados (libro_isbn, usuario_dni, fecha_prestamo, fecha_devolucion) VALUES
-('9781234567891', '12345678A', '2023-01-10', '2023-02-10'),
-('9781234567892', '87654321B', '2023-02-15', '2023-03-15'),
-('9781234567893', '11223344C', '2023-03-01', '2023-04-01'),
-('9782345678901', '22334455D', '2023-04-05', NULL), 
-('9782345678902', '33445566E', '2023-05-20', '2023-06-20'),
-('9782345678903', '44556677F', '2023-06-25', NULL), 
-('9781234567891', '55667788G', '2023-07-10', '2023-08-10'),
-('9781234567892', '66778899H', '2023-08-12', NULL), 
-('9782345678903', '77889900I', '2023-09-14', '2023-10-14'),
-('9782345678902', '22334455D', '2023-10-20', NULL);
-
-
+-- Insertar préstamos en la tabla libros_prestados
+INSERT INTO libros_prestados (usuario_dni, libro_isbn, fecha_prestamo, fecha_devolucion) VALUES
+-- Préstamos dentro del plazo
+('12345678A', '9780141182533', '2024-11-01 10:00:00', '2024-11-25 10:00:00'),
+('87654321B', '9780060883287', '2024-11-10 14:30:00', '2024-11-28 14:30:00'),
+('11223344C', '9780307475466', '2024-11-15 09:00:00', '2024-11-30 09:00:00'),
+('22334455D', '9780241968581', '2024-11-20 12:00:00', '2024-12-02 12:00:00'),
+('33445566E', '9781408855652', '2024-11-23 16:45:00', '2024-12-01 16:45:00'),
+-- Préstamo fuera del plazo
+('44556677F', '9780451524935', '2024-10-20 11:00:00', NULL);

@@ -51,6 +51,22 @@ class ControladorReservas
         return $reservas;
     }
 
+    /* MÉTODO PARA CANCELAR RESERVA DESDE USERPANEL*/
+    public static function cancelarReserva($id)
+    {
+        $conexion = Conexion::conectar();
+        $sql = "DELETE FROM reservas WHERE id = :id";
+        $stmt = $conexion->prepare($sql);
+        $stmt->bindParam(':id', $id);
+
+        if ($stmt->execute()) {
+            return true; // Reserva cancelada con éxito
+        } else {
+            return false; // Error al cancelar la reserva
+        }
+    }
+
+
     /* MÉTODO PARA RESERVAR LIBRO DESDE EL HOME */
     public static function reservarLibro($dni, $isbn)
     {

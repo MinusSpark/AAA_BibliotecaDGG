@@ -12,9 +12,10 @@ const Search = () => {
     const [filteredBooks, setFilteredBooks] = useState([]);  // Almacena los libros filtrados según la búsqueda y filtros
     const [searchTerm, setSearchTerm] = useState('');  // Almacena el término de búsqueda
     const [selectedYear, setSelectedYear] = useState('');  // Almacena el año seleccionado para el filtro
-    const [selectedPublisher, setSelectedPublisher] = useState('');  // Almacena la editorial seleccionada
+    const [selectedPublisher] = useState('');  // Almacena la editorial seleccionada
     const [selectedAuthor, setSelectedAuthor] = useState('');  // Almacena el autor seleccionado
     const [selectedGenre, setSelectedGenre] = useState('');  // Almacena el género seleccionado
+    // eslint-disable-next-line
     const [publishers, setPublishers] = useState([]);  // Almacena las editoriales disponibles
     const [authors, setAuthors] = useState([]);  // Almacena los autores disponibles
     const [genres, setGenres] = useState([]);  // Almacena los géneros disponibles

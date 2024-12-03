@@ -77,6 +77,28 @@ const UserPanel = () => {
         fetchWaitingList();
     }, [user.dni]);  // Se ejecuta cada vez que el DNI del usuario cambia
 
+    const cancelReservation = async (id) => {
+        try {
+            const response = await axios.delete('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=cancelReservation', {
+                data: { id },
+            });
+
+            if (response.data.status === 'success') {
+                alert('Reserva cancelada con éxito.');
+                // Actualizar el estado para eliminar la reserva cancelada
+                setPendingReservations((prev) =>
+                    prev.filter((reservation) => reservation.id !== id)
+                );
+            } else {
+                alert('No se pudo cancelar la reserva.');
+            }
+        } catch (error) {
+            console.error('Error cancelling reservation:', error);
+            alert('Error al intentar cancelar la reserva.');
+        }
+    };
+
+
     return (
         <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0' }}>
             <Header />
@@ -170,19 +192,28 @@ const UserPanel = () => {
                                 {pendingReservations.length > 0 ? (
                                     <ul className="list-group mt-3">
                                         {pendingReservations.map((reservation, index) => (
-                                            <li key={index} className="list-group-item">
-                                                <strong>{reservation.titulo}</strong>
-                                                <br />
-                                                <small>
-                                                    Tiempo Restante:{' '}
-                                                    {reservation.tiempo_restante === 'Expirada' ? (
-                                                        <span className="text-danger">Expirada</span>
-                                                    ) : (
-                                                        <span className="text-success">{reservation.tiempo_restante}</span>
-                                                    )}
-                                                </small>
+                                            <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>{reservation.titulo}</strong>
+                                                    <br />
+                                                    <small>
+                                                        Tiempo Restante:{' '}
+                                                        {reservation.tiempo_restante === 'Expirada' ? (
+                                                            <span className="text-danger">Expirada</span>
+                                                        ) : (
+                                                            <span className="text-success">{reservation.tiempo_restante}</span>
+                                                        )}
+                                                    </small>
+                                                </div>
+                                                <button
+                                                    className="btn btn-danger btn-sm"
+                                                    onClick={() => cancelReservation(reservation.id)}
+                                                >
+                                                    Cancelar
+                                                </button>
                                             </li>
                                         ))}
+
                                     </ul>
                                 ) : (
                                     <div className="alert alert-info mt-3" role="alert">

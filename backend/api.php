@@ -303,6 +303,7 @@ switch ($method) {
          * Procesamos las solicitudes DELETE para eliminar registros,
          * como usuarios, libros, autores o editoriales.
          */
+        $input = json_decode(file_get_contents("php://input"), true);
 
         /* ELIMINAR USUARIO DESDE INTERFAZ ADMINISTRADOR */
         if ($request === 'deleteUser') {
@@ -336,6 +337,19 @@ switch ($method) {
                 echo json_encode(['status' => 'success', 'message' => 'Editorial eliminada correctamente']);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Error al eliminar la editorial']);
+            }
+        } /* CANCELAR RESERVAS DESDE USERPANEL */elseif ($request === 'cancelReservation') {
+            $id = isset($input['id']) ? $input['id'] : null;
+    
+            if ($id) {
+                $resultado = ControladorReservas::cancelarReserva($id);
+                if ($resultado) {
+                    echo json_encode(['status' => 'success', 'message' => 'Reserva cancelada con éxito.']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'No se pudo cancelar la reserva.']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'ID de reserva no proporcionado.']);
             }
         }
         break;
