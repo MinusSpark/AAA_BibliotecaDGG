@@ -30,18 +30,37 @@ const ReservationsTable = ({ reservations, setReservations, setBorrowedBooks }) 
         }
     };
 
+    // Función para cancelar una reserva
+    const cancelReservation = async (reservationId) => {
+        if (!window.confirm('¿Estás seguro de que deseas cancelar esta reserva?')) return;
+
+        try {
+            const response = await axios.delete('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=cancelReservation', {
+                data: { id: reservationId }
+            });
+
+            if (response.data.status === 'success') {
+                alert('Reserva cancelada exitosamente.');
+                setReservations(prevReservations => prevReservations.filter(res => res.id !== reservationId));
+            } else {
+                alert(`Error al cancelar la reserva: ${response.data.message}`);
+            }
+        } catch (error) {
+            console.error('Error al cancelar la reserva:', error);
+            alert('Hubo un problema al procesar la solicitud.');
+        }
+    };
+
     return (
         <div className='card mb-3 shadow-sm'>
             <div className="card-header bg-primary text-white p-2">
                 <h2 className="h6 mb-0">Reservas Pendientes</h2>
             </div>
             <div className="card-body p-2">
-                {/* Hacemos la tabla desplazable en pantallas pequeñas usando 'table-responsive' */}
                 <div className="table-responsive">
                     <table className="table table-bordered table-sm">
                         <thead className='table-light'>
                             <tr>
-                                {/* Encabezados de la tabla */}
                                 <th className='text-center'>ID</th>
                                 <th className='text-center'>Usuario DNI</th>
                                 <th className='text-center'>Libro ISBN</th>
@@ -50,7 +69,6 @@ const ReservationsTable = ({ reservations, setReservations, setBorrowedBooks }) 
                             </tr>
                         </thead>
                         <tbody>
-                            {/* Mapea las reservas y muestra cada una en una fila */}
                             {reservations.map(reservation => (
                                 <tr key={reservation.id}>
                                     <td>{reservation.id}</td>
@@ -58,12 +76,17 @@ const ReservationsTable = ({ reservations, setReservations, setBorrowedBooks }) 
                                     <td>{reservation.libro_isbn}</td>
                                     <td>{new Date(reservation.fecha_reserva).toLocaleString()}</td>
                                     <td className='text-center'>
-                                        {/* Botón para aprobar la reserva y convertirla en un préstamo */}
                                         <button
-                                            className="btn btn-success btn-sm"
+                                            className="btn btn-success btn-sm me-2"
                                             onClick={() => approveReservation(reservation.id)}
                                         >
                                             Aprobar
+                                        </button>
+                                        <button
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() => cancelReservation(reservation.id)}
+                                        >
+                                            Cancelar
                                         </button>
                                     </td>
                                 </tr>
@@ -74,7 +97,6 @@ const ReservationsTable = ({ reservations, setReservations, setBorrowedBooks }) 
             </div>
         </div>
     );
-
 };
 
 export default ReservationsTable;
