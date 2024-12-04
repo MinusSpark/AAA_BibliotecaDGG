@@ -103,6 +103,25 @@ const UserPanel = () => {
         }
     };
 
+    const deleteNotification = async (id) => {
+        try {
+            const response = await axios.delete('http://localhost/AAA_BibliotecaDGG/backend/api.php?request=deleteNotification', {
+                data: { id },
+            });
+
+            if (response.data.status === 'success') {
+                alert('Notificación eliminada con éxito.');
+                setNotifications((prev) => prev.filter((notification) => notification.id !== id));
+            } else {
+                alert('No se pudo eliminar la notificación.');
+            }
+        } catch (error) {
+            console.error('Error deleting notification:', error);
+            alert('Error al intentar eliminar la notificación.');
+        }
+    };
+
+
     return (
         <div className="d-flex flex-column min-vh-100" style={{ background: '#f0f0f0' }}>
             <Header />
@@ -114,22 +133,37 @@ const UserPanel = () => {
 
             <div className="container flex-grow-1 my-5">
                 <div className="row g-4">
-                    <div className="col-12 mb-4">
-                        <h3 className="text-danger">Notificaciones</h3>
-                        {notifications.length > 0 ? (
-                            <ul className="list-group">
-                                {notifications.map((notification, index) => (
-                                    <li key={index} className="list-group-item">
-                                        {notification.mensaje}
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <div className="alert alert-info" role="alert">
-                                No tienes notificaciones.
+
+                    {/* Sección de notificaciones */}
+                    <div className="col-12 col-md-6">
+                        <div className="card shadow-sm h-100">
+                            <div className="card-body">
+                                <h3 className="text-danger">Notificaciones ({notifications.length})</h3>
+                                {notifications.length > 0 ? (
+                                    <ul className="list-group mt-3">
+                                        {notifications.map((notification) => (
+                                            <li key={notification.id} className="list-group-item d-flex justify-content-between align-items-center">
+                                                {notification.mensaje}
+                                                <button
+                                                    onClick={() => deleteNotification(notification.id)}
+                                                    className="btn btn-sm btn-danger"
+                                                    title="Eliminar notificación"
+                                                >
+                                                    ×
+                                                </button>
+                                            </li>
+                                        ))}
+
+                                    </ul>
+                                ) : (
+                                    <div className="alert alert-info mt-3" role="alert">
+                                        No tienes notificaciones.
+                                    </div>
+                                )}
                             </div>
-                        )}
+                        </div>
                     </div>
+
 
                     {/* Sección de préstamos actuales */}
                     <div className="col-12 col-md-6">
@@ -171,7 +205,7 @@ const UserPanel = () => {
                                                 <strong>{loan.titulo}</strong>
                                                 <br />
                                                 <small className="text-muted">
-                                                Fecha de Préstamo: {loan.fecha_prestamo}
+                                                    Fecha de Préstamo: {loan.fecha_prestamo}
                                                     <br />
                                                     Fecha de Devolución: {loan.fecha_devolucion}
                                                 </small>

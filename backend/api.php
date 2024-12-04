@@ -178,7 +178,7 @@ switch ($method) {
                 $stmt = $conexion->prepare($query);
                 $stmt->execute([':dni' => $dni]);
                 $notificaciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
+
                 if ($notificaciones) {
                     echo json_encode(['status' => 'success', 'data' => $notificaciones]);
                 } else {
@@ -188,8 +188,8 @@ switch ($method) {
                 echo json_encode(['status' => 'error', 'message' => 'DNI no proporcionado']);
             }
         }
-        
-        
+
+
 
         break;
 
@@ -372,6 +372,15 @@ switch ($method) {
                 }
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'ID de reserva no proporcionado.']);
+            }
+        } elseif ($request === 'deleteNotification') {
+            $id = isset($input['id']) ? $input['id'] : null;
+
+            if ($id) {
+                $resultado = ControladorEventos::borrarNotificacion($id);
+                echo json_encode($resultado);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'ID de notificación no proporcionado.']);
             }
         }
         break;
